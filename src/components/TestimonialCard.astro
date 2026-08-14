@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro'
+import { initials } from '../lib/utils'
+import type { Testimonial } from '../data/testimonials'
+
+interface Props {
+  testimonial: Testimonial
+}
+const { testimonial } = Astro.props
+const inits = initials(testimonial.name)
+---
+
+<figure class="card card-hover flex h-full flex-col">
+  <div class="flex gap-0.5 text-warm-500" aria-label={`${testimonial.rating} out of 5 stars`}>
+    {Array.from({ length: 5 }).map((_, i) => (
+      <Icon key={i} name={i < testimonial.rating ? 'star-solid' : 'star'} size={18} />
+    ))}
+  </div>
+  <blockquote class="mt-4 flex-1 text-[15px] leading-relaxed text-gray-700 dark:text-slate-300">
+    “{testimonial.quote}”
+  </blockquote>
+  <figcaption class="mt-5 flex items-center gap-3 border-t pt-5 dark:border-night-border">
+    <span class="flex h-11 w-11 items-center justify-center rounded-full bg-brand-800 text-sm font-bold text-white dark:bg-brand-600">
+      {inits}
+    </span>
+    <div>
+      <p class="text-sm font-semibold">{testimonial.name}</p>
+      <p class="text-xs text-gray-500 dark:text-slate-400">{testimonial.location} · {testimonial.treatment}</p>
+    </div>
+  </figcaption>
+</figure>

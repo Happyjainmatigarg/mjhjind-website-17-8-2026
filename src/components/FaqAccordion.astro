@@ -1,0 +1,123 @@
+---
+import Icon from './Icon.astro'
+import { faqs as seedFaqs, faqCategories as seedFaqCategories } from '../data/faqs'
+import type { Faq } from '../data/faqs'
+
+interface Props {
+  searchable?: boolean
+  categories?: boolean
+  items?: Faq[]
+}
+const { searchable = true, categories = true, items } = Astro.props
+const faqs = items ?? seedFaqs
+const faqCategories = categories ? Array.from(new Set(faqs.map((f) => f.category).filter(Boolean))) : seedFaqCategories
+---
+
+<div class="mx-auto max-w-3xl" id="faq-widget">
+  {searchable && (
+    <div class="relative mb-8">
+      <Icon name="search" size={20} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+      <input
+        type="search"
+        id="faq-search"
+        class="input !pl-12"
+        placeholder="Search questions..."
+        aria-label="Search frequently asked questions"
+      />
+    </div>
+  )}
+
+  {categories && (
+    <div class="mb-8 flex flex-wrap gap-2" id="faq-categories" role="group" aria-label="Filter by topic">
+      <button type="button" data-cat="all" class="chip border-brand-700 bg-brand-800 text-white dark:border-brand-400 dark:bg-brand-600 dark:text-white">All</button>
+      {
+        faqCategories.map((cat) => (
+          <button type="button" data-cat={cat} class="chip border-gray-300 text-gray-600 hover:border-brand-700 hover:text-brand-800 dark:border-night-border dark:text-slate-300 dark:hover:border-brand-400">
+            {cat}
+          </button>
+        ))
+      }
+    </div>
+  )}
+
+  <div class="space-y-3" id="faq-list">
+    {
+      faqs.map((faq) => (
+        <div class="card !p-0 overflow-hidden" data-faq data-category={faq.category} data-question={faq.question.toLowerCase()}>
+          <button type="button" class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left font-medium transition-colors hover:bg-gray-50 dark:hover:bg-night-bg" aria-expanded="false">
+            <span>{faq.question}</span>
+            <Icon name="chevron-down" size={20} class="shrink-0 text-brand-700 transition-transform duration-300 dark:text-brand-400" />
+          </button>
+          <div class="faq-answer hidden border-t px-5 py-4 text-[15px] leading-relaxed text-gray-600 dark:border-night-border dark:text-slate-300">
+            <p>{faq.answer}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+
+  <div id="faq-empty" class="hidden py-12 text-center">
+    <p class="text-lg font-semibold" style="color: var(--color-heading)">No questions found</p>
+    <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">Try a different keyword, or contact us directly.</p>
+    <a href="/contact" class="btn-primary mt-5">Contact Us</a>
+  </div>
+</div>
+
+<script>
+  const list = document.getElementById('faq-list')
+  const empty = document.getElementById('faq-empty')
+  const search = document.getElementById('faq-search') as HTMLInputElement | null
+  const items = Array.from(document.querySelectorAll<HTMLElement>('[data-faq]'))
+
+  document.querySelectorAll<HTMLElement>('[data-faq] > button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('[data-faq]')!
+      const answer = item.querySelector('.faq-answer') as HTMLElement
+      const icon = btn.querySelector('svg')
+      const expanded = btn.getAttribute('aria-expanded') === 'true'
+
+      document.querySelectorAll('[data-faq]').forEach((el) => {
+        const a = el.querySelector('.faq-answer') as HTMLElement
+        const b = el.querySelector('button')!
+        const i = b.querySelector('svg')
+        a.classList.add('hidden')
+        b.setAttribute('aria-expanded', 'false')
+        i?.classList.remove('rotate-180')
+      })
+
+      if (!expanded) {
+        answer.classList.remove('hidden')
+        btn.setAttribute('aria-expanded', 'true')
+        icon?.classList.add('rotate-180')
+      }
+    })
+  })
+
+  function applyFilters() {
+    const q = (search?.value || '').toLowerCase().trim()
+    const cat = document.querySelector<HTMLElement>('#faq-categories [data-cat].border-brand-700')?.dataset.cat || 'all'
+    let visible = 0
+    items.forEach((item) => {
+      const matchCat = cat === 'all' || item.dataset.category === cat
+      const matchQ = !q || (item.dataset.question || '').includes(q)
+      const show = matchCat && matchQ
+      item.classList.toggle('hidden', !show)
+      if (show) visible++
+    })
+    empty!.classList.toggle('hidden', visible > 0)
+    list!.classList.toggle('hidden', visible === 0)
+  }
+
+  search?.addEventListener('input', applyFilters)
+  document.querySelectorAll<HTMLElement>('#faq-categories [data-cat]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#faq-categories [data-cat]').forEach((b) => {
+        b.classList.remove('border-brand-700', 'bg-brand-800', 'text-white', 'dark:bg-brand-600')
+        b.classList.add('border-gray-300', 'text-gray-600', 'dark:border-night-border', 'dark:text-slate-300')
+      })
+      btn.classList.add('border-brand-700', 'bg-brand-800', 'text-white', 'dark:bg-brand-600')
+      btn.classList.remove('border-gray-300', 'text-gray-600', 'dark:border-night-border', 'dark:text-slate-300')
+      applyFilters()
+    })
+  })
+</script>

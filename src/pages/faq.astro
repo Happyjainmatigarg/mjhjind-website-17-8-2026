@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import FaqAccordion from '../components/FaqAccordion.astro'
+import Icon from '../components/Icon.astro'
+import { getCollection } from '../lib/server/store'
+import type { Faq } from '../data/faqs'
+import { hospital } from '../data/site'
+
+export const prerender = false
+
+const allFaqs = getCollection<Faq & { id: string }>('faqs')
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: allFaqs.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+}
+---
+
+<Layout title="FAQ" active="faq" description={`Frequently asked questions about appointments, OPD timings, admissions, insurance and health camps at ${hospital.name}, Jind.`} schema={[faqSchema]}>
+  <PageHero
+    eyebrow="Help Center"
+    title="Frequently Asked Questions"
+    subtitle="Quick answers to the questions our patients ask us most. Can’t find what you need? Contact our team."
+  />
+
+  <section class="section-pad">
+    <div class="container-site">
+      <FaqAccordion items={allFaqs} />
+
+      <div class="mt-16 grid gap-6 md:grid-cols-3">
+        <a href={`tel:${hospital.phones.reception.replace(/\D/g, '')}`} class="card card-hover flex items-center gap-4">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-brand-50 text-brand-800 dark:bg-brand-950 dark:text-brand-300">
+            <Icon name="phone" size={22} />
+          </span>
+          <div>
+            <p class="font-semibold">Call Reception</p>
+            <p class="text-sm text-gray-600 dark:text-slate-400">{hospital.phones.reception}</p>
+          </div>
+        </a>
+        <a href="/contact" class="card card-hover flex items-center gap-4">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-heal-50 text-heal-600 dark:bg-heal-500/10 dark:text-heal-500">
+            <Icon name="chat" size={22} />
+          </span>
+          <div>
+            <p class="font-semibold">Send a Message</p>
+            <p class="text-sm text-gray-600 dark:text-slate-400">We reply within 24 hours</p>
+          </div>
+        </a>
+        <a href="/book" class="card card-hover flex items-center gap-4">
+          <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-warm-500/15 text-warm-600 dark:text-warm-400">
+            <Icon name="calendar" size={22} />
+          </span>
+          <div>
+            <p class="font-semibold">Book Appointment</p>
+            <p class="text-sm text-gray-600 dark:text-slate-400">Online in under 2 minutes</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

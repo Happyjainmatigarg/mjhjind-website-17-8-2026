@@ -1,0 +1,402 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-surface-alt: #f3f4f6;
+    --color-text: #1e293b;
+    --color-text-muted: #475569;
+    --color-border: #e5e7eb;
+    --color-heading: #1e293b;
+    --color-footer: #1e293b;
+    --color-footer-text: #cbd5e1;
+    --color-footer-heading: #ffffff;
+    color-scheme: light;
+  }
+
+  html.dark {
+    --color-bg: #0f172a;
+    --color-surface: #1e293b;
+    --color-surface-alt: #16213a;
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-border: #334155;
+    --color-heading: #f8fafc;
+    --color-footer: #0b1222;
+    --color-footer-text: #94a3b8;
+    --color-footer-heading: #e2e8f0;
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-ink antialiased;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--color-heading);
+  }
+
+  p {
+    color: var(--color-text);
+  }
+
+  ::selection {
+    background-color: #1e40af;
+    color: #ffffff;
+  }
+
+  :focus-visible {
+    outline: 2px solid #1e40af;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .container-site {
+    @apply mx-auto w-full max-w-content px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-6 py-3 text-base font-medium tracking-wide transition-all duration-200 select-none;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand-800 text-white hover:bg-brand-900 hover:-translate-y-0.5 hover:shadow-card-lg active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply btn border-2 border-brand-800 bg-transparent text-brand-800 hover:bg-brand-100 dark:border-brand-400 dark:text-brand-300 dark:hover:bg-brand-950 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-white {
+    @apply btn bg-white text-brand-800 hover:bg-brand-50 hover:-translate-y-0.5 hover:shadow-card-lg;
+  }
+
+  .btn-ghost {
+    @apply btn px-4 py-2 text-brand-800 underline-offset-4 hover:underline dark:text-brand-300;
+  }
+
+  .btn-whatsapp {
+    @apply btn bg-[#25D366] text-white hover:bg-[#1EBE5B] hover:-translate-y-0.5 hover:shadow-card-lg;
+  }
+
+  .card {
+    @apply rounded-md border border-gray-200 bg-white p-6 shadow-card-sm transition-all duration-300 hover:shadow-card-md;
+    border-color: var(--color-border);
+    background-color: var(--color-surface);
+  }
+
+  .card-hover {
+    @apply hover:-translate-y-1 hover:shadow-card-lg;
+  }
+
+  .input {
+    @apply h-12 w-full rounded-sm border border-gray-300 bg-white px-4 py-3 text-base text-ink placeholder-gray-400 transition-colors focus:border-brand-800 focus:outline-none focus:ring-2 focus:ring-brand-800 focus:ring-opacity-20 dark:border-night-border dark:bg-night-surface dark:text-night-text;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    border-color: var(--color-border);
+  }
+
+  .input-error {
+    @apply border-danger-500 focus:border-danger-500 focus:ring-danger-500;
+    border-color: #ef4444 !important;
+  }
+
+  .error-text {
+    @apply mt-1 flex items-center gap-1 text-sm text-danger-600 dark:text-red-400;
+  }
+
+  .label {
+    @apply mb-1.5 block text-sm font-medium uppercase tracking-wider text-gray-600 dark:text-slate-400;
+    color: var(--color-text-muted);
+  }
+
+  .section-pad {
+    @apply py-16 md:py-24;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide;
+  }
+
+  .badge-green {
+    @apply badge bg-heal-100 text-heal-700 dark:bg-heal-500/15 dark:text-heal-500;
+  }
+
+  .badge-orange {
+    @apply badge bg-warm-400/15 text-warm-600 dark:bg-warm-400/15 dark:text-warm-400;
+  }
+
+  .badge-gray {
+    @apply badge bg-gray-200 text-gray-600 dark:bg-night-border dark:text-slate-400;
+  }
+
+  .badge-blue {
+    @apply badge bg-brand-100 text-brand-800 dark:bg-brand-500/15 dark:text-brand-300;
+  }
+
+  .badge-red {
+    @apply badge bg-danger-500/10 text-danger-600 dark:bg-danger-500/15 dark:text-red-400;
+  }
+
+  .eyebrow {
+    @apply text-sm font-semibold uppercase tracking-[0.05em] text-brand-700 dark:text-brand-400;
+  }
+
+  .chip {
+    @apply inline-flex cursor-pointer items-center rounded-full border px-4 py-1.5 text-sm font-medium transition-colors;
+  }
+
+  .prose-content {
+    @apply leading-relaxed;
+  }
+
+  .prose-content p {
+    @apply mb-4;
+    color: var(--color-text);
+  }
+
+  .prose-content h2 {
+    @apply mt-8 mb-4 text-2xl font-semibold;
+    color: var(--color-heading);
+  }
+
+  .prose-content h3 {
+    @apply mt-6 mb-3 text-xl font-semibold;
+    color: var(--color-heading);
+  }
+
+  .prose-content ul {
+    @apply mb-4 list-disc pl-6 space-y-1;
+  }
+
+  .prose-content ol {
+    @apply mb-4 list-decimal pl-6 space-y-1;
+  }
+
+  .prose-content a {
+    @apply text-brand-700 underline dark:text-brand-400;
+  }
+
+  .prose-content blockquote {
+    @apply my-6 border-l-4 border-brand-700 bg-brand-50 px-6 py-4 italic dark:border-brand-400 dark:bg-brand-950/40;
+  }
+
+  .prose-content img {
+    @apply my-6 rounded-md shadow-card-md;
+  }
+
+  .prose-content strong {
+    @apply font-semibold;
+  }
+
+  .prose-content table {
+    @apply my-6 w-full border-collapse text-sm;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .prose-content th {
+    @apply border border-gray-300 bg-gray-100 px-4 py-2 text-left font-semibold dark:border-night-border dark:bg-night-surface;
+  }
+
+  .prose-content td {
+    @apply border border-gray-300 px-4 py-2 dark:border-night-border;
+  }
+
+  .skip-link {
+    @apply absolute left-4 top-4 z-[100] -translate-y-24 rounded-sm bg-brand-800 px-4 py-2 text-white transition-transform focus:translate-y-0;
+  }
+
+  .toast {
+    @apply fixed left-1/2 top-6 z-[90] -translate-x-1/2 translate-y-0 rounded-md px-5 py-3 text-white shadow-card-lg transition-all duration-300;
+  }
+
+  .toast-success {
+    @apply bg-heal-600;
+  }
+
+  .toast-error {
+    @apply bg-danger-600;
+  }
+
+  .toast-hidden {
+    @apply -translate-y-24 opacity-0;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #1e40af 0%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-grid {
+    background-image: linear-gradient(to right, rgba(30, 64, 175, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(30, 64, 175, 0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  .bg-hero {
+    background-image: linear-gradient(to right, rgba(15, 23, 42, 0.88), rgba(30, 64, 175, 0.55)),
+      radial-gradient(1200px 600px at 80% -10%, rgba(16, 185, 129, 0.25), transparent 60%);
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .admin-input {
+    @apply w-full rounded-sm border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-night-border dark:bg-night-surface dark:text-slate-200 dark:placeholder-slate-500;
+  }
+
+  .admin-select {
+    @apply rounded-sm border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:border-night-border dark:bg-night-surface dark:text-slate-200;
+  }
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: none;
+}
+
+#print-receipt {
+  display: none;
+}
+
+#print-receipt .print-receipt-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 2px solid #1e40af;
+  padding-bottom: 16px;
+}
+
+#print-receipt .print-receipt-brand {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e40af;
+}
+
+#print-receipt .print-receipt-sub {
+  font-size: 12px;
+  color: #475569;
+  margin-top: 2px;
+}
+
+#print-receipt .print-receipt-badge {
+  border: 2px solid #1e40af;
+  color: #1e40af;
+  font-weight: 700;
+  font-size: 12px;
+  text-align: center;
+  letter-spacing: 0.05em;
+  padding: 6px 10px;
+}
+
+#print-receipt .print-receipt-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 20px 0 12px;
+  color: #1e293b;
+}
+
+#print-receipt .print-receipt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+#print-receipt .print-receipt-table td {
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  color: #334155;
+}
+
+#print-receipt .print-receipt-table td:first-child {
+  width: 40%;
+  font-weight: 600;
+  background: #f8fafc;
+}
+
+#print-receipt .print-receipt-note {
+  margin-top: 14px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+#print-receipt .print-receipt-footer {
+  margin-top: 24px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 12px;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #print-receipt {
+    display: block !important;
+    position: absolute;
+    inset: 0;
+    padding: 28px;
+    background: #ffffff;
+    color: #1e293b;
+  }
+  #print-receipt,
+  #print-receipt * {
+    visibility: visible;
+  }
+}
+

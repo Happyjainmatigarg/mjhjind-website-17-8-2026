@@ -1,0 +1,209 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import Icon from '../components/Icon.astro'
+import { hospital } from '../data/site'
+import { getCollection } from '../lib/server/store'
+import type { Doctor } from '../data/doctors'
+import ImagePlaceholder from '../components/ImagePlaceholder.astro'
+
+export const prerender = false
+
+const doctors = getCollection<Doctor>('doctors')
+
+const values = [
+  { icon: 'heart', title: 'Compassion', desc: 'We treat every patient with the same care and dignity we would give our own family.' },
+  { icon: 'shield', title: 'Integrity', desc: 'Honest advice, transparent billing, and no unnecessary tests or procedures.' },
+  { icon: 'sparkles', title: 'Excellence', desc: 'Continuous training, modern equipment, and evidence-based medicine.' },
+  { icon: 'user-group', title: 'Community', desc: 'Free camps and health education keep our community healthy and informed.' },
+]
+
+const infrastructure = [
+  { icon: 'bed', title: '30+ Inpatient Beds', desc: 'Comfortable general, semi-private and private rooms with attentive nursing.' },
+  { icon: 'icu', title: 'ICU & Critical Care', desc: 'Continuous monitoring, ventilator support and 24×7 intensivist coverage.' },
+  { icon: 'ot', title: 'Operation Theatre', desc: 'Well-equipped OT for routine and emergency surgical procedures.' },
+  { icon: 'lab', title: 'Diagnostics & Imaging', desc: 'Pathology, X-ray, ultrasound, ECG, 2D ECHO and TMT in-house.' },
+  { icon: 'maternity', title: 'Maternity Wing', desc: 'Dedicated labour and maternity care for safe deliveries.' },
+  { icon: 'pharmacy', title: 'In-house Pharmacy', desc: '24×7 pharmacy with all essential medicines readily available.' },
+]
+---
+
+<Layout title="About Us" active="about" description={`Learn about ${hospital.name}, ${hospital.address.city} — our history since ${hospital.foundedYear}, mission, values, infrastructure and the team behind your care.`}>
+  <PageHero
+    eyebrow="About Us"
+    title="A Legacy of Care in Jind"
+    subtitle={`Serving the people of ${hospital.address.city} and the surrounding region with trusted, affordable healthcare since ${hospital.foundedYear}.`}
+  />
+
+  <!-- Our story -->
+  <section class="section-pad">
+    <div class="container-site grid items-center gap-12 lg:grid-cols-2">
+      <div>
+        <p class="eyebrow mb-3">Our Story</p>
+        <h2 class="text-3xl font-bold tracking-tight text-balance md:text-h2">From a Small Clinic to a Trusted Hospital</h2>
+        <div class="mt-6 space-y-4 leading-relaxed text-gray-700 dark:text-slate-300">
+          <p>
+            {hospital.name} began as a modest clinic on {hospital.address.line1} with a simple belief — that the people of Jind deserve quality healthcare without travelling to bigger cities. What started with a handful of consultations each day has grown into a multi-specialty hospital serving tens of thousands of patients every year.
+          </p>
+          <p>
+            Today, our team of over a dozen registered specialists and a dedicated nursing and support staff covers general medicine, cardiology, orthopedics, pediatrics, gynecology and more. We have continuously invested in modern diagnostics, an intensive care unit, and round-the-clock emergency services.
+          </p>
+          <p>
+            Yet our founding principle has never changed: treat every patient with warmth, honesty and compassion. That is why families across Jind, Julana, Narwana and Safidon have trusted us with their health for more than {new Date().getFullYear() - hospital.foundedYear} years.
+          </p>
+        </div>
+        <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
+          {[
+            { v: '25+', l: 'Years of Care' },
+            { v: '15+', l: 'Specialist Doctors' },
+            { v: '30+', l: 'Inpatient Beds' },
+            { v: '50K+', l: 'Patients Treated' },
+            { v: '2,000+', l: 'Safe Deliveries' },
+            { v: '24×7', l: 'Emergency Care' },
+          ].map((s) => (
+            <div class="card !p-4 text-center">
+              <p class="text-2xl font-bold text-brand-800 dark:text-brand-400">{s.v}</p>
+              <p class="mt-1 text-xs text-gray-600 dark:text-slate-400">{s.l}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="grid gap-6">
+        <ImagePlaceholder image="campus" title="MJ Hospital Campus" />
+        <div class="grid grid-cols-2 gap-6">
+          <ImagePlaceholder image="reception" title="Reception" class="!aspect-square" />
+          <ImagePlaceholder image="icu" title="ICU" class="!aspect-square" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="bg-gray-50 dark:bg-night-surface-alt" style="background-color: var(--color-surface-alt)">
+    <div class="container-site section-pad">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow mb-3">Our Journey</p>
+        <h2 class="text-3xl font-bold tracking-tight text-balance md:text-h2">Milestones on Our Path</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">From a single clinic room to a full-fledged hospital — here is how we grew.</p>
+      </div>
+      <div class="relative mx-auto mt-14 max-w-3xl">
+        <div class="absolute bottom-0 left-[15px] top-0 w-px bg-brand-200 dark:bg-brand-950 md:left-1/2"></div>
+        <div class="space-y-10">
+          {[
+            { year: '1998', title: 'The First Clinic', desc: 'MJ Hospital opens as a small clinic with a single consultation room and a two-bed observation ward.' },
+            { year: '2004', title: 'Becomes a Hospital', desc: 'A 10-bed inpatient wing, a modest OT and the first full-time staff are added, and the hospital is formally registered.' },
+            { year: '2010', title: 'Diagnostics & ICU', desc: 'In-house pathology, X-ray and ultrasound begin, and a 6-bed ICU with ventilator support is commissioned.' },
+            { year: '2015', title: 'Maternity & Emergency', desc: 'A dedicated maternity wing and a 24×7 emergency department open, along with the 102 ambulance tie-up.' },
+            { year: '2020', title: 'Digital & Preventive Care', desc: 'Digital records, online appointments and regular community health camps bring modern care to more families.' },
+            { year: 'Today', title: 'Serving the Region', desc: '30+ beds, a dozen specialists, in-house pharmacy and lab — still guided by the same founding values.' },
+          ].map((m, i) => (
+            <div class={`relative flex gap-6 pl-10 md:w-1/2 md:pl-0 ${i % 2 === 0 ? 'md:pr-12 md:text-right' : 'md:ml-auto md:pl-12'}`}>
+              <span class={`absolute left-[7px] top-1 flex h-4 w-4 items-center justify-center rounded-full border-2 border-brand-600 bg-white dark:bg-night-surface md:left-auto ${i % 2 === 0 ? 'md:-right-2' : 'md:-left-2'}`}>
+                <span class="h-1.5 w-1.5 rounded-full bg-brand-600"></span>
+              </span>
+              <div class="card w-full !p-5">
+                <p class="text-sm font-bold text-brand-700 dark:text-brand-400">{m.year}</p>
+                <h3 class="mt-1 font-semibold">{m.title}</h3>
+                <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-slate-400">{m.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & Vision -->
+  <section class="bg-gray-50 dark:bg-night-surface-alt" style="background-color: var(--color-surface-alt)">
+    <div class="container-site section-pad">
+      <div class="grid gap-6 md:grid-cols-2">
+        <div class="card relative overflow-hidden">
+          <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-brand-100/60 blur-2xl dark:bg-brand-900/40"></div>
+          <div class="relative">
+            <div class="flex h-12 w-12 items-center justify-center rounded-md bg-brand-800 text-white">
+              <Icon name="eye" size={24} />
+            </div>
+            <h3 class="mt-4 text-xl font-semibold">Our Mission</h3>
+            <p class="mt-3 leading-relaxed text-gray-700 dark:text-slate-300">
+              To provide safe, affordable and compassionate healthcare to every patient who walks through our doors — using modern medicine, skilled professionals, and a deeply human approach.
+            </p>
+          </div>
+        </div>
+        <div class="card relative overflow-hidden">
+          <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-heal-100/60 blur-2xl dark:bg-heal-900/30"></div>
+          <div class="relative">
+            <div class="flex h-12 w-12 items-center justify-center rounded-md bg-heal-600 text-white">
+              <Icon name="sparkles" size={24} />
+            </div>
+            <h3 class="mt-4 text-xl font-semibold">Our Vision</h3>
+            <p class="mt-3 leading-relaxed text-gray-700 dark:text-slate-300">
+              To be the most trusted healthcare destination in the Jind district — a hospital where families choose to be born, healed and cared for, generation after generation.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {values.map((v) => (
+          <div class="card text-center">
+            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-heal-50 text-heal-600 dark:bg-heal-500/10 dark:text-heal-500">
+              <Icon name={v.icon} size={26} />
+            </div>
+            <h3 class="mt-4 font-semibold">{v.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-slate-400">{v.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Infrastructure -->
+  <section class="section-pad">
+    <div class="container-site">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow mb-3">Infrastructure</p>
+        <h2 class="text-3xl font-bold tracking-tight text-balance md:text-h2">Modern Facilities, Patient Comfort</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">Everything your family needs for diagnosis, treatment and recovery — under one roof.</p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {infrastructure.map((f) => (
+          <div class="card flex gap-4">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-brand-50 text-brand-800 dark:bg-brand-950 dark:text-brand-300">
+              <Icon name={f.icon} size={24} />
+            </div>
+            <div>
+              <h3 class="font-semibold">{f.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-gray-600 dark:text-slate-400">{f.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Team teaser -->
+  <section class="bg-gray-50 dark:bg-night-surface-alt" style="background-color: var(--color-surface-alt)">
+    <div class="container-site section-pad">
+      <div class="mx-auto max-w-3xl text-center">
+        <p class="eyebrow mb-3">Our Team</p>
+        <h2 class="text-3xl font-bold tracking-tight text-balance md:text-h2">Specialists Who Care</h2>
+        <p class="mt-4 text-lg text-gray-600 dark:text-slate-400">All our doctors are registered with the Haryana Medical Council and bring years of hospital experience.</p>
+      </div>
+      <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {doctors.slice(0, 4).map((d) => (
+          <a href={`/doctors/${d.slug}`} class="card card-hover group text-center">
+            <div class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-brand-800 text-2xl font-bold text-white group-hover:bg-brand-700">
+              {d.name.replace('Dr. ', '').split(' ').map((p) => p[0]).join('').slice(0, 2)}
+            </div>
+            <h3 class="mt-4 font-semibold">{d.name}</h3>
+            <p class="text-sm text-brand-700 dark:text-brand-400">{d.specialty}</p>
+            <p class="mt-1 text-xs text-gray-500 dark:text-slate-400">{d.qualification}</p>
+          </a>
+        ))}
+      </div>
+      <div class="mt-10 text-center">
+        <a href="/doctors" class="btn-primary">Meet All Our Doctors</a>
+      </div>
+    </div>
+  </section>
+</Layout>

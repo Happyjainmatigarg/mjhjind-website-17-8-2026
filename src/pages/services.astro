@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import ServiceCard from '../components/ServiceCard.astro'
+import Icon from '../components/Icon.astro'
+import { getCollection } from '../lib/server/store'
+import type { Service } from '../data/services'
+import { hospital } from '../data/site'
+
+export const prerender = false
+
+const services = getCollection<Service>('services')
+---
+
+<Layout title="Our Services" active="services" description={`Explore the full range of services at ${hospital.name}, Jind — cardiology, orthopedics, general medicine, pediatrics, gynecology, diagnostics, emergency and more.`}>
+  <PageHero
+    eyebrow="Our Services"
+    title="Departments & Services"
+    subtitle="Comprehensive medical care for your whole family — from routine check-ups to 24×7 emergencies."
+  />
+
+  <section class="section-pad">
+    <div class="container-site">
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {services.map((s) => <ServiceCard service={s} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-brand-900 text-white dark:bg-night-bg">
+    <div class="container-site py-12">
+      <div class="grid items-center gap-8 md:grid-cols-2">
+        <div>
+          <h2 class="text-2xl font-bold">Not sure which department you need?</h2>
+          <p class="mt-3 text-white/80">Call our team — we will guide you to the right specialist based on your symptoms.</p>
+        </div>
+        <div class="flex flex-wrap gap-4 md:justify-end">
+          <a href={`tel:${hospital.phones.appointment.replace(/\D/g, '')}`} class="btn-white">
+            <Icon name="phone" size={18} /> {hospital.phones.appointment}
+          </a>
+          <a href="/book" class="btn border-2 border-white/40 text-white hover:bg-white/10">
+            Book an Appointment
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>

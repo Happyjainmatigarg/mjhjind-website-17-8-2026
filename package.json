@@ -1,0 +1,23 @@
+{
+  "name": "mjhospital-website",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Meenakshi Jain Hospital — public website",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@astrojs/node": "^9.5.5",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/tailwind": "^6.0.2",
+    "astro": "^5.12.5",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.8.3"
+  }
+}

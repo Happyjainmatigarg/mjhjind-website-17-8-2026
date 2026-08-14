@@ -1,0 +1,24 @@
+---
+import Icon from './Icon.astro'
+import type { Service } from '../data/services'
+
+interface Props {
+  service: Service
+}
+const { service } = Astro.props
+---
+
+<article class="card card-hover flex h-full flex-col">
+  <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-md bg-brand-50 text-brand-800 dark:bg-brand-950 dark:text-brand-300">
+    <Icon name={service.icon} size={28} />
+  </div>
+  <h3 class="text-lg font-semibold">{service.title}</h3>
+  <p class="mt-2 flex-1 text-sm leading-relaxed text-gray-600 dark:text-slate-400">{service.short}</p>
+  <div class="mt-4 flex items-center justify-between">
+    <a href={`/services/${service.slug}`} class="inline-flex items-center gap-1 text-sm font-semibold text-brand-700 transition-colors hover:text-brand-900 dark:text-brand-400 dark:hover:text-brand-300">
+      Learn More
+      <Icon name="arrow-right" size={16} />
+    </a>
+    <a href={`/book?service=${service.slug}`} class="text-sm font-medium text-heal-600 hover:underline dark:text-heal-500">Book</a>
+  </div>
+</article>

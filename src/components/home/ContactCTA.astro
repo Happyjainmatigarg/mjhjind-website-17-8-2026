@@ -1,0 +1,51 @@
+---
+import Icon from '../Icon.astro'
+import { hospital } from '../../data/site'
+import { telHref } from '../../lib/utils'
+---
+
+<section class="relative overflow-hidden bg-brand-900 text-white dark:bg-night-bg">
+  <div class="absolute inset-0 opacity-10 bg-grid"></div>
+  <div class="absolute -left-20 -bottom-24 h-80 w-80 rounded-full bg-heal-500/25 blur-3xl"></div>
+  <div class="absolute -right-20 -top-24 h-80 w-80 rounded-full bg-brand-500/25 blur-3xl"></div>
+  <div class="container-site relative grid items-center gap-10 py-16 md:py-20 lg:grid-cols-2">
+    <div>
+      <h2 class="text-3xl font-bold tracking-tight text-balance md:text-4xl">
+        Ready to See a Doctor? We Make It Simple.
+      </h2>
+      <p class="mt-4 max-w-xl text-lg leading-relaxed text-white/80">
+        Book an appointment online in under two minutes, walk in during OPD hours, or reach us on the phone. However you prefer, our team is here for you.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="/book" class="btn-white">
+          <Icon name="calendar" size={20} /> Book an Appointment
+        </a>
+        <a href={telHref(hospital.phones.appointment)} class="btn border-2 border-white/40 bg-transparent text-white hover:bg-white/10">
+          <Icon name="phone" size={20} /> {hospital.phones.appointment}
+        </a>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <a href="/emergency" class="group rounded-md border border-white/15 bg-white/5 p-6 backdrop-blur transition-colors hover:bg-white/10">
+        <Icon name="lightning" size={28} class="text-warm-400" />
+        <p class="mt-3 font-semibold">Emergency Care</p>
+        <p class="mt-1 text-sm text-white/70">24×7 trauma & ambulance</p>
+      </a>
+      <a href="/camps" class="group rounded-md border border-white/15 bg-white/5 p-6 backdrop-blur transition-colors hover:bg-white/10">
+        <Icon name="user-group" size={28} class="text-heal-500" />
+        <p class="mt-3 font-semibold">Free Health Camps</p>
+        <p class="mt-1 text-sm text-white/70">Checkups near you</p>
+      </a>
+      <a href="/doctors" class="group rounded-md border border-white/15 bg-white/5 p-6 backdrop-blur transition-colors hover:bg-white/10">
+        <Icon name="user" size={28} class="text-brand-300" />
+        <p class="mt-3 font-semibold">Find a Doctor</p>
+        <p class="mt-1 text-sm text-white/70">15+ specialists</p>
+      </a>
+      <a href="/contact" class="group rounded-md border border-white/15 bg-white/5 p-6 backdrop-blur transition-colors hover:bg-white/10">
+        <Icon name="map-pin" size={28} class="text-brand-300" />
+        <p class="mt-3 font-semibold">Visit Us</p>
+        <p class="mt-1 text-sm text-white/70">Circular Road, Jind</p>
+      </a>
+    </div>
+  </div>
+</section>

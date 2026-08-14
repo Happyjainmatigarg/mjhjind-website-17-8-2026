@@ -1,0 +1,62 @@
+---
+import SectionHeading from '../SectionHeading.astro'
+import Icon from '../Icon.astro'
+
+const features = [
+  {
+    icon: 'shield',
+    title: 'ISO-Certified Quality',
+    desc: 'Hospital-wide quality standards and infection-control protocols, audited and certified.',
+  },
+  {
+    icon: 'lightning',
+    title: '24×7 Emergency Care',
+    desc: 'Emergency physicians, ICU and ambulance available round the clock, all year.',
+  },
+  {
+    icon: 'lab',
+    title: 'Modern Diagnostics',
+    desc: 'Pathology, X-ray, ultrasound, ECG, 2D ECHO and TMT — all in one building.',
+  },
+  {
+    icon: 'calendar',
+    title: 'Online Appointments',
+    desc: 'Book, reschedule or cancel in minutes. Confirmation by SMS, email and WhatsApp.',
+  },
+  {
+    icon: 'building',
+    title: 'Clean & Safe Facilities',
+    desc: 'Hygienic wards, dedicated maternity wing and a well-maintained operation theatre.',
+  },
+  {
+    icon: 'user-group',
+    title: 'Community Programs',
+    desc: 'Free health camps, awareness drives and school screening across the Jind district.',
+  },
+]
+---
+
+<section class="section-pad">
+  <div class="container-site">
+    <SectionHeading
+      eyebrow="Why Choose Us"
+      title="Care You Can Trust, Close to Home"
+      subtitle="We combine the warmth of a family hospital with the standards of a modern healthcare facility."
+    />
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((f) => (
+          <div class="card flex gap-4">
+            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-heal-50 text-heal-600 dark:bg-heal-500/10 dark:text-heal-500">
+              <Icon name={f.icon} size={24} />
+            </div>
+            <div>
+              <h3 class="font-semibold">{f.title}</h3>
+              <p class="mt-1.5 text-sm leading-relaxed text-gray-600 dark:text-slate-400">{f.desc}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

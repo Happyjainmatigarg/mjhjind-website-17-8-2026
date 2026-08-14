@@ -1,0 +1,51 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Hero from '../components/home/Hero.astro'
+import ServicesOverview from '../components/home/ServicesOverview.astro'
+import DoctorsHighlights from '../components/home/DoctorsHighlights.astro'
+import CampsPreview from '../components/home/CampsPreview.astro'
+import Features from '../components/home/Features.astro'
+import BlogPreview from '../components/home/BlogPreview.astro'
+import TestimonialsSection from '../components/home/TestimonialsSection.astro'
+import ContactCTA from '../components/home/ContactCTA.astro'
+import FaqAccordion from '../components/FaqAccordion.astro'
+import SectionHeading from '../components/SectionHeading.astro'
+import { getCollection } from '../lib/server/store'
+import type { Doctor } from '../data/doctors'
+import type { BlogPost } from '../data/blog'
+import type { HealthCamp } from '../data/camps'
+import type { Service } from '../data/services'
+import type { Faq } from '../data/faqs'
+import type { Testimonial } from '../data/testimonials'
+
+export const prerender = false
+
+const doctors = getCollection<Doctor>('doctors')
+const blogPosts = getCollection<BlogPost>('blogPosts')
+const camps = getCollection<HealthCamp>('camps')
+const services = getCollection<Service>('services')
+const faqs = getCollection<Faq & { id: string }>('faqs')
+const testimonials = getCollection<Testimonial & { id: string }>('testimonials')
+---
+
+<Layout active="home" description="Meenakshi Jain Hospital, Jind — modern, patient-first healthcare with online appointment booking, free health camps and trusted doctors. Book your appointment online." searchDoctors={doctors} searchServices={services} searchCamps={camps} searchPosts={blogPosts}>
+  <Hero />
+  <ServicesOverview services={services} />
+  <DoctorsHighlights doctors={doctors} />
+  <CampsPreview camps={camps} />
+  <Features />
+  <BlogPreview blogPosts={blogPosts} />
+  <TestimonialsSection testimonials={testimonials} />
+  <section class="section-pad">
+    <div class="container-site">
+      <SectionHeading eyebrow="FAQ" title="Frequently Asked Questions" subtitle="Quick answers to the questions patients ask us most." />
+      <div class="mt-12">
+        <FaqAccordion searchable={false} categories={false} items={faqs} />
+      </div>
+      <div class="mt-8 text-center">
+        <a href="/faq" class="btn-secondary">View All FAQs</a>
+      </div>
+    </div>
+  </section>
+  <ContactCTA />
+</Layout>

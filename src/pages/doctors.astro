@@ -1,0 +1,116 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import DoctorCard from '../components/DoctorCard.astro'
+import Icon from '../components/Icon.astro'
+import { getCollection } from '../lib/server/store'
+import type { Doctor } from '../data/doctors'
+import { hospital } from '../data/site'
+
+export const prerender = false
+
+const doctors = getCollection<Doctor>('doctors')
+const departments = Array.from(new Set(doctors.map((d) => d.department).filter(Boolean)))
+---
+
+<Layout title="Our Doctors" active="doctors" description={`Meet our specialists at ${hospital.name}, Jind. Search doctors by specialty, view profiles, qualifications and medical registration numbers, and book online.`}>
+  <PageHero
+    eyebrow="Our Doctors"
+    title="Meet Our Specialists"
+    subtitle="Search and filter our doctors by department. Every specialist is registered with the Haryana Medical Council."
+  />
+
+  <section class="section-pad">
+    <div class="container-site">
+      <!-- Search & filters -->
+      <div class="card mb-10 !p-5">
+        <div class="grid gap-4 md:grid-cols-3">
+          <div class="relative">
+            <Icon name="search" size={18} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="search"
+              id="doctor-search"
+              class="input !pl-11"
+              placeholder="Search by name..."
+              aria-label="Search doctors by name"
+            />
+          </div>
+          <div>
+            <select id="doctor-department" class="input" aria-label="Filter by department">
+              <option value="all">All Departments</option>
+              {departments.map((d) => <option value={d}>{d}</option>)}
+            </select>
+          </div>
+          <label class="flex items-center gap-3 rounded-sm border px-4 py-3 dark:border-night-border">
+            <input type="checkbox" id="available-only" class="h-5 w-5 rounded accent-brand-800" />
+            <span class="text-sm font-medium">Available today only</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4" id="doctors-grid">
+        {doctors.map((d) => <DoctorCard doctor={d} />)}
+      </div>
+
+      <div id="doctors-empty" class="hidden py-16 text-center">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-night-border">
+          <Icon name="search" size={30} class="text-gray-400" />
+        </div>
+        <p class="mt-4 text-lg font-semibold" style="color: var(--color-heading)">No doctors found</p>
+        <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">Try a different name or clear your filters.</p>
+        <button type="button" id="clear-filters" class="btn-secondary mt-5">Clear Filters</button>
+      </div>
+
+      <div class="mt-12 grid items-center gap-6 rounded-md bg-brand-900 p-8 text-white md:grid-cols-2 dark:bg-night-bg">
+        <div>
+          <h2 class="text-2xl font-bold">Can’t find the right specialist?</h2>
+          <p class="mt-2 text-white/80">Call our OPD desk and our team will help you book with the right doctor for your condition.</p>
+        </div>
+        <div class="flex flex-wrap gap-3 md:justify-end">
+          <a href={`tel:${hospital.phones.appointment.replace(/\D/g, '')}`} class="btn-white">
+            <Icon name="phone" size={18} /> {hospital.phones.appointment}
+          </a>
+          <a href="/book" class="btn border-2 border-white/40 text-white hover:bg-white/10">Book Online</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const search = document.getElementById('doctor-search') as HTMLInputElement
+  const dept = document.getElementById('doctor-department') as HTMLSelectElement
+  const avail = document.getElementById('available-only') as HTMLInputElement
+  const grid = document.getElementById('doctors-grid')!
+  const empty = document.getElementById('doctors-empty')!
+  const clearBtn = document.getElementById('clear-filters')
+
+  function apply() {
+    const q = search.value.trim().toLowerCase()
+    const dep = dept.value
+    let visible = 0
+    Array.from(grid.querySelectorAll(':scope > article')).forEach((card) => {
+      const name = (card.querySelector('h3')?.textContent || '').toLowerCase()
+      const deps = card.querySelector('p.text-brand-700')?.textContent || ''
+      const availToday = card.textContent?.includes('Available Today') || false
+      const matchQ = !q || name.includes(q)
+      const matchD = dep === 'all' || deps.includes(dep)
+      const matchA = !avail.checked || availToday
+      const show = matchQ && matchD && matchA
+      card.classList.toggle('hidden', !show)
+      if (show) visible++
+    })
+    grid.classList.toggle('hidden', visible === 0)
+    empty.classList.toggle('hidden', visible > 0)
+  }
+
+  search.addEventListener('input', apply)
+  dept.addEventListener('change', apply)
+  avail.addEventListener('change', apply)
+  clearBtn?.addEventListener('click', () => {
+    search.value = ''
+    dept.value = 'all'
+    avail.checked = false
+    apply()
+  })
+</script>

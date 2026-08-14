@@ -1,0 +1,162 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHero from '../../components/PageHero.astro'
+import Icon from '../../components/Icon.astro'
+import { getCollection, getItemById } from '../../lib/server/store'
+import type { Service } from '../../data/services'
+import type { Doctor } from '../../data/doctors'
+import DoctorCard from '../../components/DoctorCard.astro'
+import { hospital } from '../../data/site'
+
+export const prerender = false
+
+const { slug } = Astro.params
+const services = getCollection<Service>('services')
+const service = getItemById<Service>('services', slug || '')
+if (!service) return Astro.redirect('/404')
+const doctors = getCollection<Doctor>('doctors')
+const relatedDoctors = doctors.filter((d) => service.departments.includes(d.department) || service.departments.some((dep) => d.specialty.includes(dep)))
+const otherServices = services.filter((s) => s.slug !== service.slug).slice(0, 3)
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalBusiness',
+  name: `${service.title} — ${hospital.name}`,
+  description: service.short,
+  url: `https://${hospital.domains.primary}/services/${service.slug}`,
+  provider: {
+    '@type': 'Hospital',
+    name: hospital.name,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: `${hospital.address.line1}, ${hospital.address.line2}`,
+      addressLocality: hospital.address.city,
+      addressRegion: hospital.address.state,
+      postalCode: hospital.address.pincode,
+      addressCountry: 'IN',
+    },
+  },
+  availableService: {
+    '@type': 'MedicalProcedure',
+    name: service.title,
+    description: service.description,
+  },
+}
+---
+
+<Layout title={service.title} active="services" description={service.short} schema={[serviceSchema]}>
+  <PageHero
+    eyebrow="Our Services"
+    title={service.title}
+    subtitle={service.short}
+    breadcrumb="/services"
+  />
+
+  <section class="section-pad">
+    <div class="container-site grid gap-12 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <div class="prose-content">
+          <p class="text-lg leading-relaxed">{service.description}</p>
+        </div>
+
+        <h2 class="mt-10 text-xl font-semibold">What We Offer</h2>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+          {service.features.map((f) => (
+            <li class="flex items-start gap-3 rounded-md border bg-white p-4 dark:border-night-border dark:bg-night-surface">
+              <span class="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-heal-50 text-heal-600 dark:bg-heal-500/10 dark:text-heal-500">
+                <Icon name="check" size={14} />
+              </span>
+              <span class="text-sm font-medium text-gray-700 dark:text-slate-300">{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        {service.conditions.length > 0 && (
+          <>
+            <h2 class="mt-12 text-xl font-semibold">Conditions We Treat</h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">Common problems our {service.title.toLowerCase()} team handles.</p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              {service.conditions.map((c) => (
+                <span class="rounded-full border px-4 py-1.5 text-sm font-medium dark:border-night-border dark:text-slate-300">{c}</span>
+              ))}
+            </div>
+          </>
+        )}
+
+        <h2 class="mt-12 text-xl font-semibold">Procedures & Services</h2>
+        <ul class="mt-4 space-y-2">
+          {service.procedures.map((p) => (
+            <li class="flex items-start gap-3 rounded-md border p-4 text-sm font-medium dark:border-night-border">
+              <Icon name="stethoscope" size={18} class="mt-0.5 shrink-0 text-brand-700 dark:text-brand-400" /> {p}
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-10 rounded-md border-l-4 border-heal-600 bg-heal-50 p-6 dark:border-heal-500 dark:bg-heal-500/10">
+          <h3 class="flex items-center gap-2 font-semibold text-heal-700 dark:text-heal-500">
+            <Icon name="sparkles" size={20} /> Why Choose Us
+          </h3>
+          <p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-slate-300">{service.whyChoose}</p>
+        </div>
+
+        {relatedDoctors.length > 0 && (
+          <>
+            <h2 class="mt-12 text-xl font-semibold">Related Specialists</h2>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">These doctors handle cases in {service.title.toLowerCase()}.</p>
+            <div class="mt-6 grid gap-6 sm:grid-cols-2">
+              {relatedDoctors.map((d) => <DoctorCard doctor={d} />)}
+            </div>
+          </>
+        )}
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h3 class="font-semibold">Quick Contact</h3>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li class="flex items-center gap-3">
+              <Icon name="phone" size={18} class="text-brand-700 dark:text-brand-400" />
+              <a href={`tel:${hospital.phones.appointment.replace(/\D/g, '')}`} class="hover:underline">{hospital.phones.appointment}</a>
+            </li>
+            <li class="flex items-center gap-3">
+              <Icon name="clock" size={18} class="text-brand-700 dark:text-brand-400" />
+              <span>{hospital.hours.opd}</span>
+            </li>
+            <li class="flex items-center gap-3">
+              <Icon name="map-pin" size={18} class="text-brand-700 dark:text-brand-400" />
+              <span>{hospital.address.line1}, {hospital.address.city}</span>
+            </li>
+          </ul>
+          <a href="/book" class="btn-primary mt-5 w-full">
+            <Icon name="calendar" size={18} /> Book Appointment
+          </a>
+        </div>
+
+        <div class="card">
+          <h3 class="font-semibold">Other Services</h3>
+          <ul class="mt-3 space-y-2">
+            {otherServices.map((s) => (
+              <li>
+                <a href={`/services/${s.slug}`} class="flex items-center gap-2 text-sm text-gray-700 transition-colors hover:text-brand-800 dark:text-slate-300 dark:hover:text-brand-400">
+                  <Icon name={s.icon} size={16} class="text-heal-600" /> {s.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="card bg-heal-50 dark:bg-heal-500/10">
+          <h3 class="flex items-center gap-2 font-semibold text-heal-700 dark:text-heal-500">
+            <Icon name="lightning" size={20} /> Emergency?
+          </h3>
+          <p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-slate-300">
+            Our emergency department is open 24×7. Call now for ambulance or emergency care.
+          </p>
+          <a href={`tel:${hospital.phones.emergency.replace(/\D/g, '')}`} class="btn mt-4 w-full bg-danger-600 py-2.5 text-sm text-white hover:bg-danger-700">
+            <Icon name="phone-solid" size={16} /> {hospital.phones.emergency}
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>

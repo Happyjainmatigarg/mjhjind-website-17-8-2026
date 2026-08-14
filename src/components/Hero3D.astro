@@ -1,0 +1,186 @@
+---
+const shapes = Array.from({ length: 9 })
+---
+
+<div class="hero-3d relative mx-auto h-72 w-72 sm:h-80 sm:w-80 lg:h-96 lg:w-96" id="hero-3d" aria-hidden="true">
+  <div class="scene absolute inset-0" data-depth="0">
+    <!-- Main cross -->
+    <div class="cross3d">
+      <div class="face face-front"></div>
+      <div class="face face-back"></div>
+      <div class="face face-right"></div>
+      <div class="face face-left"></div>
+      <div class="face face-top"></div>
+      <div class="face face-bottom"></div>
+      <div class="cross-face cross-h"></div>
+      <div class="cross-face cross-v"></div>
+    </div>
+  </div>
+
+  <!-- Floating rings -->
+  <div class="ring ring-1" data-depth="40"></div>
+  <div class="ring ring-2" data-depth="-30"></div>
+
+  <!-- Pulsing heartbeat line -->
+  <svg class="absolute left-1/2 top-1/2 -z-10 w-64 -translate-x-1/2 -translate-y-1/2 opacity-40 sm:w-80" viewBox="0 0 300 100" fill="none" stroke="#10B981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 50h40l15-30 20 60 15-45 10 15h40l15-30 20 60 15-45 10 15h40l15-30 20 60 15-45 10 15h15">
+      <animate attributeName="stroke-dashoffset" from="900" to="0" dur="4s" repeatCount="indefinite" />
+      <animate attributeName="stroke-dasharray" values="900 900" dur="4s" repeatCount="indefinite" />
+    </path>
+  </svg>
+
+  <!-- Floating particles -->
+  {
+    shapes.map((_, i) => (
+      <span
+        class:list={['particle', i % 2 === 0 ? 'particle-blue' : 'particle-green']}
+        style={`--delay: ${i * 0.7}s; --x: ${-60 + i * 15}px; --y: ${-50 + (i % 3) * 40}px; left: ${10 + i * 10}%; top: ${15 + (i % 4) * 22}%`}
+      ></span>
+    ))
+  }
+</div>
+
+<script>
+  const scene = document.getElementById('hero-3d')
+  if (scene && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const depths = Array.from(scene.querySelectorAll<HTMLElement>('[data-depth]')).map((el) => ({
+      el,
+      depth: parseInt(el.dataset.depth || '0', 10),
+      origin: { x: 0, y: 0 },
+    }))
+
+    let tx = 0
+    let ty = 0
+
+    scene.addEventListener('mousemove', (e) => {
+      const r = scene.getBoundingClientRect()
+      tx = (e.clientX - r.left - r.width / 2) / r.width
+      ty = (e.clientY - r.top - r.height / 2) / r.height
+    })
+
+    function animate() {
+      depths.forEach(({ el, depth }) => {
+        el.style.transform = `translate3d(${tx * depth}px, ${ty * depth}px, 0)`
+      })
+      requestAnimationFrame(animate)
+    }
+    animate()
+  }
+</script>
+
+<style>
+  .scene {
+    perspective: 900px;
+    transform-style: preserve-3d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cross3d {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    transform-style: preserve-3d;
+    animation: cross-spin 14s linear infinite;
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    background: rgba(30, 64, 175, 0.85);
+    border: 2px solid rgba(147, 197, 253, 0.7);
+    box-shadow: 0 0 40px rgba(37, 99, 235, 0.35);
+  }
+
+  .face-front    { transform: translateZ(22px); }
+  .face-back     { transform: rotateY(180deg) translateZ(22px); }
+  .face-right    { transform: rotateY(90deg) translateZ(22px); }
+  .face-left     { transform: rotateY(-90deg) translateZ(22px); }
+  .face-top      { transform: rotateX(90deg) translateZ(22px); }
+  .face-bottom   { transform: rotateX(-90deg) translateZ(22px); }
+
+  /* Cut the cross shape out of the cube faces */
+  .cross-h, .cross-v {
+    position: absolute;
+    background: transparent;
+  }
+
+  .cross-h { top: 0; left: 0; right: 0; height: 130px; transform: translateZ(23px); }
+  .cross-v { top: 0; left: 0; width: 130px; height: 130px; transform: rotateY(90deg) translateZ(23px); }
+
+  .cross3d::before,
+  .cross3d::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  .cross3d::before {
+    left: 42px; top: 0; width: 46px; height: 130px;
+    transform: translateZ(24px);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+  }
+
+  .cross3d::after {
+    left: 0; top: 42px; width: 130px; height: 46px;
+    transform: translateZ(24px);
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.5);
+  }
+
+  @keyframes cross-spin {
+    from { transform: rotateX(0) rotateY(0); }
+    to   { transform: rotateX(360deg) rotateY(360deg); }
+  }
+
+  .ring {
+    position: absolute;
+    border: 3px solid rgba(16, 185, 129, 0.5);
+    border-radius: 9999px;
+  }
+
+  .ring-1 {
+    inset: 12%;
+    animation: pulse-ring 3.5s ease-in-out infinite;
+  }
+
+  .ring-2 {
+    inset: 26%;
+    border-color: rgba(96, 165, 250, 0.45);
+    animation: pulse-ring 3.5s ease-in-out infinite reverse;
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    50%      { transform: scale(1.08); opacity: 1; }
+  }
+
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    animation: float-particle 6s ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+
+  .particle-blue  { background: #60A5FA; }
+  .particle-green { background: #34D399; }
+
+  @keyframes float-particle {
+    0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+    50%      { transform: translate(var(--x), var(--y)); opacity: 0.9; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cross3d, .ring-1, .ring-2, .particle {
+      animation: none;
+    }
+    .particle { opacity: 0.5; }
+  }
+
+  html.dark .face {
+    background: rgba(96, 165, 250, 0.2);
+    border-color: rgba(96, 165, 250, 0.5);
+  }
+</style>

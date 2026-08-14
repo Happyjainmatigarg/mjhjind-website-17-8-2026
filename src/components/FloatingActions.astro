@@ -1,0 +1,32 @@
+---
+import Icon from './Icon.astro'
+import { hospital } from '../data/site'
+---
+
+<div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3" id="floating-actions">
+  <a
+    href={hospital.social.whatsapp}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-card-xl transition-transform hover:scale-110"
+    aria-label="Chat with us on WhatsApp"
+    title="Chat with us on WhatsApp"
+  >
+    <span class="absolute inset-0 animate-ping rounded-full bg-[#25D366] opacity-20"></span>
+    <Icon name="whatsapp" size={28} />
+    <span class="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-white dark:text-gray-900">
+      Chat with us
+    </span>
+  </a>
+  <a
+    href={`tel:${hospital.phones.emergency.replace(/\D/g, '')}`}
+    class="group relative flex h-14 w-14 items-center justify-center rounded-full bg-danger-600 text-white shadow-card-xl transition-transform hover:scale-110"
+    aria-label="Call emergency"
+    title={`Emergency: ${hospital.phones.emergency}`}
+  >
+    <Icon name="phone-solid" size={26} />
+    <span class="pointer-events-none absolute right-full mr-3 whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 transition-opacity group-hover:opacity-100 dark:bg-white dark:text-gray-900">
+      Emergency: {hospital.phones.emergency}
+    </span>
+  </a>
+</div>

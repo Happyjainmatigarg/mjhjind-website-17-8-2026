@@ -1,0 +1,41 @@
+---
+import ImagePlaceholder from './ImagePlaceholder.astro'
+import Icon from './Icon.astro'
+import type { BlogPost } from '../data/blog'
+import { formatShortDate } from '../lib/utils'
+
+interface Props {
+  post: BlogPost
+  featured?: boolean
+}
+
+const { post, featured = false } = Astro.props
+---
+
+<article class:list={['card card-hover flex h-full flex-col overflow-hidden p-0', featured && 'md:flex-row md:gap-0']} data-category={post.category}>
+  <a href={`/blog/${post.slug}`} class={featured ? 'block md:w-1/2' : 'block'}>
+    <ImagePlaceholder image={post.image} title={post.title} class={featured ? 'h-full min-h-56' : ''} />
+  </a>
+  <div class:list={['flex flex-1 flex-col p-6', featured && 'md:p-8']}>
+    <div class="flex items-center gap-3 text-xs">
+      <span class="badge badge-blue">{post.category}</span>
+      <span class="inline-flex items-center gap-1 text-gray-500 dark:text-slate-400">
+        <Icon name="clock" size={13} /> {post.readTime} min read
+      </span>
+    </div>
+    <h3 class:list={['mt-3 font-semibold leading-snug hover:text-brand-700 dark:hover:text-brand-400', featured ? 'text-xl md:text-2xl' : 'text-lg']}>
+      <a href={`/blog/${post.slug}`}>{post.title}</a>
+    </h3>
+    <p class="mt-2 flex-1 text-sm leading-relaxed text-gray-600 line-clamp-3 dark:text-slate-400">{post.excerpt}</p>
+    <div class="mt-4 flex items-center justify-between">
+      <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-slate-400">
+        <span class="font-medium text-gray-700 dark:text-slate-300">{post.author}</span>
+        <span>·</span>
+        <span>{formatShortDate(post.date)}</span>
+      </div>
+      <a href={`/blog/${post.slug}`} class="inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-900 dark:text-brand-400 dark:hover:text-brand-300">
+        Read More <Icon name="arrow-right" size={15} />
+      </a>
+    </div>
+  </div>
+</article>

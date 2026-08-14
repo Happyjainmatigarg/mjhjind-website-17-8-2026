@@ -1,0 +1,71 @@
+---
+import Hero3D from '../Hero3D.astro'
+import Icon from '../Icon.astro'
+import { hospital } from '../../data/site'
+import { telHref } from '../../lib/utils'
+
+const stats = [
+  { value: '25+', label: 'Years of Service' },
+  { value: '15+', label: 'Specialist Doctors' },
+  { value: '50,000+', label: 'Patients Treated' },
+  { value: '24×7', label: 'Emergency & ICU' },
+]
+---
+
+<section class="relative overflow-hidden bg-hero text-white">
+  <div class="bg-grid absolute inset-0 opacity-10"></div>
+  <div class="absolute -left-32 top-20 h-96 w-96 rounded-full bg-heal-500/20 blur-3xl"></div>
+  <div class="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-brand-500/20 blur-3xl"></div>
+
+  <div class="container-site relative grid items-center gap-12 py-16 md:py-24 lg:grid-cols-2">
+    <div>
+      <p class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur">
+        <Icon name="shield" size={16} class="text-heal-500" />
+        ISO-Certified Multi-Specialty Hospital · Jind
+      </p>
+      <h1 class="mt-6 text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl lg:text-6xl">
+        {hospital.tagline}
+      </h1>
+      <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
+        Meenakshi Jain Hospital is a modern, patient-first hospital serving the people of Jind and nearby districts — trusted doctors, advanced diagnostics, compassionate 24×7 emergency care, and simple online appointment booking.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="/book" class="btn-white !text-base">
+          <Icon name="calendar" size={20} /> Book Appointment
+        </a>
+        <a href="/services" class="btn border-2 border-white/40 bg-transparent text-white hover:bg-white/10">
+          View Our Services
+        </a>
+      </div>
+      <div class="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm text-white/80">
+        <a href={telHref(hospital.phones.appointment)} class="inline-flex items-center gap-2 hover:text-white">
+          <Icon name="phone" size={18} class="text-heal-500" /> {hospital.phones.appointment}
+        </a>
+        <span class="inline-flex items-center gap-2">
+          <Icon name="clock" size={18} class="text-heal-500" /> OPD: {hospital.hours.opd}
+        </span>
+        <span class="inline-flex items-center gap-2">
+          <Icon name="map-pin" size={18} class="text-heal-500" /> {hospital.address.city}, {hospital.address.state}
+        </span>
+      </div>
+    </div>
+
+    <div class="relative hidden lg:block">
+      <Hero3D />
+    </div>
+  </div>
+
+  <!-- Stats strip -->
+  <div class="border-t border-white/10 bg-black/20 backdrop-blur">
+    <div class="container-site grid grid-cols-2 gap-6 py-8 md:grid-cols-4">
+      {
+        stats.map((s) => (
+          <div class="text-center">
+            <p class="text-3xl font-bold text-heal-500 md:text-4xl">{s.value}</p>
+            <p class="mt-1 text-sm text-white/75">{s.label}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

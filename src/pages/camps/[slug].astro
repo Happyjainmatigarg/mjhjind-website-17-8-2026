@@ -1,0 +1,170 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHero from '../../components/PageHero.astro'
+import ImagePlaceholder from '../../components/ImagePlaceholder.astro'
+import Icon from '../../components/Icon.astro'
+import CampRegistrationForm from '../../components/CampRegistrationForm.astro'
+import { getCollection, getItemById } from '../../lib/server/store'
+import type { HealthCamp } from '../../data/camps'
+import { formatDate, isUpcoming, daysUntil } from '../../lib/utils'
+import { hospital } from '../../data/site'
+
+export const prerender = false
+
+const { slug } = Astro.params
+const camps = getCollection<HealthCamp>('camps')
+const camp = getItemById<HealthCamp>('camps', slug || '')
+if (!camp) return Astro.redirect('/404')
+const upcoming = isUpcoming(camp.date)
+const isFull = camp.registrations >= camp.capacity
+const otherCamps = camps.filter((c) => c.slug !== camp.slug).slice(0, 3)
+const days = daysUntil(camp.date)
+
+const eventSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'MedicalEvent',
+  name: camp.title,
+  description: camp.description,
+  startDate: camp.date,
+  eventStatus: upcoming ? 'https://schema.org/EventScheduled' : 'https://schema.org/EventPast',
+  location: {
+    '@type': 'Place',
+    name: camp.location,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: `${hospital.address.line1}, ${hospital.address.line2}`,
+      addressLocality: hospital.address.city,
+      addressRegion: hospital.address.state,
+      postalCode: hospital.address.pincode,
+      addressCountry: 'IN',
+    },
+  },
+  organizer: {
+    '@type': 'Hospital',
+    name: camp.organizer,
+    url: `https://${hospital.domains.primary}`,
+  },
+  url: `https://${hospital.domains.primary}/camps/${camp.slug}`,
+  maximumAttendeeCapacity: camp.capacity,
+}
+---
+
+<Layout title={camp.title} active="camps" description={camp.description} schema={[eventSchema]}>
+  <PageHero
+    eyebrow={`Health Camp · ${camp.type}`}
+    title={camp.title}
+    subtitle={`${formatDate(camp.date)} · ${camp.time}`}
+    breadcrumb="/camps"
+  />
+
+  <section class="section-pad">
+    <div class="container-site grid gap-10 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <ImagePlaceholder image={camp.image} title={camp.type} class="rounded-md shadow-card-md" />
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span class:list={['badge', upcoming ? 'badge-green' : 'badge-gray']}>{upcoming ? 'Upcoming' : 'Past Camp'}</span>
+          <span class:list={['badge', isFull ? 'badge-red' : 'badge-orange']}>
+            {isFull ? 'Full' : `${camp.capacity - camp.registrations} spots left`}
+          </span>
+          <span class="badge badge-blue">{camp.registrations} registered</span>
+        </div>
+
+        <h2 class="mt-8 text-xl font-semibold">About This Camp</h2>
+        <p class="mt-3 leading-relaxed text-gray-700 dark:text-slate-300">{camp.description}</p>
+
+        {camp.summary && (
+          <div class="mt-6 rounded-md border-l-4 border-brand-700 bg-brand-50 p-5 dark:border-brand-400 dark:bg-brand-950/40">
+            <p class="flex items-center gap-2 font-semibold text-brand-800 dark:text-brand-300">
+              <Icon name="sparkles" size={18} /> Camp Highlights
+            </p>
+            <p class="mt-2 text-sm leading-relaxed text-gray-700 dark:text-slate-300">{camp.summary}</p>
+          </div>
+        )}
+
+        <h2 class="mt-8 text-xl font-semibold">Services Offered</h2>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          {camp.services.map((s) => (
+            <div class="flex items-center gap-3 rounded-md border p-3 dark:border-night-border">
+              <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-heal-50 text-heal-600 dark:bg-heal-500/10 dark:text-heal-500">
+                <Icon name="check" size={14} />
+              </span>
+              <span class="text-sm font-medium">{s}</span>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-8 grid gap-4 sm:grid-cols-2">
+          <div class="card">
+            <p class="flex items-center gap-2 font-semibold"><Icon name="user-group" size={18} class="text-brand-700 dark:text-brand-400" /> Eligibility</p>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">{camp.eligibility}</p>
+          </div>
+          <div class="card">
+            <p class="flex items-center gap-2 font-semibold"><Icon name="shield" size={18} class="text-brand-700 dark:text-brand-400" /> Organized By</p>
+            <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">{camp.organizer}</p>
+          </div>
+        </div>
+
+        <h2 class="mt-8 text-xl font-semibold">What to Bring</h2>
+        <ul class="mt-4 space-y-2">
+          {camp.whatToBring.map((w) => (
+            <li class="flex items-start gap-3 text-sm text-gray-700 dark:text-slate-300">
+              <Icon name="clipboard" size={18} class="mt-0.5 shrink-0 text-heal-600" /> {w}
+            </li>
+          ))}
+        </ul>
+
+        {upcoming && (
+          <div class="mt-10">
+            <CampRegistrationForm camp={camp} />
+          </div>
+        )}
+      </div>
+
+      <aside class="space-y-6">
+        <div class="card">
+          <h3 class="font-semibold">Camp Details</h3>
+          <ul class="mt-4 space-y-3 text-sm">
+            <li class="flex items-start gap-3">
+              <Icon name="calendar" size={18} class="mt-0.5 shrink-0 text-brand-700 dark:text-brand-400" />
+              <span><span class="font-medium">{formatDate(camp.date)}</span><br />{camp.time}</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Icon name="map-pin" size={18} class="mt-0.5 shrink-0 text-brand-700 dark:text-brand-400" />
+              <span>{camp.location}</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <Icon name="user-group" size={18} class="mt-0.5 shrink-0 text-brand-700 dark:text-brand-400" />
+              <span>{camp.registrations} / {camp.capacity} registered</span>
+            </li>
+          </ul>
+          {upcoming && !isFull && (
+            <a href="#register" class="btn-primary mt-5 w-full"><Icon name="user-group" size={18} /> Register Now</a>
+          )}
+          {upcoming && isFull && <p class="mt-5 rounded-md bg-danger-500/10 p-3 text-center text-sm font-medium text-danger-600 dark:text-red-400">Registration full. Check back for the next camp!</p>}
+        </div>
+
+        <div class="card bg-heal-50 dark:bg-heal-500/10">
+          <h3 class="font-semibold text-heal-700 dark:text-heal-500">Questions?</h3>
+          <p class="mt-2 text-sm text-gray-700 dark:text-slate-300">Call our camp coordination desk for any help.</p>
+          <a href={`tel:${hospital.phones.reception.replace(/\D/g, '')}`} class="btn mt-4 w-full bg-heal-600 py-2.5 text-sm text-white hover:bg-heal-700">
+            <Icon name="phone" size={16} /> {hospital.phones.reception}
+          </a>
+        </div>
+
+        <div class="card">
+          <h3 class="font-semibold">More Camps</h3>
+          <ul class="mt-3 space-y-2">
+            {otherCamps.map((c) => (
+              <li>
+                <a href={`/camps/${c.slug}`} class="flex items-center gap-2 text-sm text-gray-700 transition-colors hover:text-brand-800 dark:text-slate-300 dark:hover:text-brand-400">
+                  <Icon name="heart" size={16} class="text-heal-600" /> {c.title}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <a href="/camps" class="btn-secondary mt-4 w-full !py-2 text-sm">View All Camps</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Layout>

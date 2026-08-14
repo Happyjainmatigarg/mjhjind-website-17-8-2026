@@ -1,0 +1,197 @@
+---
+import Logo from './Logo.astro'
+import Icon from './Icon.astro'
+import ThemeToggle from './ThemeToggle.astro'
+import { hospital, emergencyNumbers } from '../data/site'
+import { telHref } from '../lib/utils'
+
+interface Props {
+  active?: string
+}
+const { active } = Astro.props
+
+const navItems = [
+  { label: 'Home', href: '/', activeKey: 'home' },
+  { label: 'Services', href: '/services', activeKey: 'services' },
+  { label: 'Doctors', href: '/doctors', activeKey: 'doctors' },
+  { label: 'Health Camps', href: '/camps', activeKey: 'camps' },
+  { label: 'Blog', href: '/blog', activeKey: 'blog' },
+  { label: 'Contact', href: '/contact', activeKey: 'contact' },
+]
+---
+
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<!-- Top emergency strip -->
+<div class="bg-brand-900 text-white dark:bg-black/40">
+  <div class="container-site flex items-center justify-between gap-4 py-2">
+    <p class="flex items-center gap-2 text-xs font-medium sm:text-sm">
+      <span class="relative flex h-2 w-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-heal-500 opacity-75"></span>
+        <span class="relative inline-flex h-2 w-2 rounded-full bg-heal-500"></span>
+      </span>
+      <span class="hidden sm:inline">24 × 7 Emergency</span>
+      <a href={telHref(hospital.phones.emergency)} class="font-bold text-heal-500 underline-offset-2 hover:underline">
+        {hospital.phones.emergency}
+      </a>
+      <span class="text-white/40">|</span>
+      <a href={telHref(hospital.phones.ambulance)} class="font-bold text-white underline-offset-2 hover:underline">
+        Ambulance: {hospital.phones.ambulance}
+      </a>
+    </p>
+    <div class="hidden items-center gap-4 md:flex">
+      <a href={`mailto:${hospital.email}`} class="flex items-center gap-1.5 text-xs text-white/80 hover:text-white">
+        <Icon name="mail" size={14} /> {hospital.email}
+      </a>
+      <span class="text-xs text-white/60">{hospital.hours.opd}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main header -->
+<header class="sticky top-0 z-50 border-b bg-white/90 backdrop-blur-md dark:border-night-border dark:bg-night-bg/90" id="site-header">
+  <div class="container-site flex h-16 items-center justify-between gap-4 md:h-20">
+    <Logo />
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'relative rounded-sm px-4 py-2 text-[15px] font-medium text-gray-700 transition-colors after:absolute after:bottom-0.5 after:left-4 after:right-4 after:h-0.5 after:origin-left after:scale-x-0 after:rounded-full after:bg-brand-700 after:transition-transform after:duration-300 hover:text-brand-800 hover:after:scale-x-100 dark:text-slate-200 dark:hover:text-white',
+              active === item.activeKey && 'after:scale-x-100 text-brand-800 dark:text-white',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-1.5 sm:gap-2">
+      <a
+        href="/book"
+        class="btn-primary hidden !px-4 !py-2.5 text-sm md:inline-flex"
+      >
+        <Icon name="calendar" size={18} />
+        Book Appointment
+      </a>
+      <ThemeToggle class="hidden sm:inline-flex" />
+      <button
+        type="button"
+        id="open-search"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-brand-50 hover:text-brand-800 dark:text-slate-300 dark:hover:bg-night-border dark:hover:text-white"
+        aria-label="Open search"
+        title="Search"
+      >
+        <Icon name="search" size={22} />
+      </button>
+      <button
+        type="button"
+        id="menu-toggle"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-700 lg:hidden dark:text-slate-200"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-drawer"
+      >
+        <Icon name="menu" size={26} />
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile drawer -->
+<div id="mobile-drawer" class="fixed inset-0 z-[60] lg:hidden" aria-hidden="true">
+  <div id="drawer-overlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
+  <div
+    id="drawer-panel"
+    class="absolute right-0 top-0 flex h-full w-[85%] max-w-sm flex-col overflow-y-auto bg-white shadow-card-xl transition-transform duration-300 ease-in-out dark:bg-night-surface"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Mobile menu"
+  >
+    <div class="flex items-center justify-between border-b px-5 py-4 dark:border-night-border">
+      <Logo />
+      <button type="button" id="drawer-close" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-night-border" aria-label="Close menu">
+        <Icon name="x" size={24} />
+      </button>
+    </div>
+    <nav class="flex flex-col p-5" aria-label="Mobile navigation">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            class:list={[
+              'rounded-md px-4 py-3 text-base font-medium text-gray-700 hover:bg-brand-50 hover:text-brand-800 dark:text-slate-200 dark:hover:bg-night-bg',
+              active === item.activeKey && 'bg-brand-50 text-brand-800 dark:bg-night-bg dark:text-white',
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <div class="mt-auto space-y-3 border-t p-5 dark:border-night-border">
+      <a href="/book" class="btn-primary w-full">
+        <Icon name="calendar" size={18} /> Book Appointment
+      </a>
+      <div class="grid grid-cols-2 gap-2">
+        <a href={telHref(hospital.phones.emergency)} class="btn-secondary !py-2.5 text-sm">
+          <Icon name="phone" size={16} /> Emergency
+        </a>
+        <a href={hospital.social.whatsapp} target="_blank" rel="noopener" class="btn-whatsapp !py-2.5 text-sm">
+          <Icon name="whatsapp" size={16} /> WhatsApp
+        </a>
+      </div>
+      <div class="flex items-center justify-center gap-3 pt-2">
+        <span class="text-sm text-gray-500 dark:text-slate-400">Theme</span>
+        <ThemeToggle />
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const menuToggle = document.getElementById('menu-toggle')
+  const drawer = document.getElementById('mobile-drawer')
+  const overlay = document.getElementById('drawer-overlay')
+  const panel = document.getElementById('drawer-panel')
+  const closeBtn = document.getElementById('drawer-close')
+
+  function openDrawer() {
+    drawer!.setAttribute('aria-hidden', 'false')
+    document.body.style.overflow = 'hidden'
+    overlay!.classList.remove('opacity-0')
+    panel!.classList.remove('translate-x-full')
+    menuToggle!.setAttribute('aria-expanded', 'true')
+    drawer!.classList.add('visible')
+  }
+
+  function closeDrawer() {
+    drawer!.setAttribute('aria-hidden', 'true')
+    document.body.style.overflow = ''
+    overlay!.classList.add('opacity-0')
+    panel!.classList.add('translate-x-full')
+    menuToggle!.setAttribute('aria-expanded', 'false')
+  }
+
+  menuToggle?.addEventListener('click', openDrawer)
+  closeBtn?.addEventListener('click', closeDrawer)
+  overlay?.addEventListener('click', closeDrawer)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeDrawer()
+  })
+
+  const header = document.getElementById('site-header')
+  window.addEventListener('scroll', () => {
+    if (!header) return
+    header.classList.toggle('shadow-card-sm', window.scrollY > 10)
+  })
+</script>
+
+<style>
+  #mobile-drawer { pointer-events: none; }
+  #mobile-drawer.visible { pointer-events: auto; }
+  #mobile-drawer[aria-hidden='false'] #drawer-panel { transform: translateX(0); }
+</style>

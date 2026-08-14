@@ -1,0 +1,30 @@
+---
+import SectionHeading from '../SectionHeading.astro'
+import DoctorCard from '../DoctorCard.astro'
+import Icon from '../Icon.astro'
+import { doctors as seedDoctors } from '../../data/doctors'
+import type { Doctor } from '../../data/doctors'
+
+interface Props {
+  doctors?: Doctor[]
+}
+const { doctors = seedDoctors } = Astro.props
+---
+
+<section class="section-pad bg-gray-50 dark:bg-night-surface-alt" style="background-color: var(--color-surface-alt)">
+  <div class="container-site">
+    <SectionHeading
+      eyebrow="Meet Our Team"
+      title="Trusted Doctors, Caring Hearts"
+      subtitle="Every specialist at Meenakshi Jain Hospital is registered with the Haryana Medical Council and chosen for expertise as much as empathy."
+    />
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {doctors.filter((d) => d.featured).map((d) => <DoctorCard doctor={d} />)}
+    </div>
+    <div class="mt-10 text-center">
+      <a href="/doctors" class="btn-primary">
+        Meet All Doctors <Icon name="arrow-right" size={18} />
+      </a>
+    </div>
+  </div>
+</section>

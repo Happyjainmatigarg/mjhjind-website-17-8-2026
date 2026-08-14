@@ -1,0 +1,30 @@
+---
+import SectionHeading from '../SectionHeading.astro'
+import BlogCard from '../BlogCard.astro'
+import Icon from '../Icon.astro'
+import { blogPosts as seedBlogPosts } from '../../data/blog'
+import type { BlogPost } from '../../data/blog'
+
+interface Props {
+  blogPosts?: BlogPost[]
+}
+const { blogPosts = seedBlogPosts } = Astro.props
+---
+
+<section class="section-pad bg-gray-50 dark:bg-night-surface-alt" style="background-color: var(--color-surface-alt)">
+  <div class="container-site">
+    <SectionHeading
+      eyebrow="Health Blog"
+      title="Learn More, Live Healthier"
+      subtitle="Practical health guidance from our own doctors — on diabetes, heart health, child care, nutrition and more."
+    />
+    <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {blogPosts.slice(0, 3).map((p) => <BlogCard post={p} />)}
+    </div>
+    <div class="mt-10 text-center">
+      <a href="/blog" class="btn-secondary">
+        Read the Blog <Icon name="arrow-right" size={18} />
+      </a>
+    </div>
+  </div>
+</section>

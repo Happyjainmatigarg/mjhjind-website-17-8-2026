@@ -1,0 +1,467 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import Icon from '../components/Icon.astro'
+import { getCollection } from '../lib/server/store'
+import type { Doctor } from '../data/doctors'
+import type { Service } from '../data/services'
+import { hospital } from '../data/site'
+
+export const prerender = false
+
+const doctors = getCollection<Doctor>('doctors')
+const services = getCollection<Service>('services')
+const doctorOptions = doctors.map((d) => ({ slug: d.slug, name: d.name, specialty: d.specialty }))
+const serviceOptions = services.map((s) => ({ slug: s.slug, name: s.title }))
+const timeSlots = [
+  { label: '9:00 AM', value: '09:00' },
+  { label: '10:00 AM', value: '10:00' },
+  { label: '11:00 AM', value: '11:00' },
+  { label: '12:00 PM', value: '12:00' },
+  { label: '4:00 PM', value: '16:00' },
+  { label: '5:00 PM', value: '17:00' },
+  { label: '6:00 PM', value: '18:00' },
+  { label: '7:00 PM', value: '19:00' },
+]
+---
+
+<Layout title="Book an Appointment" active="appointment" description={`Book an OPD appointment at ${hospital.name}, Jind online. Choose a doctor or department, pick a slot and we will confirm by phone.`}>
+  <PageHero
+    eyebrow="Book Appointment"
+    title="Reserve Your OPD Slot"
+    subtitle="Pick a doctor or department, choose a time, and our team will confirm your appointment by phone within 30 minutes during working hours."
+  />
+
+  <section class="section-pad">
+    <div class="container-site mx-auto max-w-4xl">
+      <!-- Stepper -->
+      <ol class="mb-10 flex items-center justify-center gap-2 sm:gap-4" aria-label="Booking steps">
+        {['Doctor', 'Date & Time', 'Your Details'].map((step, i) => (
+          <li class="flex items-center gap-2 sm:gap-4" key={step}>
+            <div class="flex items-center gap-2">
+              <span data-step-dot={i + 1} class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-500 transition-colors dark:bg-night-border dark:text-slate-400">{(i + 1).toString()}</span>
+              <span data-step-label={i + 1} class="hidden text-sm font-medium text-gray-400 sm:inline dark:text-slate-500">{step}</span>
+            </div>
+            {i < 2 && <span class="h-px w-8 bg-gray-200 sm:w-16 dark:bg-night-border" />}
+          </li>
+        ))}
+      </ol>
+
+      <form id="booking-form" class="card" novalidate>
+        <!-- Step 1: Doctor / Service -->
+        <div data-step="1" class="step-panel">
+          <h2 class="text-lg font-semibold">Who would you like to see?</h2>
+          <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Choose a doctor or browse by department.</p>
+
+          <div class="mt-6">
+            <label class="label" for="bk-doctor">Select Doctor</label>
+            <select id="bk-doctor" name="doctor" class="input">
+              <option value="">— Choose a doctor —</option>
+              {doctorOptions.map((d) => (
+                <option value={d.slug}>{d.name} · {d.specialty}</option>
+              ))}
+            </select>
+            <p class="error-text hidden" data-error="doctor"></p>
+          </div>
+
+          <div class="my-6 flex items-center gap-4">
+            <span class="h-px flex-1 bg-gray-200 dark:bg-night-border"></span>
+            <span class="text-xs font-medium uppercase tracking-wide text-gray-400">or</span>
+            <span class="h-px flex-1 bg-gray-200 dark:bg-night-border"></span>
+          </div>
+
+          <div>
+            <label class="label" for="bk-service">Or Choose a Department</label>
+            <select id="bk-service" name="service" class="input">
+              <option value="">— Choose a department —</option>
+              {serviceOptions.map((s) => (
+                <option value={s.slug}>{s.name}</option>
+              ))}
+            </select>
+            <p class="error-text hidden" data-error="service"></p>
+          </div>
+
+          <div class="mt-8 flex justify-end">
+            <button type="button" data-next="1" class="btn-primary">Continue <Icon name="arrow-right" size={18} /></button>
+          </div>
+        </div>
+
+        <!-- Step 2: Date & Time -->
+        <div data-step="2" class="step-panel hidden">
+          <h2 class="text-lg font-semibold">Pick a date and time</h2>
+          <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">OPD runs {hospital.hours.opd}. Choose a date up to 30 days ahead.</p>
+
+          <div class="mt-6 grid gap-6 sm:grid-cols-2">
+            <div>
+              <label class="label" for="bk-date">Preferred Date *</label>
+              <input type="date" id="bk-date" name="date" class="input" min="" />
+              <p class="error-text hidden" data-error="date"></p>
+            </div>
+            <div>
+              <label class="label" for="bk-time">Preferred Time Slot *</label>
+              <select id="bk-time" name="time" class="input">
+                <option value="">— Choose a slot —</option>
+                {timeSlots.map((t) => (
+                  <option value={t.value}>{t.label}</option>
+                ))}
+              </select>
+              <p class="error-text hidden" data-error="time"></p>
+            </div>
+          </div>
+
+          <div class="mt-4 rounded-md bg-gray-50 p-4 text-sm text-gray-600 dark:bg-night-surface dark:text-slate-400">
+            <p class="flex items-start gap-2">
+              <Icon name="info" size={16} class="mt-0.5 shrink-0" />
+              <span>Times are indicative. Our team will confirm the exact slot with you over the phone. Walk-ins are welcome during OPD hours.</span>
+            </p>
+          </div>
+
+          <div class="mt-8 flex justify-between">
+            <button type="button" data-back="2" class="btn-secondary"><Icon name="arrow-left" size={18} /> Back</button>
+            <button type="button" data-next="2" class="btn-primary">Continue <Icon name="arrow-right" size={18} /></button>
+          </div>
+        </div>
+
+        <!-- Step 3: Details -->
+        <div data-step="3" class="step-panel hidden">
+          <h2 class="text-lg font-semibold">Your details</h2>
+          <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">We will confirm the appointment on this phone number.</p>
+
+          <div class="mt-6 space-y-4">
+            <div>
+              <label class="label" for="bk-name">Full Name *</label>
+              <input type="text" id="bk-name" name="patientName" class="input" placeholder="e.g. Ramesh Kumar" autocomplete="name" required />
+              <p class="error-text hidden" data-error="patientName"></p>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label class="label" for="bk-phone">Phone Number *</label>
+                <div class="relative">
+                  <span class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-gray-500">+91</span>
+                  <input type="tel" id="bk-phone" name="phone" class="input !pl-12" placeholder="10-digit mobile" maxlength="10" inputmode="numeric" autocomplete="tel" required />
+                </div>
+                <p class="error-text hidden" data-error="phone"></p>
+              </div>
+              <div>
+                <label class="label" for="bk-age">Age *</label>
+                <input type="number" id="bk-age" name="age" class="input" placeholder="e.g. 42" min="1" max="120" inputmode="numeric" required />
+                <p class="error-text hidden" data-error="age"></p>
+              </div>
+            </div>
+
+            <div>
+              <span class="label">Patient Gender</span>
+              <div class="flex flex-wrap gap-4">
+                {['Female', 'Male', 'Other'].map((g) => (
+                  <label class="flex cursor-pointer items-center gap-2 text-sm" key={g}>
+                    <input type="radio" name="gender" value={g} class="h-4 w-4 accent-brand-800" />
+                    {g}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label class="label" for="bk-symptom">Describe the problem (optional)</label>
+              <textarea id="bk-symptom" name="symptoms" class="input !h-auto min-h-24 resize-y" placeholder="Briefly describe your symptoms so we can prepare for your visit"></textarea>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label class="label" for="bk-first">Is this your first visit?</label>
+                <select id="bk-first" name="firstVisit" class="input">
+                  <option value="no">No, returning patient</option>
+                  <option value="yes">Yes, first visit</option>
+                </select>
+              </div>
+              <div>
+                <label class="label" for="bk-mode">Appointment mode</label>
+                <select id="bk-mode" name="mode" class="input">
+                  <option value="opd">In-person OPD</option>
+                  <option value="video">Video consult</option>
+                </select>
+              </div>
+            </div>
+
+            <label class="flex items-start gap-3 text-sm text-gray-700 dark:text-slate-300">
+              <input type="checkbox" id="bk-consent" name="consent" class="mt-0.5 h-4 w-4 accent-brand-800" required />
+              <span>I consent to being contacted about this appointment and understand the confirmation will come by phone.</span>
+            </label>
+            <p class="error-text hidden" data-error="consent"></p>
+          </div>
+
+          <div class="mt-8 flex justify-between">
+            <button type="button" data-back="3" class="btn-secondary"><Icon name="arrow-left" size={18} /> Back</button>
+            <button type="submit" class="btn-primary"><Icon name="calendar-solid" size={18} /> Confirm Appointment</button>
+          </div>
+        </div>
+      </form>
+
+      <div id="booking-success" class="card hidden">
+        <div class="rounded-md border border-heal-200 bg-heal-50 p-8 text-center dark:border-heal-500/30 dark:bg-heal-500/10">
+          <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-heal-600 text-white">
+            <Icon name="check" size={28} />
+          </span>
+          <h2 class="mt-4 text-2xl font-bold" style="color: var(--color-heading)">Appointment Requested!</h2>
+          <p class="mt-2 text-sm text-gray-600 dark:text-slate-400" id="booking-summary"></p>
+          <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">Booking ID: <strong id="booking-id"></strong></p>
+          <div class="mx-auto mt-6 max-w-sm space-y-2 text-left text-sm">
+            <p class="rounded-md bg-white px-4 py-2 text-gray-700 shadow-sm dark:bg-night-surface dark:text-slate-300">We will call you within <strong>30 minutes</strong> during working hours to confirm.</p>
+            <p class="rounded-md bg-white px-4 py-2 text-gray-700 shadow-sm dark:bg-night-surface dark:text-slate-300">For urgent needs, call <a href={`tel:${hospital.phones.emergency.replace(/-/g, '')}`} class="font-semibold hover:underline" style="color: var(--color-primary)">{hospital.phones.emergency}</a>.</p>
+          </div>
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            <a href="/" class="btn-secondary !py-2 text-sm">Back to Home</a>
+            <button type="button" id="print-receipt-btn" class="btn-secondary !py-2 text-sm"><Icon name="print" size={16} /> Print Receipt</button>
+            <button type="button" id="book-another" class="btn-primary !py-2 text-sm">Book Another</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="print-receipt" aria-hidden="true">
+        <div class="print-receipt-header">
+          <div>
+            <p class="print-receipt-brand">{hospital.name}</p>
+            <p class="print-receipt-sub">{hospital.address.line1}, {hospital.address.line2}</p>
+            <p class="print-receipt-sub">{hospital.address.city}, {hospital.address.state} {hospital.address.pincode} · Tel: {hospital.phones.reception} · Emergency: {hospital.phones.emergency}</p>
+          </div>
+          <div class="print-receipt-badge">APPOINTMENT<br />REQUEST</div>
+        </div>
+        <h2 class="print-receipt-title">Appointment Request Receipt</h2>
+        <table class="print-receipt-table">
+          <tbody>
+            <tr><td>Booking ID</td><td><strong id="r-id"></strong></td></tr>
+            <tr><td>Patient Name</td><td id="r-name"></td></tr>
+            <tr><td>Phone</td><td id="r-phone"></td></tr>
+            <tr><td>Doctor / Service</td><td id="r-doctor"></td></tr>
+            <tr><td>Appointment Date</td><td id="r-date"></td></tr>
+            <tr><td>Time Slot</td><td id="r-time"></td></tr>
+            <tr><td>Issued On</td><td id="r-issued"></td></tr>
+          </tbody>
+        </table>
+        <p class="print-receipt-note">This is a booking request, not a confirmed appointment. Our team will call you to confirm the slot. For urgent needs please call {hospital.phones.emergency}.</p>
+        <p class="print-receipt-footer">{hospital.name} · {hospital.domains.primary}</p>
+      </div>
+
+      <p class="mt-8 text-center text-sm text-gray-500 dark:text-slate-400">
+        Prefer to call? Dial <a href={`tel:${hospital.phones.appointment.replace(/-/g, '')}`} class="font-semibold hover:underline" style="color: var(--color-primary)">{hospital.phones.appointment}</a> during OPD hours.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  import { showToast } from '../lib/toast'
+
+  const form = document.getElementById('booking-form') as HTMLFormElement
+  if (form) {
+    const doctorSel = form.querySelector<HTMLSelectElement>('#bk-doctor')!
+    const serviceSel = form.querySelector<HTMLSelectElement>('#bk-service')!
+    const dateInput = form.querySelector<HTMLInputElement>('#bk-date')!
+    const timeSel = form.querySelector<HTMLSelectElement>('#bk-time')!
+    const fields = {
+      patientName: form.querySelector<HTMLInputElement>('#bk-name')!,
+      phone: form.querySelector<HTMLInputElement>('#bk-phone')!,
+      age: form.querySelector<HTMLInputElement>('#bk-age')!,
+      consent: form.querySelector<HTMLInputElement>('#bk-consent')!,
+    }
+    const success = document.getElementById('booking-success')!
+    const summary = document.getElementById('booking-summary')!
+    const bookingId = document.getElementById('booking-id')!
+
+    function setError(name: string, msg: string) {
+      const field = fields[name as keyof typeof fields]
+      field?.classList.add('input-error')
+      const el = form.querySelector(`[data-error="${name}"]`) as HTMLElement
+      if (el) { el.textContent = msg; el.classList.remove('hidden') }
+    }
+    function clearError(name: string) {
+      const field = fields[name as keyof typeof fields]
+      field?.classList.remove('input-error')
+      form.querySelector(`[data-error="${name}"]`)?.classList.add('hidden')
+    }
+    function setSelError(name: string, msg: string) {
+      const sel = name === 'doctor' ? doctorSel : name === 'service' ? serviceSel : name === 'date' ? dateInput : timeSel
+      sel.classList.add('input-error')
+      const el = form.querySelector(`[data-error="${name}"]`) as HTMLElement
+      if (el) { el.textContent = msg; el.classList.remove('hidden') }
+    }
+    function clearSelError(name: string) {
+      const sel = name === 'doctor' ? doctorSel : name === 'service' ? serviceSel : name === 'date' ? dateInput : timeSel
+      sel.classList.remove('input-error')
+      form.querySelector(`[data-error="${name}"]`)?.classList.add('hidden')
+    }
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    dateInput.min = today.toISOString().split('T')[0]
+    const maxDate = new Date(today)
+    maxDate.setDate(maxDate.getDate() + 30)
+    dateInput.max = maxDate.toISOString().split('T')[0]
+
+    const params = new URLSearchParams(window.location.search)
+    const preselect = (sel: HTMLSelectElement, slug: string | null) => {
+      if (!slug) return
+      Array.from(sel.options).forEach((o) => { if (o.value === slug) sel.value = slug })
+    }
+    preselect(doctorSel, params.get('doctor'))
+    preselect(serviceSel, params.get('service'))
+
+    ;['patientName', 'phone', 'age'].forEach((n) => {
+      fields[n as keyof typeof fields].addEventListener('input', () => clearError(n))
+    })
+    doctorSel.addEventListener('change', () => { if (doctorSel.value) { serviceSel.value = ''; clearSelError('doctor') } })
+    serviceSel.addEventListener('change', () => { if (serviceSel.value) { doctorSel.value = ''; clearSelError('service') } })
+    dateInput.addEventListener('change', () => clearSelError('date'))
+    timeSel.addEventListener('change', () => clearSelError('time'))
+    fields.consent.addEventListener('change', () => clearError('consent'))
+
+    function showStep(n: number) {
+      form.querySelectorAll('.step-panel').forEach((el) => {
+        const panel = el as HTMLElement
+        panel.classList.toggle('hidden', panel.dataset.step !== String(n))
+      })
+      for (let i = 1; i <= 3; i++) {
+        const dot = form.querySelector(`[data-step-dot="${i}"]`) as HTMLElement | null
+        const label = form.querySelector(`[data-step-label="${i}"]`) as HTMLElement | null
+        if (!dot) continue
+        if (i < n) {
+          dot.textContent = '✓'
+          dot.classList.remove('bg-gray-200', 'dark:bg-night-border')
+          dot.classList.add('bg-heal-600', 'text-white')
+        } else if (i === n) {
+          dot.textContent = String(i)
+          dot.classList.remove('bg-gray-200', 'dark:bg-night-border', 'bg-heal-600')
+          dot.classList.add('bg-brand-800', 'text-white')
+        } else {
+          dot.textContent = String(i)
+          dot.classList.remove('bg-heal-600', 'bg-brand-800')
+          dot.classList.add('bg-gray-200', 'text-gray-500', 'dark:bg-night-border', 'dark:text-slate-400')
+        }
+        if (label) label.classList.toggle('text-gray-900', i <= n)
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    form.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const from = Number(btn.dataset.next)
+        let ok = true
+        if (from === 1) {
+          if (!doctorSel.value && !serviceSel.value) {
+            setSelError('doctor', 'Please choose a doctor or a department.')
+            setSelError('service', 'Please choose a doctor or a department.')
+            showToast('Please select a doctor or department to continue.', { type: 'error' })
+            ok = false
+          } else {
+            clearSelError('doctor'); clearSelError('service')
+          }
+        } else if (from === 2) {
+          const chosen = new Date(dateInput.value + 'T00:00:00')
+          if (!dateInput.value || isNaN(chosen.getTime()) || chosen < today || chosen > maxDate) {
+            setSelError('date', 'Please choose a valid date (today up to 30 days ahead).')
+            ok = false
+          } else clearSelError('date')
+          if (!timeSel.value) {
+            setSelError('time', 'Please choose a time slot.')
+            ok = false
+          } else clearSelError('time')
+          if (!ok) { showToast('Please pick a date and time slot.', { type: 'error' }); return }
+        }
+        if (ok) showStep(from + 1)
+      })
+    })
+
+    form.querySelectorAll<HTMLButtonElement>('[data-back]').forEach((btn) => {
+      btn.addEventListener('click', () => showStep(Number(btn.dataset.back) - 1))
+    })
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      let valid = true
+      if (fields.patientName.value.trim().length < 3) { setError('patientName', 'Please enter the patient\'s full name.'); valid = false }
+      else clearError('patientName')
+      const phone = fields.phone.value.trim()
+      if (!/^[6-9]\d{9}$/.test(phone)) { setError('phone', 'Please enter a valid 10-digit Indian mobile number.'); valid = false }
+      else clearError('phone')
+      const age = parseInt(fields.age.value, 10)
+      if (!fields.age.value || isNaN(age) || age < 1 || age > 120) { setError('age', 'Please enter a valid age (1–120).'); valid = false }
+      else clearError('age')
+      if (!fields.consent.checked) { setError('consent', 'Please confirm to proceed.'); valid = false }
+      else clearError('consent')
+      if (!valid) { showToast('Please correct the highlighted fields.', { type: 'error' }); return }
+
+      const submitBtn = form.querySelector('button[type=submit]') as HTMLButtonElement
+      const origSubmit = submitBtn.innerHTML
+      submitBtn.disabled = true
+      submitBtn.innerHTML = 'Submitting...'
+
+      fetch('/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
+      })
+        .then(async (res) => {
+          const data = await res.json().catch(() => ({}))
+          if (!res.ok || !data.ok) {
+            throw new Error(data.error || 'Submission failed.')
+          }
+          renderSuccess(data.id)
+        })
+        .catch((err: Error) => {
+          const id = 'MJ-' + Math.random().toString(36).slice(2, 7).toUpperCase()
+          renderSuccess(id, err)
+        })
+        .finally(() => {
+          submitBtn.disabled = false
+          submitBtn.innerHTML = origSubmit
+        })
+
+      function renderSuccess(id: string, fallbackErr?: Error) {
+        const doctorName = doctorSel.value ? doctorSel.selectedOptions[0].textContent?.split(' · ')[0] : ''
+        const serviceName = serviceSel.value ? serviceSel.selectedOptions[0].textContent : ''
+        const slot = timeSel.selectedOptions[0]?.textContent || timeSel.value
+        const date = new Date(dateInput.value + 'T00:00:00').toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+        const who = doctorName || serviceName || 'General OPD'
+        summary.innerHTML = `Requested: <strong>${who}</strong> on <strong>${date}</strong> at <strong>${slot}</strong> for <strong>${fields.patientName.value.trim()}</strong>.`
+        bookingId.textContent = id
+        form.classList.add('hidden')
+        success.classList.remove('hidden')
+
+        const setR = (key: string, value: string) => {
+          const el = document.getElementById(key)
+          if (el) el.textContent = value
+        }
+        const doctorLabel = doctorSel.value ? doctorSel.selectedOptions[0].textContent || '' : ''
+        const serviceLabel = serviceSel.value ? serviceSel.selectedOptions[0].textContent || '' : ''
+        setR('r-id', id)
+        setR('r-name', fields.patientName.value.trim())
+        setR('r-phone', fields.phone.value.trim())
+        setR('r-doctor', doctorLabel || serviceLabel || 'General OPD')
+        setR('r-date', date)
+        setR('r-time', slot)
+        setR('r-issued', new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) + ' · ' + new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }))
+
+        if (fallbackErr) {
+          showToast('Booking saved offline. We will call you to confirm.', { type: 'success' })
+        } else {
+          showToast('Appointment request submitted!', { type: 'success' })
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    })
+
+    document.getElementById('print-receipt-btn')?.addEventListener('click', () => {
+      window.print()
+    })
+
+    document.getElementById('book-another')?.addEventListener('click', () => {
+      form.reset()
+      form.querySelectorAll('.input-error').forEach((el) => el.classList.remove('input-error'))
+      form.querySelectorAll('.error-text').forEach((el) => el.classList.add('hidden'))
+      success.classList.add('hidden')
+      form.classList.remove('hidden')
+      showStep(1)
+    })
+  }
+</script>

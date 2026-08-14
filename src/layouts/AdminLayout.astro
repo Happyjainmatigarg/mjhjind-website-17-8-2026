@@ -1,0 +1,94 @@
+---
+import '../styles/global.css'
+import Icon from '../components/Icon.astro'
+import { adminCollections } from '../lib/admin/config'
+import { hospital } from '../data/site'
+
+interface Props {
+  active?: string
+}
+
+const { active = 'dashboard' } = Astro.props
+
+const groups: { label: string; names: string[] }[] = [
+  { label: 'Requests', names: ['appointments', 'campRegistrations', 'contacts', 'newsletter'] },
+  { label: 'Content', names: ['doctors', 'blogPosts', 'camps', 'services', 'faqs', 'gallery', 'testimonials'] },
+]
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin — {hospital.name}</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script is:inline>
+      try {
+        const saved = localStorage.getItem('mj-theme')
+        const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        document.documentElement.classList.toggle('dark', theme === 'dark')
+      } catch {
+        /* ignore */
+      }
+    </script>
+  </head>
+  <body class="min-h-screen bg-gray-100 text-gray-900 antialiased dark:bg-night-bg dark:text-slate-200">
+    <div class="flex min-h-screen">
+      <aside class="fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-brand-900 text-white dark:bg-night-surface">
+        <a href="/admin" class="flex items-center gap-3 border-b border-white/10 px-5 py-5">
+          <span class="flex h-9 w-9 items-center justify-center rounded-sm bg-heal-600 font-bold text-white">MJ</span>
+          <span>
+            <span class="block text-sm font-bold leading-tight">{hospital.name}</span>
+            <span class="block text-xs text-white/60">Admin Panel</span>
+          </span>
+        </a>
+        <nav class="flex-1 overflow-y-auto px-3 py-4">
+          <a
+            href="/admin"
+            class:list={['mb-2 flex items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium transition-colors', active === 'dashboard' ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white']}
+          >
+            <Icon name="database" size={18} /> Dashboard
+          </a>
+          {groups.map((g) => (
+            <div class="mb-4" key={g.label}>
+              <p class="px-3 pb-1.5 pt-3 text-[11px] font-semibold uppercase tracking-wider text-white/40">{g.label}</p>
+              {g.names.map((name) => {
+                const cfg = adminCollections.find((c) => c.name === name)
+                if (!cfg) return null
+                return (
+                  <a
+                    href={`/admin/${name}`}
+                    class:list={['flex items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium transition-colors', active === name ? 'bg-white/15 text-white' : 'text-white/70 hover:bg-white/10 hover:text-white']}
+                  >
+                    <Icon name={cfg.icon} size={18} /> {cfg.label}
+                  </a>
+                )
+              })}
+            </div>
+          ))}
+        </nav>
+        <div class="border-t border-white/10 p-3">
+          <a href="/" class="flex items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium text-white/70 transition-colors hover:bg-white/10 hover:text-white" target="_blank">
+            <Icon name="external-link" size={18} /> View Website
+          </a>
+          <button id="admin-logout" class="flex w-full items-center gap-3 rounded-sm px-3 py-2 text-sm font-medium text-white/70 transition-colors hover:bg-danger-600/20 hover:text-white">
+            <Icon name="logout" size={18} /> Sign Out
+          </button>
+        </div>
+      </aside>
+
+      <main class="ml-64 min-w-0 flex-1 p-6 lg:p-10">
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      document.getElementById('admin-logout')?.addEventListener('click', () => {
+        localStorage.removeItem('mj-admin-token')
+        localStorage.removeItem('mj-admin-user')
+        window.location.href = '/admin'
+      })
+    </script>
+  </body>
+</html>

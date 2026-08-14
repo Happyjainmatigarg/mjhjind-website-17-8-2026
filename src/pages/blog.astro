@@ -1,0 +1,104 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import BlogCard from '../components/BlogCard.astro'
+import Icon from '../components/Icon.astro'
+import NewsletterForm from '../components/NewsletterForm.astro'
+import { getCollection } from '../lib/server/store'
+import type { BlogPost } from '../data/blog'
+import { hospital } from '../data/site'
+
+export const prerender = false
+
+const blogPosts = getCollection<BlogPost>('blogPosts')
+const blogCategories = Array.from(new Set(blogPosts.map((p) => p.category).filter(Boolean)))
+---
+
+<Layout title="Health Blog" active="blog" description={`Practical health articles from the doctors of ${hospital.name}, Jind — diabetes, heart health, child care, nutrition and more.`}>
+  <PageHero
+    eyebrow="Health Blog"
+    title="Health Articles & Tips"
+    subtitle="Practical, trustworthy health guidance written by our own doctors — for you and your family."
+  />
+
+  <section class="section-pad">
+    <div class="container-site">
+      <!-- Search -->
+      <div class="relative mx-auto mb-8 max-w-2xl">
+        <Icon name="search" size={20} class="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+        <input type="search" id="blog-search" class="input !pl-12" placeholder="Search articles..." aria-label="Search blog articles" />
+      </div>
+
+      <div class="mb-8 flex flex-wrap justify-center gap-2" id="blog-categories" role="group" aria-label="Filter by category">
+        <button type="button" data-cat="all" class="chip border-brand-700 bg-brand-800 text-white dark:border-brand-400 dark:bg-brand-600">All</button>
+        {blogCategories.map((c) => (
+          <button type="button" data-cat={c} class="chip border-gray-300 text-gray-600 hover:border-brand-700 hover:text-brand-800 dark:border-night-border dark:text-slate-300 dark:hover:border-brand-400">
+            {c}
+          </button>
+        ))}
+      </div>
+
+      <p id="blog-count" class="mb-6 text-sm text-gray-500 dark:text-slate-400"></p>
+
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" id="blog-grid">
+        {blogPosts.map((p) => <BlogCard post={p} />)}
+      </div>
+
+      <div id="blog-empty" class="hidden py-16 text-center">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-night-border">
+          <Icon name="document" size={30} class="text-gray-400" />
+        </div>
+        <p class="mt-4 text-lg font-semibold" style="color: var(--color-heading)">No articles found</p>
+        <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">Try a different keyword or browse another category.</p>
+      </div>
+
+      <div class="mx-auto mt-14 max-w-2xl">
+        <NewsletterForm variant="card" />
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script define:vars={{ blogPosts }}>
+  import type { BlogPost } from '../data/blog'
+
+  const posts: BlogPost[] = blogPosts
+  const search = document.getElementById('blog-search') as HTMLInputElement
+  const grid = document.getElementById('blog-grid')!
+  const empty = document.getElementById('blog-empty')!
+  const count = document.getElementById('blog-count')!
+
+  let activeCat = 'all'
+
+  function apply() {
+    const q = search.value.trim().toLowerCase()
+    let visible = 0
+    grid.querySelectorAll<HTMLElement>(':scope > article').forEach((card) => {
+      const cat = card.dataset.category || ''
+      const text = (card.textContent || '').toLowerCase()
+      const matchCat = activeCat === 'all' || cat === activeCat
+      const matchQ = !q || text.includes(q)
+      const show = matchCat && matchQ
+      card.classList.toggle('hidden', !show)
+      if (show) visible++
+    })
+    grid.classList.toggle('hidden', visible === 0)
+    empty.classList.toggle('hidden', visible > 0)
+    count.textContent = visible > 0 ? `Showing ${visible} article${visible > 1 ? 's' : ''}` : ''
+  }
+
+  search.addEventListener('input', apply)
+
+  document.querySelectorAll<HTMLElement>('#blog-categories [data-cat]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#blog-categories [data-cat]').forEach((b) => {
+        b.classList.remove('border-brand-700', 'bg-brand-800', 'text-white', 'dark:bg-brand-600')
+        b.classList.add('border-gray-300', 'text-gray-600', 'dark:border-night-border', 'dark:text-slate-300')
+      })
+      btn.classList.add('border-brand-700', 'bg-brand-800', 'text-white', 'dark:bg-brand-600')
+      btn.classList.remove('border-gray-300', 'text-gray-600', 'dark:border-night-border', 'dark:text-slate-300')
+      activeCat = btn.dataset.cat || 'all'
+      apply()
+    })
+  })
+</script>

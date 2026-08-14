@@ -1,0 +1,31 @@
+---
+import SectionHeading from '../SectionHeading.astro'
+import CampCard from '../CampCard.astro'
+import Icon from '../Icon.astro'
+import { camps as seedCamps } from '../../data/camps'
+import type { HealthCamp } from '../../data/camps'
+import { isUpcoming } from '../../lib/utils'
+
+interface Props {
+  camps?: HealthCamp[]
+}
+const { camps = seedCamps } = Astro.props
+---
+
+<section class="section-pad">
+  <div class="container-site">
+    <SectionHeading
+      eyebrow="Free Health Camps"
+      title="Free Health Checkups for the Community"
+      subtitle="We regularly organize free screening and awareness camps across Jind. Check an upcoming camp near you and register online in minutes."
+    />
+    <div class="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {camps.filter((c) => isUpcoming(c.date)).slice(0, 3).map((c) => <CampCard camp={c} />)}
+    </div>
+    <div class="mt-10 text-center">
+      <a href="/camps" class="btn-secondary">
+        View All Camps <Icon name="arrow-right" size={18} />
+      </a>
+    </div>
+  </div>
+</section>

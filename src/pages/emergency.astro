@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import Icon from '../components/Icon.astro'
+import { hospital, emergencyNumbers } from '../data/site'
+---
+
+<Layout title="Emergency & Ambulance" active="emergency" description={`24×7 emergency and ambulance services at ${hospital.name}, Jind. Call ${hospital.phones.emergency} for medical emergencies or dial 102 for an ambulance.`}>
+  <PageHero
+    eyebrow="Emergency Care"
+    title="24×7 Emergency & Ambulance"
+    subtitle="When every minute counts, our emergency team is ready around the clock."
+    showEmergency={false}
+  />
+
+  <section class="bg-red-600 text-white" style="background-color: var(--color-danger, #EF4444)">
+    <div class="container-site flex flex-col items-center justify-between gap-4 py-5 text-center md:flex-row md:text-left">
+      <div>
+        <p class="flex items-center justify-center gap-2 text-lg font-bold md:justify-start">
+          <Icon name="emergency" size={22} /> Medical Emergency?
+        </p>
+        <p class="text-sm text-white/85">Do not wait. Call now — our team is available 24 hours a day, 7 days a week.</p>
+      </div>
+      <a href={`tel:${hospital.phones.emergency.replace(/-/g, '')}`} class="inline-flex shrink-0 items-center gap-3 rounded-sm bg-white px-6 py-3 text-lg font-bold text-red-700 transition-transform hover:scale-105">
+        <Icon name="phone" size={22} /> {hospital.phones.emergency}
+      </a>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="container-site">
+      <h2 class="text-2xl font-bold">When to call Emergency</h2>
+      <p class="mt-2 max-w-3xl text-gray-600 dark:text-slate-400">Call for an ambulance immediately if you or someone nearby is experiencing any of the following:</p>
+
+      <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { icon: 'heart', title: 'Heart Attack Signs', text: 'Chest pain or pressure, pain in the arm or jaw, shortness of breath, cold sweat.' },
+          { icon: 'lightning', title: 'Stroke Signs', text: 'Facial drooping, weakness on one side, slurred speech, sudden confusion.' },
+          { icon: 'car', title: 'Accidents & Injuries', text: 'Road accidents, deep cuts, fractures, head injuries or severe bleeding.' },
+          { icon: 'breath', title: 'Breathing Difficulty', text: 'Severe asthma attack, choking, or sudden trouble breathing.' },
+        ].map((c) => (
+          <div class="card" key={c.title}>
+            <span class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400">
+              {c.icon === 'breath' ? <Icon name="therapy" size={24} /> : <Icon name={c.icon} size={24} />}
+            </span>
+            <h3 class="mt-4 font-semibold">{c.title}</h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">{c.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-6 rounded-md bg-red-50 p-5 dark:bg-red-500/10">
+        <p class="flex items-start gap-3 text-sm text-gray-700 dark:text-slate-300">
+          <Icon name="info" size={18} class="mt-0.5 shrink-0 text-red-600" />
+          <span><strong>Not sure if it's an emergency?</strong> It's always better to call. Our trained staff will guide you on the next step — including whether to come in or stay home.</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-gray-50 dark:bg-night-surface-alt" style="background-color: var(--color-surface-alt)">
+    <div class="container-site section-pad">
+      <h2 class="text-2xl font-bold">Emergency Numbers</h2>
+      <p class="mt-2 text-gray-600 dark:text-slate-400">Save these numbers in your phone today.</p>
+
+      <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {emergencyNumbers.map((n) => (
+          <div class="card text-center" key={n.label}>
+            <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-800 text-white"><Icon name="phone" size={24} /></span>
+            <p class="mt-4 text-sm font-medium uppercase tracking-wide text-gray-500 dark:text-slate-400">{n.label}</p>
+            <a href={`tel:${n.number.replace(/-/g, '')}`} class="mt-1 block text-2xl font-bold hover:underline" style="color: var(--color-primary)">{n.number}</a>
+            <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{n.note}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="mx-auto mt-10 max-w-2xl rounded-md bg-white p-6 text-center shadow-card-md dark:bg-night-surface">
+        <h3 class="text-lg font-semibold">Save the Ambulance Number</h3>
+        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">India's national ambulance number is 108. Our hospital ambulance line is <strong>102</strong>.</p>
+        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Ambulance to the hospital is also available by calling our emergency line at <strong>{hospital.phones.emergency}</strong>.</p>
+        <div class="mt-5 flex flex-wrap justify-center gap-3">
+          <a href={`tel:102`} class="btn-primary"><Icon name="car" size={18} /> Call 102</a>
+          <a href={`tel:${hospital.phones.emergency.replace(/-/g, '')}`} class="btn-secondary"><Icon name="phone" size={18} /> {hospital.phones.emergency}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad">
+    <div class="container-site">
+      <h2 class="text-2xl font-bold">What to do while waiting</h2>
+      <div class="mt-8 grid gap-5 md:grid-cols-3">
+        {[
+          { n: '1', t: 'Stay calm', d: 'Reassure the person. Panic only adds to the confusion.' },
+          { n: '2', t: 'Call the emergency number', d: `Dial ${hospital.phones.emergency} or 102 and answer all questions clearly.` },
+          { n: '3', t: 'Keep the person still', d: 'Do not move someone with a suspected head, neck or spine injury.' },
+          { n: '4', t: 'Follow instructions', d: 'The dispatcher may give you first-aid steps while help is on the way.' },
+          { n: '5', t: 'Keep details ready', d: 'Your location, the person\'s age, and what happened.' },
+          { n: '6', t: 'Stay with the person', d: 'Keep watching for changes and report them to the ambulance team.' },
+        ].map((s) => (
+          <div class="card flex items-start gap-4" key={s.n}>
+            <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-lg font-bold text-gray-600 dark:bg-night-border dark:text-slate-300">{s.n}</span>
+            <div>
+              <h3 class="font-semibold">{s.t}</h3>
+              <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">{s.d}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-12 rounded-md bg-brand-50 p-6 text-center dark:bg-brand-500/10">
+        <p class="text-lg font-semibold" style="color: var(--color-heading)">Need help getting to the hospital?</p>
+        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Our emergency team can guide you on the fastest route.</p>
+        <a href={hospital.mapsDirections} target="_blank" rel="noopener noreferrer" class="btn-secondary mt-4"><Icon name="locate" size={18} /> Get Directions</a>
+      </div>
+    </div>
+  </section>
+</Layout>

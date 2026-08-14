@@ -1,0 +1,72 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Medical Disclaimer"
+  subtitle="Important information about the health content on our website."
+  updated="August 2026"
+>
+  <h2>1. General Information Only</h2>
+  <p>
+    The content on this website — including articles, FAQs, and pages describing services and conditions — is provided
+    for general educational and informational purposes only. It is not intended to be, and must not be treated as,
+    professional medical advice, diagnosis, or treatment.
+  </p>
+
+  <h2>2. No Doctor–Patient Relationship</h2>
+  <p>
+    Using this website, reading its content, or submitting an online enquiry does not create a doctor–patient
+    relationship with {hospital.name} or any of its doctors. A doctor–patient relationship is established only after
+    you are personally examined or consulted by one of our doctors.
+  </p>
+
+  <h2>3. Consult a Qualified Professional</h2>
+  <p>
+    Always seek the advice of your physician or another qualified health provider with any questions you may have
+    regarding a medical condition. Never disregard professional medical advice or delay seeking it because of something
+    you have read on this website.
+  </p>
+
+  <h2>4. Emergencies</h2>
+  <p>
+    If you are experiencing a medical emergency, do not wait for an online response. Call {hospital.phones.emergency}
+    or the national emergency number 108/102, or go to the nearest emergency department immediately.
+  </p>
+
+  <h2>5. No Warranty</h2>
+  <p>
+    While we strive to keep the information on this website accurate and up to date, medical knowledge evolves and we
+    make no representations or warranties — express or implied — about the completeness, accuracy, reliability,
+    suitability, or availability of the information contained here. The content is provided "as is".
+  </p>
+
+  <h2>6. Individual Results May Vary</h2>
+  <p>
+    Health conditions and responses to treatment vary from person to person. Information about conditions, procedures,
+    or outcomes on this website should not be interpreted as a promise or guarantee of any particular result.
+  </p>
+
+  <h2>7. Medication & Treatment Advice</h2>
+  <p>
+    Do not start, stop, or change the dosage of any medication based on information from this website. Prescriptions
+    and treatment plans must always be decided by a qualified medical professional.
+  </p>
+
+  <h2>8. Liability</h2>
+  <p>
+    To the fullest extent permitted by law, {hospital.name} and its doctors, staff, and affiliates shall not be liable
+    for any loss or damage arising from reliance on the content of this website.
+  </p>
+
+  <h2>9. Contact</h2>
+  <p>
+    If you have concerns about the content on this website, please contact us at {hospital.email} or visit us at:
+  </p>
+  <p>
+    {hospital.name}<br />
+    {hospital.address.line1}, {hospital.address.line2}<br />
+    {hospital.address.city}, {hospital.address.state} {hospital.address.pincode}
+  </p>
+</LegalLayout>

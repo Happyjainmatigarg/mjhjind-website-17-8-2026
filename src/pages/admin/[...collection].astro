@@ -1,0 +1,20 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+import { ADMIN_COLLECTIONS } from '../../lib/server/store'
+
+export const prerender = false
+
+const { collection } = Astro.params
+const valid = !!collection && (ADMIN_COLLECTIONS as string[]).includes(collection)
+const active = valid ? collection : 'dashboard'
+---
+
+<AdminLayout active={active}>
+  <div id="admin-app" data-active={active}></div>
+</AdminLayout>
+
+<script>
+  import initAdmin from '../../scripts/admin'
+  const el = document.getElementById('admin-app')
+  if (el) initAdmin(el)
+</script>

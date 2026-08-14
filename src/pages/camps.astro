@@ -1,0 +1,160 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import CampCard from '../components/CampCard.astro'
+import Icon from '../components/Icon.astro'
+import { getCollection } from '../lib/server/store'
+import type { HealthCamp } from '../data/camps'
+import { isUpcoming, formatDate } from '../lib/utils'
+import { hospital } from '../data/site'
+
+export const prerender = false
+
+const camps = getCollection<HealthCamp>('camps')
+const campTypes = Array.from(new Set(camps.map((c) => c.type).filter(Boolean)))
+---
+
+<Layout title="Health Camps" active="camps" description={`Free health camps and checkups organized by ${hospital.name}, Jind. Find upcoming camps, register online, and see past camp highlights.`}>
+  <PageHero
+    eyebrow="Community Outreach"
+    title="Free Health Camps"
+    subtitle="Free screening, checkups and health awareness camps organized across Jind. Register online — it takes less than a minute."
+  />
+
+  <section class="section-pad">
+    <div class="container-site">
+      <!-- Filters -->
+      <div class="card mb-10 !p-5">
+        <div class="grid gap-4 md:grid-cols-3">
+          <div>
+            <select id="camp-type" class="input" aria-label="Filter by camp type">
+              <option value="all">All Camp Types</option>
+              {campTypes.map((t) => <option value={t}>{t}</option>)}
+            </select>
+          </div>
+          <div>
+            <select id="camp-status" class="input" aria-label="Filter by status">
+              <option value="upcoming">Upcoming Camps</option>
+              <option value="past">Past Camps (Archive)</option>
+              <option value="all">All Camps</option>
+            </select>
+          </div>
+          <div>
+            <select id="camp-sort" class="input" aria-label="Sort camps">
+              <option value="date">Sort by Date</option>
+              <option value="registration">Most Registered</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3" id="camps-grid">
+        {camps.map((c) => <CampCard camp={c} />)}
+      </div>
+
+      <div id="camps-empty" class="hidden py-16 text-center">
+        <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 dark:bg-night-border">
+          <Icon name="user-group" size={30} class="text-gray-400" />
+        </div>
+        <p class="mt-4 text-lg font-semibold" style="color: var(--color-heading)">No camps match your filters</p>
+        <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">Try a different camp type or check back soon — new camps are added regularly.</p>
+        <a href="#newsletter" class="btn-secondary mt-5">Get Camp Updates</a>
+      </div>
+
+      <div class="mt-14 rounded-md bg-brand-900 p-8 text-white md:p-10 dark:bg-night-bg" id="newsletter">
+        <div class="grid items-center gap-8 md:grid-cols-2">
+          <div>
+            <h2 class="text-2xl font-bold">Never Miss a Free Camp</h2>
+            <p class="mt-2 text-white/80">Subscribe and we’ll email you when a new camp is announced near you.</p>
+          </div>
+          <form id="camp-alert-form" class="flex flex-col gap-3 sm:flex-row" novalidate>
+            <label class="sr-only" for="camp-alert-email">Email address</label>
+            <input type="email" id="camp-alert-email" class="h-12 w-full rounded-sm border-0 px-4 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-heal-500" placeholder="Your email address" />
+            <button type="submit" class="btn shrink-0 bg-heal-600 text-white hover:bg-heal-700"><Icon name="bell" size={18} /> Notify Me</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script define:vars={{ camps }}>
+  import { showToast } from '../lib/toast'
+  import type { HealthCamp } from '../data/camps'
+
+  const campsData: (HealthCamp & { card: HTMLElement })[] = []
+  Array.from(document.querySelectorAll<HTMLElement>('#camps-grid > article')).forEach((card) => {
+    const camp = (camps as HealthCamp[]).find((c) => c.slug === card.dataset.campSlug)
+    if (camp) campsData.push({ ...camp, card })
+  })
+
+  const typeSel = document.getElementById('camp-type') as HTMLSelectElement
+  const statusSel = document.getElementById('camp-status') as HTMLSelectElement
+  const sortSel = document.getElementById('camp-sort') as HTMLSelectElement
+  const grid = document.getElementById('camps-grid')!
+  const empty = document.getElementById('camps-empty')!
+
+  function applyFilters() {
+    const type = typeSel.value
+    const status = statusSel.value
+    const sort = sortSel.value
+    let list = campsData.filter((c) => {
+      const matchType = type === 'all' || c.type === type
+      const matchStatus = status === 'all' || c.status === status
+      return matchType && matchStatus
+    })
+    if (sort === 'registration') {
+      list = [...list].sort((a, b) => b.registrations - a.registrations)
+    } else {
+      list = [...list].sort((a, b) => (a.date < b.date ? -1 : 1))
+    }
+    grid.innerHTML = ''
+    list.forEach((c) => grid.appendChild(c.card))
+    const visible = list.length
+    grid.classList.toggle('hidden', visible === 0)
+    empty.classList.toggle('hidden', visible > 0)
+  }
+
+  typeSel.addEventListener('change', applyFilters)
+  statusSel.addEventListener('change', applyFilters)
+  sortSel.addEventListener('change', applyFilters)
+
+  const alertForm = document.getElementById('camp-alert-form') as HTMLFormElement
+  const alertEmail = document.getElementById('camp-alert-email') as HTMLInputElement
+  const alertBtn = alertForm.querySelector('button[type=submit]') as HTMLButtonElement
+  alertForm.addEventListener('submit', (e) => {
+    e.preventDefault()
+    const value = alertEmail.value.trim()
+    if (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      alertEmail.classList.add('input-error')
+      showToast('Please enter a valid email address.', { type: 'error' })
+      return
+    }
+    alertEmail.classList.remove('input-error')
+    const orig = alertBtn.innerHTML
+    alertBtn.disabled = true
+    alertBtn.innerHTML = 'Subscribing...'
+    fetch('/api/newsletter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: value }),
+    })
+      .then(async (res) => {
+        const data = await res.json().catch(() => ({}))
+        if (res.ok && data.ok) {
+          alertEmail.value = ''
+          showToast(data.message || 'You\'re on the list!', { type: 'success' })
+        } else {
+          showToast(data.error || 'Subscription failed. Please try again.', { type: 'error' })
+        }
+      })
+      .catch(() => {
+        alertEmail.value = ''
+        showToast('You\'re on the list! We\'ll notify you about upcoming camps.', { type: 'success' })
+      })
+      .finally(() => {
+        alertBtn.disabled = false
+        alertBtn.innerHTML = orig
+      })
+  })
+</script>

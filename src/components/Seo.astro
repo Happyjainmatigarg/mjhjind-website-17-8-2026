@@ -1,0 +1,51 @@
+---
+import { hospital } from '../data/site'
+
+interface Props {
+  path?: string
+  schema?: object[]
+}
+
+const { path = '/', schema = [] } = Astro.props
+const url = `https://${hospital.domains.primary}${path === '/' ? '/' : path}`
+const { name, tagline, address, phones, email, social, mapsDirections, foundedYear } = hospital
+
+const hospitalSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Hospital',
+  name,
+  alternateName: hospital.shortName,
+  slogan: tagline,
+  url: `https://${hospital.domains.primary}`,
+  telephone: phones.reception,
+  email,
+  foundingDate: String(foundedYear),
+  image: `https://${hospital.domains.primary}/og-image.png`,
+  logo: `https://${hospital.domains.primary}/favicon-512.png`,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${address.line1}, ${address.line2}`,
+    addressLocality: address.city,
+    addressRegion: address.state,
+    postalCode: address.pincode,
+    addressCountry: 'IN',
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: 29.31, longitude: 76.31 },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      opens: '08:00',
+      closes: '20:00',
+    },
+  ],
+  sameAs: [social.facebook, social.instagram, social.youtube, social.whatsapp],
+  hasMap: mapsDirections,
+}
+---
+
+<meta property="og:url" content={url} />
+<link rel="canonical" href={url} />
+<meta name="robots" content="index, follow, max-image-preview:large" />
+
+<script is:inline set:html={`<script type="application/ld+json">${JSON.stringify([hospitalSchema, ...schema]).replace(/<\/script>/g, '<\\/script>')}<\/script>`}></script>

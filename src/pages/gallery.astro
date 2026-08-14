@@ -1,0 +1,191 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import ImagePlaceholder from '../components/ImagePlaceholder.astro'
+import Icon from '../components/Icon.astro'
+import { getCollection } from '../lib/server/store'
+import type { GalleryItem } from '../data/gallery'
+import { hospital } from '../data/site'
+
+export const prerender = false
+
+const gallery = getCollection<GalleryItem & { id: string }>('gallery')
+const galleryCategories = Array.from(new Set(gallery.map((g) => g.category).filter(Boolean)))
+---
+
+<Layout title="Gallery" active="gallery" description={`A look inside ${hospital.name}, Jind — our facilities, doctors, events and community health camps.`}>
+  <PageHero
+    eyebrow="Gallery"
+    title="Inside Our Hospital"
+    subtitle="A look at our facilities, our team, and the community programs we are proud of."
+  />
+
+  <section class="section-pad">
+    <div class="container-site">
+      <div class="mb-10 flex flex-wrap items-center justify-center gap-2" id="gallery-filters" role="group" aria-label="Filter gallery">
+        <button type="button" data-cat="all" class="chip border-brand-700 bg-brand-800 text-white dark:border-brand-400 dark:bg-brand-600">All</button>
+        {
+          galleryCategories.map((cat) => (
+            <button type="button" data-cat={cat} class="chip border-gray-300 text-gray-600 hover:border-brand-700 hover:text-brand-800 dark:border-night-border dark:text-slate-300 dark:hover:border-brand-400">
+              {cat}
+            </button>
+          ))
+        }
+      </div>
+
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" id="gallery-grid">
+        {
+          gallery.map((item) => (
+            <button
+              type="button"
+              class="group relative block cursor-zoom-in overflow-hidden rounded-md focus-visible:outline-none"
+              data-cat={item.category}
+              data-title={item.title}
+              data-caption={item.caption}
+              data-image={item.image}
+              aria-label={`View ${item.title}`}
+            >
+              <ImagePlaceholder image={item.image} title={item.category} class="transition-transform duration-500 group-hover:scale-105" />
+              <span class="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-transparent to-transparent p-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span class="text-sm font-semibold text-white">{item.title}</span>
+                <span class="text-xs text-white/75">{item.category}</span>
+              </span>
+              <span class="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white opacity-0 backdrop-blur transition-opacity duration-300 group-hover:opacity-100">
+                <Icon name="plus" size={18} />
+              </span>
+            </button>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/90 p-4" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button type="button" id="lightbox-close" class="absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label="Close">
+      <Icon name="x" size={24} />
+    </button>
+    <button type="button" id="lightbox-prev" class="absolute left-4 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/10 p-3 text-white hover:bg-white/20 sm:block" aria-label="Previous image">
+      <Icon name="arrow-left" size={22} />
+    </button>
+    <button type="button" id="lightbox-next" class="absolute right-4 top-1/2 hidden -translate-y-1/2 rounded-full bg-white/10 p-3 text-white hover:bg-white/20 sm:block" aria-label="Next image">
+      <Icon name="arrow-right" size={22} />
+    </button>
+    <figure class="max-w-4xl">
+      <div id="lightbox-image" class="overflow-hidden rounded-md"></div>
+      <figcaption class="mt-4 text-center">
+        <p id="lightbox-title" class="text-lg font-semibold text-white"></p>
+        <p id="lightbox-caption" class="mt-1 text-sm text-white/70"></p>
+      </figcaption>
+    </figure>
+  </div>
+</Layout>
+
+<script>
+  const items = Array.from(document.querySelectorAll('#gallery-grid > button'))
+  const filterBtns = Array.from(document.querySelectorAll('#gallery-filters [data-cat]'))
+  const lightbox = document.getElementById('lightbox')
+  const lbImage = document.getElementById('lightbox-image')
+  const lbTitle = document.getElementById('lightbox-title')
+  const lbCaption = document.getElementById('lightbox-caption')
+  let currentIndex = 0
+
+  function applyFilter(cat: string) {
+    items.forEach((item) => {
+      const show = cat === 'all' || item.dataset.cat === cat
+      item.classList.toggle('hidden', !show)
+    })
+  }
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => {
+        b.classList.remove('border-brand-700', 'bg-brand-800', 'text-white', 'dark:bg-brand-600')
+        b.classList.add('border-gray-300', 'text-gray-600', 'dark:border-night-border', 'dark:text-slate-300')
+      })
+      btn.classList.add('border-brand-700', 'bg-brand-800', 'text-white', 'dark:bg-brand-600')
+      btn.classList.remove('border-gray-300', 'text-gray-600', 'dark:border-night-border', 'dark:text-slate-300')
+      applyFilter(btn.dataset.cat || 'all')
+    })
+  })
+
+  function visibleItems(): HTMLElement[] {
+    return items.filter((i) => !i.classList.contains('hidden'))
+  }
+
+  function openLightbox(index: number) {
+    const list = visibleItems()
+    if (!list.length) return
+    currentIndex = index
+    render(list[currentIndex])
+    lightbox.classList.remove('hidden')
+    lightbox.classList.add('flex')
+    document.body.style.overflow = 'hidden'
+  }
+
+  function render(item: HTMLElement) {
+    lbTitle.textContent = item.dataset.title || ''
+    lbCaption.textContent = item.dataset.caption || ''
+    const container = document.createElement('div')
+    const base = document.createElement('span')
+    base.dataset.image = item.dataset.image || 'general'
+    base.dataset.title = item.dataset.title || ''
+    container.innerHTML = `<svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid slice" class="max-h-[70vh] w-full"></svg>`
+    const svg = container.querySelector('svg')!
+    // Reuse ImagePlaceholder visuals by copying the inner SVG markup from the card
+    const source = item.querySelector('svg')
+    if (source) {
+      svg.innerHTML = source.innerHTML
+      svg.setAttribute('viewBox', '200 200')
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect')
+      rect.setAttribute('width', '200')
+      rect.setAttribute('height', '200')
+      rect.setAttribute('fill', 'url(#' + (source.querySelector('linearGradient')?.id || '') + ')')
+      svg.prepend(rect)
+      svg.setAttribute('viewBox', '0 0 200 200')
+    }
+    lbImage.innerHTML = ''
+    lbImage.appendChild(container)
+  }
+
+  items.forEach((item, i) => {
+    item.addEventListener('click', () => openLightbox(i))
+  })
+
+  document.getElementById('lightbox-close')?.addEventListener('click', () => {
+    lightbox.classList.add('hidden')
+    lightbox.classList.remove('flex')
+    document.body.style.overflow = ''
+  })
+
+  document.getElementById('lightbox-prev')?.addEventListener('click', () => {
+    const list = visibleItems()
+    currentIndex = (currentIndex - 1 + list.length) % list.length
+    render(list[currentIndex])
+  })
+
+  document.getElementById('lightbox-next')?.addEventListener('click', () => {
+    const list = visibleItems()
+    currentIndex = (currentIndex + 1) % list.length
+    render(list[currentIndex])
+  })
+
+  lightbox?.addEventListener('click', (e) => {
+    if (e.target === lightbox) {
+      lightbox.classList.add('hidden')
+      lightbox.classList.remove('flex')
+      document.body.style.overflow = ''
+    }
+  })
+
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.classList.contains('hidden')) return
+    if (e.key === 'Escape') {
+      lightbox.classList.add('hidden')
+      lightbox.classList.remove('flex')
+      document.body.style.overflow = ''
+    }
+    if (e.key === 'ArrowLeft') document.getElementById('lightbox-prev')?.click()
+    if (e.key === 'ArrowRight') document.getElementById('lightbox-next')?.click()
+  })
+</script>

@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import { hospital } from '../data/site'
+
+interface Props {
+  title: string
+  subtitle: string
+  updated: string
+}
+
+const { title, subtitle, updated } = Astro.props
+---
+
+<Layout title={title} active="" description={subtitle}>
+  <PageHero eyebrow="Legal" title={title} subtitle={subtitle} showEmergency={false} />
+
+  <section class="section-pad">
+    <div class="container-site mx-auto max-w-3xl">
+      <p class="mb-8 text-sm text-gray-500 dark:text-slate-400">Last updated: {updated} · {hospital.name}, Jind</p>
+      <div class="prose-content">
+        <slot />
+      </div>
+    </div>
+  </section>
+</Layout>

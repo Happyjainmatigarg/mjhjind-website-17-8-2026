@@ -1,0 +1,84 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Terms of Service"
+  subtitle="The terms that govern your use of our website and online services."
+  updated="August 2026"
+>
+  <h2>1. Acceptance of Terms</h2>
+  <p>
+    By accessing or using this website ({hospital.domains.primary} and {hospital.domains.secondary}), you agree to be
+    bound by these Terms of Service. If you do not agree with any part of these terms, please do not use this website.
+  </p>
+
+  <h2>2. About Our Services</h2>
+  <p>
+    This website provides general information about {hospital.name}, its departments, doctors, services, health camps,
+    and a facility to request OPD appointments and camp registrations. Online appointment requests are <strong>requests</strong> —
+    your appointment is confirmed only after our team contacts you by phone and you receive confirmation.
+  </p>
+
+  <h2>3. Appointment Bookings</h2>
+  <ul>
+    <li>Submitting an online appointment request does not guarantee a slot until confirmed by our staff.</li>
+    <li>We may need to reschedule or cancel appointments due to unforeseen circumstances; we will inform you as early as possible.</li>
+    <li>You are responsible for providing accurate contact information so we can confirm your visit.</li>
+    <li>For emergencies, do not rely on online booking — call {hospital.phones.emergency} or the national ambulance number 108/102.</li>
+  </ul>
+
+  <h2>4. Medical Disclaimer</h2>
+  <p>
+    Content on this website is for general information only and is not a substitute for professional medical advice,
+    diagnosis, or treatment. Always seek the advice of a qualified health provider with any questions you may have
+    regarding a medical condition. Never disregard professional medical advice because of something you read on this site.
+  </p>
+
+  <h2>5. Acceptable Use</h2>
+  <p>You agree not to:</p>
+  <ul>
+    <li>Use this website for any unlawful purpose or to misrepresent your identity.</li>
+    <li>Attempt to gain unauthorised access to the website, its servers, or connected systems.</li>
+    <li>Interfere with the normal operation of the website or attempt to overload it.</li>
+    <li>Submit false information through forms on this site.</li>
+  </ul>
+
+  <h2>6. Intellectual Property</h2>
+  <p>
+    All content on this website — including text, graphics, logos, and design — is the property of {hospital.name}
+    or its licensors and is protected by applicable intellectual property laws. You may not reproduce, distribute,
+    or use our content without prior written permission, except for personal, non-commercial use.
+  </p>
+
+  <h2>7. Limitation of Liability</h2>
+  <p>
+    To the maximum extent permitted by law, {hospital.name} shall not be liable for any direct, indirect, incidental,
+    or consequential damages arising from your use of, or inability to use, this website. The website is provided
+    "as is" without warranties of any kind, express or implied.
+  </p>
+
+  <h2>8. Third-Party Links</h2>
+  <p>
+    Links to external websites are provided for convenience. We do not endorse and are not responsible for the content
+    or practices of third-party sites.
+  </p>
+
+  <h2>9. Changes to These Terms</h2>
+  <p>
+    We may revise these terms at any time. Changes take effect when posted on this page. Your continued use of the
+    website constitutes acceptance of the updated terms.
+  </p>
+
+  <h2>10. Governing Law</h2>
+  <p>
+    These terms are governed by the laws of India and the state of Haryana. Any disputes shall be subject to the
+    jurisdiction of the courts in Jind, Haryana.
+  </p>
+
+  <h2>11. Contact</h2>
+  <p>
+    For questions about these terms, contact us at {hospital.email} or call {hospital.phones.reception}.
+  </p>
+</LegalLayout>

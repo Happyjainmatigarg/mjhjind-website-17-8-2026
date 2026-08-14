@@ -1,0 +1,30 @@
+---
+import SectionHeading from '../SectionHeading.astro'
+import ServiceCard from '../ServiceCard.astro'
+import Icon from '../Icon.astro'
+import { services as seedServices } from '../../data/services'
+import type { Service } from '../../data/services'
+
+interface Props {
+  services?: Service[]
+}
+const { services = seedServices } = Astro.props
+---
+
+<section class="section-pad">
+  <div class="container-site">
+    <SectionHeading
+      eyebrow="Our Services"
+      title="Comprehensive Care, Under One Roof"
+      subtitle="From everyday consultations to critical care, our departments are equipped to serve your whole family."
+    />
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {services.slice(0, 8).map((s) => <ServiceCard service={s} />)}
+    </div>
+    <div class="mt-10 text-center">
+      <a href="/services" class="btn-secondary">
+        View All Services <Icon name="arrow-right" size={18} />
+      </a>
+    </div>
+  </div>
+</section>

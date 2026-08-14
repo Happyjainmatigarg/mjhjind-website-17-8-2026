@@ -1,0 +1,33 @@
+---
+import { doctors as seedDoctors } from '../data/doctors'
+import { services as seedServices } from '../data/services'
+import { camps as seedCamps } from '../data/camps'
+import { blogPosts as seedBlogPosts } from '../data/blog'
+import type { Doctor } from '../data/doctors'
+import type { Service } from '../data/services'
+import type { HealthCamp } from '../data/camps'
+import type { BlogPost } from '../data/blog'
+
+interface Props {
+  doctors?: Doctor[]
+  services?: Service[]
+  camps?: HealthCamp[]
+  blogPosts?: BlogPost[]
+}
+const { doctors = seedDoctors, services = seedServices, camps = seedCamps, blogPosts = seedBlogPosts } = Astro.props
+---
+
+<div class="hidden" aria-hidden="true">
+  {doctors.map((d) => (
+    <span data-search-doctors data-name={d.name} data-specialty={`${d.specialty} · ${d.qualification}`} data-href={`/doctors/${d.slug}`}></span>
+  ))}
+  {services.map((s) => (
+    <span data-search-services data-title={s.title} data-short={s.short} data-href={`/services/${s.slug}`}></span>
+  ))}
+  {camps.map((c) => (
+    <span data-search-camps data-title={c.title} data-type={`${c.type} · ${c.date}`} data-href={`/camps/${c.slug}`}></span>
+  ))}
+  {blogPosts.map((p) => (
+    <span data-search-posts data-title={p.title} data-category={p.category} data-href={`/blog/${p.slug}`}></span>
+  ))}
+</div>

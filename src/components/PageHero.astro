@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro'
+import { hospital } from '../data/site'
+import { telHref } from '../lib/utils'
+
+interface Props {
+  eyebrow?: string
+  title: string
+  subtitle?: string
+  breadcrumb?: string
+  showEmergency?: boolean
+}
+const { eyebrow, title, subtitle, breadcrumb, showEmergency = true } = Astro.props
+---
+
+<section class="relative overflow-hidden bg-brand-900 text-white dark:bg-night-bg">
+  <div class="bg-grid absolute inset-0 opacity-20"></div>
+  <div class="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-heal-500/20 blur-3xl"></div>
+  <div class="container-site relative py-16 md:py-24">
+    {breadcrumb && (
+      <nav class="mb-4 flex items-center gap-2 text-sm text-white/70" aria-label="Breadcrumb">
+        <a href="/" class="hover:text-white">Home</a>
+        <Icon name="chevron-right" size={14} />
+        <a href={breadcrumb} class="hover:text-white capitalize">{breadcrumb.replace(/^\//, '').replace(/-/g, ' ')}</a>
+        <Icon name="chevron-right" size={14} />
+        <span class="text-white">{title}</span>
+      </nav>
+    )}
+    {eyebrow && <p class="mb-3 text-sm font-semibold uppercase tracking-[0.05em] text-heal-500">{eyebrow}</p>}
+    <h1 class="text-4xl font-bold tracking-tight text-balance md:text-5xl">{title}</h1>
+    {subtitle && <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/80">{subtitle}</p>}
+    {showEmergency && (
+      <div class="mt-6 inline-flex flex-wrap items-center gap-3">
+        <a href={telHref(hospital.phones.emergency)} class="inline-flex items-center gap-2 rounded-sm bg-white/10 px-4 py-2 text-sm font-semibold backdrop-blur transition-colors hover:bg-white/20">
+          <Icon name="phone" size={16} class="text-heal-500" /> Emergency: {hospital.phones.emergency}
+        </a>
+        <a href="/book" class="inline-flex items-center gap-2 rounded-sm bg-heal-600 px-4 py-2 text-sm font-semibold transition-colors hover:bg-heal-700">
+          <Icon name="calendar" size={16} /> Book Appointment
+        </a>
+      </div>
+    )}
+  </div>
+</section>

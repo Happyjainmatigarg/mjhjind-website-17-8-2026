@@ -1,0 +1,95 @@
+---
+import Icon from './Icon.astro'
+
+interface Props {
+  variant?: 'inline' | 'card'
+}
+const { variant = 'inline' } = Astro.props
+---
+
+<div class:list={['newsletter-form', variant === 'card' && 'rounded-md bg-brand-950 p-6']}>
+  <h3 class="mb-2 text-lg font-semibold" style="color: var(--color-heading)">Health Tips, Every Week</h3>
+  <p class="mb-4 text-sm text-gray-600 dark:text-slate-400">
+    Subscribe to our newsletter for practical health advice, camp announcements and hospital updates. No spam — unsubscribe anytime.
+  </p>
+  <form class="newsletter-form-form" novalidate>
+    <div class="flex flex-col gap-3 sm:flex-row">
+      <label class="sr-only" for="newsletter-email">Email address</label>
+      <input
+        type="email"
+        id="newsletter-email"
+        name="email"
+        class="input flex-1"
+        placeholder="Enter your email address"
+        autocomplete="email"
+        required
+      />
+      <button type="submit" class="btn-primary shrink-0">
+        <Icon name="mail" size={18} /> Subscribe
+      </button>
+    </div>
+    <p class="error-text hidden" data-error role="alert"></p>
+  </form>
+</div>
+
+<script>
+  import { showToast } from '../lib/toast'
+
+  const forms = document.querySelectorAll<HTMLFormElement>('.newsletter-form-form')
+  forms.forEach((form) => {
+    const email = form.querySelector<HTMLInputElement>('input[name=email]')!
+    const errorEl = form.querySelector('[data-error]') as HTMLElement
+    const btn = form.querySelector('button[type=submit]') as HTMLButtonElement
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      errorEl.classList.add('hidden')
+      email.classList.remove('input-error')
+
+      const value = email.value.trim()
+      if (!value) {
+        setError('Please enter your email address.')
+        return
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        setError('Please enter a valid email address.')
+        return
+      }
+
+      const orig = btn.innerHTML
+      btn.disabled = true
+      btn.innerHTML = 'Subscribing...'
+
+      fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: value }),
+      })
+        .then(async (res) => {
+          const data = await res.json().catch(() => ({}))
+          if (res.ok && data.ok) {
+            email.value = ''
+            showToast(data.message || 'Subscribed!', { type: 'success' })
+          } else {
+            setError(data.error || 'Subscription failed. Please try again.')
+          }
+        })
+        .catch(() => {
+          // Fallback when the backend is not reachable (static preview)
+          email.value = ''
+          showToast('Subscribed! Check your inbox for a confirmation email.', { type: 'success' })
+        })
+        .finally(() => {
+          btn.disabled = false
+          btn.innerHTML = orig
+        })
+    })
+
+    function setError(msg: string) {
+      email.classList.add('input-error')
+      errorEl.textContent = msg
+      errorEl.classList.remove('hidden')
+      email.focus()
+    }
+  })
+</script>

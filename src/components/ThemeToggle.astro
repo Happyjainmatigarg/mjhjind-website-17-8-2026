@@ -1,0 +1,39 @@
+---
+import Icon from './Icon.astro'
+
+interface Props {
+  class?: string
+}
+const { class: className = '' } = Astro.props
+---
+
+<button
+  type="button"
+  id="theme-toggle"
+  class:list={[
+    'inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-brand-50 hover:text-brand-800 dark:text-slate-300 dark:hover:bg-night-border dark:hover:text-white',
+    className,
+  ]}
+  aria-label="Toggle dark mode"
+  title="Toggle dark / light mode"
+>
+  <span id="icon-sun" class="hidden dark:block">
+    <Icon name="sun" size={22} />
+  </span>
+  <span id="icon-moon" class="block dark:hidden">
+    <Icon name="moon" size={22} />
+  </span>
+</button>
+
+<script>
+  const btn = document.getElementById('theme-toggle') as HTMLButtonElement
+  btn?.addEventListener('click', () => {
+    const root = document.documentElement
+    const isDark = root.classList.toggle('dark')
+    try {
+      localStorage.setItem('mjh-theme', isDark ? 'dark' : 'light')
+    } catch {
+      /* ignore */
+    }
+  })
+</script>

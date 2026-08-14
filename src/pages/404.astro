@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Icon from '../components/Icon.astro'
+import { hospital } from '../data/site'
+---
+
+<Layout title="Page Not Found" description="The page you are looking for could not be found." noindex>
+  <section class="flex min-h-[70vh] items-center justify-center px-4 py-20">
+    <div class="text-center">
+      <p class="text-8xl font-bold tracking-tight" style="color: var(--color-primary); opacity: 0.25">404</p>
+      <h1 class="mt-2 text-3xl font-bold" style="color: var(--color-heading)">This page has been discharged</h1>
+      <p class="mx-auto mt-3 max-w-md text-gray-600 dark:text-slate-400">The page you're looking for may have moved, been renamed, or never existed. Let's get you back on track.</p>
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <a href="/" class="btn-primary"><Icon name="arrow-left" size={18} /> Back to Home</a>
+        <a href="/services" class="btn-secondary">Our Services</a>
+        <a href="/book" class="btn-secondary"><Icon name="calendar" size={18} /> Book Appointment</a>
+      </div>
+      <div class="mx-auto mt-10 flex max-w-lg flex-wrap items-center justify-center gap-6 text-sm text-gray-500 dark:text-slate-400">
+        <span class="flex items-center gap-2"><Icon name="phone" size={16} /> Emergency: <a href={`tel:${hospital.phones.emergency.replace(/-/g, '')}`} class="font-semibold hover:underline" style="color: var(--color-primary)">{hospital.phones.emergency}</a></span>
+        <a href="/contact" class="flex items-center gap-2 hover:underline">Contact us</a>
+      </div>
+    </div>
+  </section>
+</Layout>

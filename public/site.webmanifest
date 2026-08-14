@@ -1,0 +1,21 @@
+{
+  "name": "Meenakshi Jain Hospital",
+  "short_name": "MJ Hospital",
+  "description": "Quality healthcare in Jind — multi-specialty hospital with 24×7 emergency care.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E40AF",
+  "theme_color": "#1E40AF",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
