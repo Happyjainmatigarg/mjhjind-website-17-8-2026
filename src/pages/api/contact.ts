@@ -1,4 +1,5 @@
 import { createContact } from '../../lib/server/store'
+import { notifyAdminContact } from '../../lib/server/notifications'
 
 export const prerender = false
 
@@ -32,5 +33,6 @@ export const POST: APIRoute = async ({ request }) => {
   if (message.length < 10) return json({ ok: false, error: 'Please write a message of at least 10 characters.' }, 422)
 
   const record = createContact(data)
+  Promise.resolve(notifyAdminContact(record)).catch(() => {})
   return json({ ok: true, id: record.id, message: 'Message received. We will get back to you soon.' }, 201)
 }

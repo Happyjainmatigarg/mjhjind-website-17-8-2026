@@ -43,6 +43,7 @@ export const adminCollections: CollectionConfig[] = [
     fields: [
       { key: 'patientName', label: 'Patient Name', type: 'text', required: true },
       { key: 'phone', label: 'Phone', type: 'text', required: true },
+      { key: 'email', label: 'Email', type: 'text', help: 'Used for email confirmation and notifications' },
       { key: 'age', label: 'Age', type: 'number' },
       { key: 'gender', label: 'Gender', type: 'select', options: ['Male', 'Female', 'Other'] },
       { key: 'doctor', label: 'Doctor / Service', type: 'text' },
@@ -115,6 +116,7 @@ export const adminCollections: CollectionConfig[] = [
     fields: [
       { key: 'name', label: 'Full Name', type: 'text', required: true, placeholder: 'e.g. Dr. Amit Sharma' },
       { key: 'title', label: 'Title', type: 'text', placeholder: 'e.g. Consultant Physician' },
+      { key: 'email', label: 'Email', type: 'text', help: 'Used for appointment notifications to this doctor' },
       { key: 'specialty', label: 'Specialty', type: 'text', required: true, placeholder: 'e.g. Cardiology' },
       { key: 'department', label: 'Department', type: 'select', options: departments, required: true },
       { key: 'qualification', label: 'Qualification', type: 'text', placeholder: 'e.g. MBBS, MD (Medicine)' },

@@ -8,6 +8,7 @@ export interface Doctor {
   slug: string
   name: string
   title: string
+  email: string
   specialty: string
   department: string
   qualification: string
@@ -47,6 +48,7 @@ export const doctors: Doctor[] = [
     slug: 'dr-meenakshi-jain',
     name: 'Dr. Meenakshi Jain',
     title: 'Founder & Senior Consultant',
+    email: 'dr.meenakshi.jain@mjhospital.in',
     specialty: 'General Medicine',
     department: 'General Medicine',
     qualification: 'MBBS, MD (Medicine)',
@@ -75,6 +77,7 @@ export const doctors: Doctor[] = [
     slug: 'dr-rahul-gupta',
     name: 'Dr. Rahul Gupta',
     title: 'Consultant Cardiologist',
+    email: 'dr.rahul.gupta@mjhospital.in',
     specialty: 'Cardiology',
     department: 'Cardiology',
     qualification: 'MBBS, MD (Medicine), DM (Cardiology)',
@@ -103,6 +106,7 @@ export const doctors: Doctor[] = [
     slug: 'dr-sunita-verma',
     name: 'Dr. Sunita Verma',
     title: 'Senior Gynecologist & Obstetrician',
+    email: 'dr.sunita.verma@mjhospital.in',
     specialty: 'Gynecology',
     department: 'Gynecology',
     qualification: 'MBBS, MS (Obstetrics & Gynecology)',
@@ -131,6 +135,7 @@ export const doctors: Doctor[] = [
     slug: 'dr-aman-singh',
     name: 'Dr. Aman Singh',
     title: 'Orthopedic & Joint Replacement Surgeon',
+    email: 'dr.aman.singh@mjhospital.in',
     specialty: 'Orthopedics',
     department: 'Orthopedics',
     qualification: 'MBBS, MS (Orthopedics)',
@@ -159,6 +164,7 @@ export const doctors: Doctor[] = [
     slug: 'dr-neha-bansal',
     name: 'Dr. Neha Bansal',
     title: 'Consultant Pediatrician',
+    email: 'dr.neha.bansal@mjhospital.in',
     specialty: 'Pediatrics',
     department: 'Pediatrics',
     qualification: 'MBBS, MD (Pediatrics)',
@@ -187,6 +193,7 @@ export const doctors: Doctor[] = [
     slug: 'dr-vikas-rana',
     name: 'Dr. Vikas Rana',
     title: 'Emergency Medicine Specialist',
+    email: 'dr.vikas.rana@mjhospital.in',
     specialty: 'Emergency Medicine',
     department: 'Emergency Medicine',
     qualification: 'MBBS, MD (Emergency Medicine)',
@@ -215,6 +222,7 @@ export const doctors: Doctor[] = [
     slug: 'dr-rajesh-khatri',
     name: 'Dr. Rajesh Khatri',
     title: 'ENT & Head-Neck Surgeon',
+    email: 'dr.rajesh.khatri@mjhospital.in',
     specialty: 'ENT',
     department: 'ENT',
     qualification: 'MBBS, MS (ENT)',
@@ -243,6 +251,7 @@ export const doctors: Doctor[] = [
     slug: 'dr-pooja-agnihotri',
     name: 'Dr. Pooja Agnihotri',
     title: 'Consultant Dermatologist',
+    email: 'dr.pooja.agnihotri@mjhospital.in',
     specialty: 'Dermatology',
     department: 'Dermatology',
     qualification: 'MBBS, MD (Dermatology)',

@@ -1,4 +1,6 @@
-import { createAppointment } from '../../lib/server/store'
+import { createAppointment, getCollection } from '../../lib/server/store'
+import type { Doctor } from '../../data/doctors'
+import { notifyAdminAppointment, notifyDoctorAppointment, sendAppointmentRequestedToPatient } from '../../lib/server/notifications'
 
 export const prerender = false
 
@@ -31,7 +33,17 @@ export const POST: APIRoute = async ({ request }) => {
   if (!doctor && !service) return json({ ok: false, error: 'Please choose a doctor or department.' }, 422)
   if (!isDate(str(data.date))) return json({ ok: false, error: 'Please choose a valid date.' }, 422)
   if (!str(data.time)) return json({ ok: false, error: 'Please choose a time slot.' }, 422)
+  if (str(data.email) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(str(data.email))) {
+    return json({ ok: false, error: 'Please enter a valid email address.' }, 422)
+  }
 
   const record = createAppointment(data)
+  const matchedDoctor = record.doctor ? getCollection<Doctor>('doctors').find((d) => d.slug === record.doctor) : undefined
+
+  Promise.allSettled([
+    sendAppointmentRequestedToPatient(record),
+    notifyDoctorAppointment(record, matchedDoctor),
+    notifyAdminAppointment(record),
+  ])
   return json({ ok: true, id: record.id, message: 'Appointment request received. We will confirm by phone.' }, 201)
 }

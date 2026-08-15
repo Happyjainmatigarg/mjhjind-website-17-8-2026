@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro'
-import { ADMIN_COLLECTIONS, deleteItem, getItemById, updateItem, type StoreCollection } from '../../../../lib/server/store'
+import { ADMIN_COLLECTIONS, deleteItem, getItemById, updateItem, type AppointmentRecord, type StoreCollection } from '../../../../lib/server/store'
 import { requireAdmin } from '../../../../lib/server/admin'
+import { sendAppointmentStatusToPatient } from '../../../../lib/server/notifications'
 
 export const prerender = false
 
@@ -34,8 +35,13 @@ export const PUT: APIRoute = async ({ params, request }) => {
   } catch {
     return json({ ok: false, error: 'Invalid JSON body.' }, 400)
   }
+  const prev = getItemById<Record<string, unknown>>(collection, id)
   const item = updateItem(collection, id, data)
   if (!item) return json({ ok: false, error: 'Item not found.' }, 404)
+  if (collection === 'appointments' && prev && prev.status !== item.status) {
+    const record = item as unknown as AppointmentRecord
+    Promise.resolve(sendAppointmentStatusToPatient(record)).catch(() => {})
+  }
   return json({ ok: true, item })
 }
 

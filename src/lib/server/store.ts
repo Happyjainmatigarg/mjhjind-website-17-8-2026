@@ -24,6 +24,7 @@ export interface AppointmentRecord {
   time: string
   patientName: string
   phone: string
+  email: string
   age: number
   gender: string
   symptoms: string
@@ -200,6 +201,7 @@ const SLUG_COLLECTIONS: StoreCollection[] = ['doctors', 'blogPosts', 'camps', 's
 const DEFAULTS: Partial<Record<StoreCollection, Record<string, unknown>>> = {
   doctors: {
     title: '',
+    email: '',
     specialty: '',
     department: 'General Medicine',
     qualification: '',
@@ -256,7 +258,7 @@ const DEFAULTS: Partial<Record<StoreCollection, Record<string, unknown>>> = {
   faqs: { category: 'General' },
   gallery: { caption: '' },
   testimonials: { rating: 5 },
-  appointments: { status: 'pending', gender: 'Other', mode: 'opd', firstVisit: 'no' },
+  appointments: { status: 'pending', gender: 'Other', mode: 'opd', firstVisit: 'no', email: '' },
   campRegistrations: { gender: 'Other', conditions: [], notes: '' },
 }
 
@@ -327,6 +329,7 @@ export function createAppointment(data: Record<string, unknown>): AppointmentRec
     time: sanitize(data.time),
     patientName: sanitize(data.patientName),
     phone: sanitize(data.phone),
+    email: sanitize(data.email).toLowerCase(),
     age: Number(data.age) || 0,
     gender: sanitize(data.gender) || 'Other',
     symptoms: sanitize(data.symptoms),

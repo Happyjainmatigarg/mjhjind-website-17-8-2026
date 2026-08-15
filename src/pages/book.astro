@@ -144,6 +144,14 @@ const timeSlots = [
                 <p class="error-text hidden" data-error="phone"></p>
               </div>
               <div>
+                <label class="label" for="bk-email">Email (optional)</label>
+                <input type="email" id="bk-email" name="email" class="input" placeholder="you@example.com" autocomplete="email" />
+                <p class="error-text hidden" data-error="email"></p>
+              </div>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div>
                 <label class="label" for="bk-age">Age *</label>
                 <input type="number" id="bk-age" name="age" class="input" placeholder="e.g. 42" min="1" max="120" inputmode="numeric" required />
                 <p class="error-text hidden" data-error="age"></p>
@@ -233,6 +241,7 @@ const timeSlots = [
             <tr><td>Booking ID</td><td><strong id="r-id"></strong></td></tr>
             <tr><td>Patient Name</td><td id="r-name"></td></tr>
             <tr><td>Phone</td><td id="r-phone"></td></tr>
+            <tr><td>Email</td><td id="r-email"></td></tr>
             <tr><td>Doctor / Service</td><td id="r-doctor"></td></tr>
             <tr><td>Appointment Date</td><td id="r-date"></td></tr>
             <tr><td>Time Slot</td><td id="r-time"></td></tr>
@@ -262,6 +271,7 @@ const timeSlots = [
     const fields = {
       patientName: form.querySelector<HTMLInputElement>('#bk-name')!,
       phone: form.querySelector<HTMLInputElement>('#bk-phone')!,
+      email: form.querySelector<HTMLInputElement>('#bk-email')!,
       age: form.querySelector<HTMLInputElement>('#bk-age')!,
       consent: form.querySelector<HTMLInputElement>('#bk-consent')!,
     }
@@ -307,7 +317,7 @@ const timeSlots = [
     preselect(doctorSel, params.get('doctor'))
     preselect(serviceSel, params.get('service'))
 
-    ;['patientName', 'phone', 'age'].forEach((n) => {
+    ;['patientName', 'phone', 'email', 'age'].forEach((n) => {
       fields[n as keyof typeof fields].addEventListener('input', () => clearError(n))
     })
     doctorSel.addEventListener('change', () => { if (doctorSel.value) { serviceSel.value = ''; clearSelError('doctor') } })
@@ -384,6 +394,9 @@ const timeSlots = [
       const phone = fields.phone.value.trim()
       if (!/^[6-9]\d{9}$/.test(phone)) { setError('phone', 'Please enter a valid 10-digit Indian mobile number.'); valid = false }
       else clearError('phone')
+      const email = fields.email.value.trim()
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('email', 'Please enter a valid email address.'); valid = false }
+      else clearError('email')
       const age = parseInt(fields.age.value, 10)
       if (!fields.age.value || isNaN(age) || age < 1 || age > 120) { setError('age', 'Please enter a valid age (1–120).'); valid = false }
       else clearError('age')
@@ -437,6 +450,7 @@ const timeSlots = [
         setR('r-id', id)
         setR('r-name', fields.patientName.value.trim())
         setR('r-phone', fields.phone.value.trim())
+        setR('r-email', fields.email.value.trim() || '—')
         setR('r-doctor', doctorLabel || serviceLabel || 'General OPD')
         setR('r-date', date)
         setR('r-time', slot)

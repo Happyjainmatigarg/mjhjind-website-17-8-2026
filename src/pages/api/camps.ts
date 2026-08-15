@@ -1,4 +1,5 @@
 import { createCampRegistration } from '../../lib/server/store'
+import { notifyAdminCampRegistration, sendCampRegistrationToPatient } from '../../lib/server/notifications'
 
 export const prerender = false
 
@@ -33,5 +34,6 @@ export const POST: APIRoute = async ({ request }) => {
   if (!str(data.campSlug)) return json({ ok: false, error: 'Missing camp reference.' }, 422)
 
   const record = createCampRegistration(data)
+  Promise.allSettled([sendCampRegistrationToPatient(record), notifyAdminCampRegistration(record)])
   return json({ ok: true, id: record.id, message: 'Camp registration received. See you there!' }, 201)
 }

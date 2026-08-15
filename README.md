@@ -28,6 +28,7 @@ The public website for **Meenakshi Jain Hospital**, Circular Road, Near Bus Stan
 
 - **10+ public pages**: Home, About, Doctors, Departments/Services, Health Camps, Blog, FAQ, Gallery, Book Appointment, Contact, Emergency, Legal pages (Privacy/Terms/Disclaimer).
 - **Appointment booking** with validation, an auto-generated booking ID (e.g. `MJ-F9LX-R4R2`), and a **printable receipt**.
+- **Email notifications via Gmail SMTP** — automatic confirmation/status emails to **patients**, notification emails to **doctors** and **admins** for appointments, camp registrations, contact messages and newsletter subscriptions (see [Email Notifications](#email-notifications)).
 - **Health camp registrations**, **contact form**, and **newsletter subscription** (all stored in the admin panel).
 - **Built-in admin panel** (`/admin`) — edit every doctor, blog post, health camp, service, FAQ, gallery item, testimonial, and view/manage appointments & form submissions.
 - **Dynamic content**: all content is stored in a JSON store and served server-side, so edits made in the admin panel appear on the site immediately (no rebuild needed).
@@ -46,7 +47,8 @@ The public website for **Meenakshi Jain Hospital**, Circular Road, Near Bus Stan
 | Language   | TypeScript                                   |
 | Data store | JSON file (`data/store.json`) — zero database |
 | Auth       | scrypt password hash + Bearer session tokens  |
-| Hosting    | Any Node.js server (see [Deployment](#deployment-production)) |
+| Email      | Nodemailer → Gmail SMTP (optional)           |
+| Hosting    | **Node.js server** (see [Deployment](#deployment-production)) |
 
 ---
 
@@ -237,9 +239,55 @@ curl https://your-domain/api/admin/stats \
 
 ---
 
+## Email Notifications (Gmail SMTP)
+
+The site can send automatic emails through **Gmail SMTP** using Nodemailer. Emails are sent only when SMTP credentials are configured (via environment variables); otherwise the app continues to work silently without email.
+
+### Setup
+
+1. On the sending Gmail account, enable **2-Step Verification**, then create an **App Password** at <https://myaccount.google.com/apppasswords> (16 characters, no spaces).
+2. Set these environment variables (see [Environment Variables](#environment-variables)):
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-hospital@gmail.com
+SMTP_PASS=your-16-char-app-password
+ADMIN_NOTIFY_EMAILS=admin@mjhospital.in,reception@mjhospital.in
+SITE_URL=https://mjhospital.in
+```
+
+3. Restart the server. Emails are now enabled.
+
+### What gets sent
+
+| Event | Recipients | Subject example |
+|-------|-----------|-----------------|
+| Appointment requested | Patient | `Appointment request received — MJ-F9LX-R4R2` |
+| Appointment requested | Doctor (matched) | `New appointment request for you — MJ-F9LX-R4R2` |
+| Appointment requested | Admin(s) | `New appointment request — MJ-F9LX-R4R2` |
+| Appointment status changed (confirmed/completed/cancelled) | Patient | `Appointment confirmed — MJ-F9LX-R4R2` |
+| Health camp registration | Patient | `Camp registration confirmed — Free Eye Camp` |
+| Health camp registration | Admin(s) | `New camp registration — Free Eye Camp` |
+| Contact form message | Admin(s) | `New contact message — Ramesh Kumar` |
+| Newsletter subscription | Subscriber | `Welcome to Meenakshi Jain Hospital health updates` |
+| Newsletter subscription | Admin(s) | `New newsletter subscriber — user@example.com` |
+
+### Notes
+
+- Patient and camp emails require an email address on the booking/registration form (the booking form's email field is optional).
+- Doctor notifications go to the `email` field on each doctor profile (editable in the admin panel under **Doctors**).
+- Admin notifications go to `ADMIN_NOTIFY_EMAILS` (comma-separated).
+- Email failures are logged and never block the API response.
+
+---
+
 ## Deployment (Production)
 
 The site builds to a **Node.js standalone server** (`@astrojs/node`, `mode: 'standalone'`). Everything — public pages, admin panel, and API — runs from a single Node process.
+
+> **Important:** This app requires a **Node.js runtime with a persistent filesystem**. It uses a JSON file store (`data/store.json`) and `node:fs`. It will **not** work on Cloudflare Workers/Pages, Vercel serverless, Netlify Functions, or other stateless/serverless runtimes — those return HTTP 500 on any page that reads data. Deploy to a Node host (VPS, Railway, Render, Fly.io, DigitalOcean App Platform) and mount a persistent disk for the `data/` directory.
 
 ### Option 1 — Node.js host (VPS, Railway, Render, Fly.io, DigitalOcean App Platform)
 
@@ -301,12 +349,20 @@ The public pages can be exported as static HTML, but the **admin panel and all f
 
 ## Environment Variables
 
-| Variable         | Required | Default       | Description |
-|------------------|----------|---------------|-------------|
-| `ADMIN_USERNAME` | No       | `admin`       | Admin panel username |
+| Variable | Required | Default       | Description |
+|----------|----------|---------------|-------------|
+| `ADMIN_USERNAME` | No | `admin` | Admin panel username |
 | `ADMIN_PASSWORD` | **Yes for production** | `mjadmin2024` | Admin panel password. **Change this before going live.** |
-| `HOST`           | No       | `0.0.0.0`     | Server bind host |
-| `PORT`           | No       | `4321`        | Server port |
+| `SMTP_HOST` | No | `smtp.gmail.com` | SMTP server host |
+| `SMTP_PORT` | No | `587` | SMTP server port |
+| `SMTP_SECURE` | No | `false` | Use TLS (`true` for port 465) |
+| `SMTP_USER` | No | — | Gmail address used to send mail |
+| `SMTP_PASS` | No | — | Gmail **App Password** (enable 2-Step Verification → myaccount.google.com/apppasswords) |
+| `MAIL_FROM` | No | `SMTP_USER` | "From" address shown on outgoing mail |
+| `ADMIN_NOTIFY_EMAILS` | No | — | Comma-separated emails that receive admin notifications (appointments, camps, contacts, newsletter) |
+| `SITE_URL` | No | `https://mjhospital.in` | Public site URL used for links in emails |
+| `HOST` | No | `0.0.0.0` | Server bind host |
+| `PORT` | No | `4321` | Server port |
 
 Copy `.env.example` to `.env` to configure locally. On a host platform, use its built-in environment settings.
 

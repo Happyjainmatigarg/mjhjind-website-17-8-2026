@@ -1,4 +1,5 @@
 import { createNewsletter } from '../../lib/server/store'
+import { notifyAdminNewsletter, sendNewsletterWelcomeToSubscriber } from '../../lib/server/notifications'
 
 export const prerender = false
 
@@ -23,5 +24,6 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   createNewsletter({ email })
+  Promise.allSettled([sendNewsletterWelcomeToSubscriber(email), notifyAdminNewsletter(email)])
   return json({ ok: true, message: 'Subscribed! Thank you for joining our health updates.' }, 201)
 }
