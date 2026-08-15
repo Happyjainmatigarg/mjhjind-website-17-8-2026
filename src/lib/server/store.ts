@@ -1,5 +1,12 @@
-import fs from 'node:fs'
-import path from 'node:path'
+/*
+  Storage adapter for server-side data.
+  - In Node (local dev) this uses the filesystem (data/store.json).
+  - In Cloudflare Workers (or other serverless runtimes without Node built-ins)
+    it falls back to an in-memory store (non-persistent) to avoid runtime errors.
+
+  This prevents the worker from throwing 500s when node:fs or node:path are not available.
+*/
+
 import { slugify } from '../utils'
 import type { Doctor } from '../../data/doctors'
 import { doctors } from '../../data/doctors'
@@ -15,6 +22,23 @@ import type { GalleryItem } from '../../data/gallery'
 import { gallery } from '../../data/gallery'
 import type { Testimonial } from '../../data/testimonials'
 import { testimonials } from '../../data/testimonials'
+
+// Try to obtain Node built-ins at runtime only if available.
+let canUseFs = false as boolean
+let nodeFs: typeof import('fs') | undefined
+let nodePath: typeof import('path') | undefined
+try {
+  // Use a dynamic require trick to avoid static ESM imports so bundlers targeting Workers
+  // won't automatically externalize node built-ins and cause runtime failures.
+  // This will succeed in Node.js (local dev) and fail silently in Workers.
+  // eslint-disable-next-line no-new-func
+  const _req: any = Function('return require')()
+  nodeFs = _req('fs')
+  nodePath = _req('path')
+  canUseFs = !!nodeFs && !!nodePath
+} catch (e) {
+  canUseFs = false
+}
 
 export interface AppointmentRecord {
   id: string
@@ -116,8 +140,13 @@ interface StoreShape {
   newsletter: NewsletterRecord[]
 }
 
-const dataDir = path.resolve(process.cwd(), 'data')
-const storeFile = path.join(dataDir, 'store.json')
+// When fs is available, use real file paths. Otherwise, fall back to in-memory store.
+let dataDir = ''
+let storeFile = ''
+if (canUseFs && nodePath) {
+  dataDir = nodePath.resolve(process.cwd(), 'data')
+  storeFile = nodePath.join(dataDir, 'store.json')
+}
 
 function seedContent(): Omit<StoreShape, 'appointments' | 'campRegistrations' | 'contacts' | 'newsletter'> {
   return {
@@ -142,46 +171,64 @@ function emptyStore(): StoreShape {
   }
 }
 
+// In-memory fallback for runtimes without fs (non-persistent)
+let MEMORY_STORE: StoreShape | null = null
+
 function ensureStore(): void {
-  if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
-  if (!fs.existsSync(storeFile)) {
-    fs.writeFileSync(storeFile, JSON.stringify({ ...emptyStore(), _contentSeeded: false }, null, 2))
+  if (canUseFs && nodeFs && nodePath) {
+    if (!nodeFs.existsSync(dataDir)) nodeFs.mkdirSync(dataDir, { recursive: true })
+    if (!nodeFs.existsSync(storeFile)) {
+      nodeFs.writeFileSync(storeFile, JSON.stringify({ ...emptyStore(), _contentSeeded: false }, null, 2))
+    }
+  } else {
+    if (!MEMORY_STORE) MEMORY_STORE = { ...emptyStore(), _contentSeeded: false }
   }
 }
 
 function readStore(): StoreShape {
-  ensureStore()
-  try {
-    const raw = fs.readFileSync(storeFile, 'utf-8')
-    const data = JSON.parse(raw)
-    const seed = seedContent()
-    const store: StoreShape = {
-      _contentSeeded: data._contentSeeded === true,
-      doctors: data.doctors ?? seed.doctors,
-      blogPosts: data.blogPosts ?? seed.blogPosts,
-      camps: data.camps ?? seed.camps,
-      services: data.services ?? seed.services,
-      faqs: data.faqs ?? seed.faqs,
-      gallery: data.gallery ?? seed.gallery,
-      testimonials: data.testimonials ?? seed.testimonials,
-      appointments: data.appointments ?? [],
-      campRegistrations: data.campRegistrations ?? [],
-      contacts: data.contacts ?? [],
-      newsletter: data.newsletter ?? [],
+  if (canUseFs && nodeFs && nodePath) {
+    ensureStore()
+    try {
+      const raw = nodeFs.readFileSync(storeFile, 'utf-8')
+      const data = JSON.parse(raw)
+      const seed = seedContent()
+      const store: StoreShape = {
+        _contentSeeded: data._contentSeeded === true,
+        doctors: data.doctors ?? seed.doctors,
+        blogPosts: data.blogPosts ?? seed.blogPosts,
+        camps: data.camps ?? seed.camps,
+        services: data.services ?? seed.services,
+        faqs: data.faqs ?? seed.faqs,
+        gallery: data.gallery ?? seed.gallery,
+        testimonials: data.testimonials ?? seed.testimonials,
+        appointments: data.appointments ?? [],
+        campRegistrations: data.campRegistrations ?? [],
+        contacts: data.contacts ?? [],
+        newsletter: data.newsletter ?? [],
+      }
+      if (!store._contentSeeded) {
+        store._contentSeeded = true
+        writeStore(store)
+      }
+      return store
+    } catch {
+      return emptyStore()
     }
-    if (!store._contentSeeded) {
-      store._contentSeeded = true
-      writeStore(store)
-    }
-    return store
-  } catch {
-    return emptyStore()
+  } else {
+    // Worker / serverless environment: use in-memory store (non-persistent)
+    if (!MEMORY_STORE) MEMORY_STORE = emptyStore()
+    return MEMORY_STORE
   }
 }
 
 function writeStore(store: StoreShape): void {
-  ensureStore()
-  fs.writeFileSync(storeFile, JSON.stringify(store, null, 2))
+  if (canUseFs && nodeFs && nodePath) {
+    ensureStore()
+    nodeFs.writeFileSync(storeFile, JSON.stringify(store, null, 2))
+  } else {
+    // update in-memory store
+    MEMORY_STORE = store
+  }
 }
 
 function uid(prefix: string): string {
