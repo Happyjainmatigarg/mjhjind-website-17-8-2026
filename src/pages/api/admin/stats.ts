@@ -12,7 +12,7 @@ function json(body: unknown, status = 200) {
 }
 
 export const GET: APIRoute = async ({ request }) => {
-  if (!requireAdmin(request)) return json({ ok: false, error: 'Unauthorized.' }, 401)
+  if (!(await requireAdmin(request))) return json({ ok: false, error: 'Unauthorized.' }, 401)
   const counts: Record<string, number> = {}
   for (const key of ADMIN_COLLECTIONS) {
     counts[key] = getCollection(key as StoreCollection).length

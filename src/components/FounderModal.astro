@@ -1,0 +1,30 @@
+---
+const message = `At Meenakshi Jain Hospital, our greatest reward is the quiet smile of a patient who walked in worried and walked out with hope. For 25 years, we've lived by one promise — "Healing with Compassion" — building a legacy that defines quality healthcare for the people of Jind.\n\n— Dr. Anil Jain & Dr. Meenakshi Jain`
+---
+
+<div id="founder-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 px-4">
+  <div class="max-w-2xl rounded bg-white p-6 shadow-lg">
+    <h3 class="text-2xl font-bold mb-3">Founder's Message</h3>
+    <p class="text-sm leading-relaxed whitespace-pre-line">{message}</p>
+    <div class="mt-6 text-right">
+      <button id="founder-dismiss" class="btn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const modal = document.getElementById('founder-modal')
+  const btn = document.getElementById('founder-dismiss')
+  try {
+    if (!localStorage.getItem('founderMessageDismissed')) {
+      modal.classList.remove('hidden')
+      modal.classList.add('flex')
+    }
+    btn?.addEventListener('click', () => {
+      localStorage.setItem('founderMessageDismissed', '1')
+      modal.classList.add('hidden')
+    })
+  } catch (e) {
+    // ignore storage errors
+  }
+</script>

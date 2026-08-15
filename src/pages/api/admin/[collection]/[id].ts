@@ -17,7 +17,7 @@ function isCollection(value: string): value is StoreCollection {
 }
 
 export const GET: APIRoute = async ({ params, request }) => {
-  if (!requireAdmin(request)) return json({ ok: false, error: 'Unauthorized.' }, 401)
+  if (!(await requireAdmin(request))) return json({ ok: false, error: 'Unauthorized.' }, 401)
   const { collection, id } = params
   if (!collection || !isCollection(collection) || !id) return json({ ok: false, error: 'Unknown collection.' }, 404)
   const item = getItemById(collection, id)
@@ -26,7 +26,7 @@ export const GET: APIRoute = async ({ params, request }) => {
 }
 
 export const PUT: APIRoute = async ({ params, request }) => {
-  if (!requireAdmin(request)) return json({ ok: false, error: 'Unauthorized.' }, 401)
+  if (!(await requireAdmin(request))) return json({ ok: false, error: 'Unauthorized.' }, 401)
   const { collection, id } = params
   if (!collection || !isCollection(collection) || !id) return json({ ok: false, error: 'Unknown collection.' }, 404)
   let data: Record<string, unknown>
@@ -46,7 +46,7 @@ export const PUT: APIRoute = async ({ params, request }) => {
 }
 
 export const DELETE: APIRoute = async ({ params, request }) => {
-  if (!requireAdmin(request)) return json({ ok: false, error: 'Unauthorized.' }, 401)
+  if (!(await requireAdmin(request))) return json({ ok: false, error: 'Unauthorized.' }, 401)
   const { collection, id } = params
   if (!collection || !isCollection(collection) || !id) return json({ ok: false, error: 'Unknown collection.' }, 404)
   const removed = deleteItem(collection, id)
