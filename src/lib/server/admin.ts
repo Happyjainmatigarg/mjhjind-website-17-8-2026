@@ -1,5 +1,5 @@
-import crypto from 'node:crypto'
 import { getDefaultStorage, type Storage } from './storage'
+import { randomHex, hashPassword, timingSafeEqualHex } from '../crypto'
 
 const storage: Storage = getDefaultStorage()
 
@@ -22,8 +22,8 @@ async function ensureAdmin(): Promise<AdminConfig> {
   if (cfg && cfg.username && cfg.passwordHash && cfg.salt) return cfg
   const username = process.env.ADMIN_USERNAME || 'admin'
   const password = process.env.ADMIN_PASSWORD || 'mjadmin2024'
-  const salt = crypto.randomBytes(16).toString('hex')
-  const passwordHash = hashPassword(password, salt)
+  const salt = await randomHex(16)
+  const passwordHash = await hashPassword(password, salt)
   const config: AdminConfig = { username, passwordHash, salt }
   await storage.writeAdmin(config)
   if (!process.env.ADMIN_PASSWORD) {
@@ -35,10 +35,6 @@ async function ensureAdmin(): Promise<AdminConfig> {
     }
   }
   return config
-}
-
-function hashPassword(password: string, salt: string): string {
-  return crypto.scryptSync(password, salt, 64).toString('hex')
 }
 
 async function readSessions(): Promise<Session[]> {
@@ -59,11 +55,9 @@ export async function verifyLogin(username: string, password: string): Promise<{
   const user = String(username || '').trim()
   const pass = String(password || '')
   if (user !== config.username) return null
-  const hash = hashPassword(pass, config.salt)
-  const expected = Buffer.from(config.passwordHash, 'hex')
-  const actual = Buffer.from(hash, 'hex')
-  if (expected.length !== actual.length || !crypto.timingSafeEqual(expected, actual)) return null
-  const token = crypto.randomBytes(24).toString('hex')
+  const hash = await hashPassword(pass, config.salt)
+  if (!timingSafeEqualHex(config.passwordHash, hash)) return null
+  const token = await randomHex(24)
   const sessions = pruneExpired(await readSessions())
   sessions.push({ token, username: user, createdAt: Date.now() })
   await writeSessions(sessions)
