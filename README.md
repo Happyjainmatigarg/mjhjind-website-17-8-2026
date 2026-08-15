@@ -1,6 +1,6 @@
 # Meenakshi Jain Hospital — Official Website
 
-The public website for **Meenakshi Jain Hospital**, Circular Road, Near Bus Stand, Jind, Haryana 126102 — built with **Astro 5** + **Tailwind CSS**, featuring a built-in admin content-management backend and appointment booking with a printable receipt.
+The public website for **Meenakshi Jain Hospital**, Circular Road, Near Bus Stand, Jind, Haryana 126102 — built with **Astro 5** + **Tailwind CSS**, featuring a built-in admin content-management [...] 
 
 > Live site domains: `https://mjhospital.in` / `https://mj.hospital`
 
@@ -28,7 +28,7 @@ The public website for **Meenakshi Jain Hospital**, Circular Road, Near Bus Stan
 
 - **10+ public pages**: Home, About, Doctors, Departments/Services, Health Camps, Blog, FAQ, Gallery, Book Appointment, Contact, Emergency, Legal pages (Privacy/Terms/Disclaimer).
 - **Appointment booking** with validation, an auto-generated booking ID (e.g. `MJ-F9LX-R4R2`), and a **printable receipt**.
-- **Email notifications via Gmail SMTP** — automatic confirmation/status emails to **patients**, notification emails to **doctors** and **admins** for appointments, camp registrations, contact messages and newsletter subscriptions (see [Email Notifications](#email-notifications)).
+- **Email notifications via Gmail SMTP** — automatic confirmation/status emails to **patients**, notification emails to **doctors** and **admins** for appointments, camp registrations, contact m[...]
 - **Health camp registrations**, **contact form**, and **newsletter subscription** (all stored in the admin panel).
 - **Built-in admin panel** (`/admin`) — edit every doctor, blog post, health camp, service, FAQ, gallery item, testimonial, and view/manage appointments & form submissions.
 - **Dynamic content**: all content is stored in a JSON store and served server-side, so edits made in the admin panel appear on the site immediately (no rebuild needed).
@@ -84,7 +84,7 @@ npm run preview
 # Serves on http://localhost:4321 (hosts on 0.0.0.0 in a container)
 ```
 
-The server listens on all interfaces and supports the `*.monkeycode-ai.live` host for preview environments.
+The server listens on all interfaces.
 
 ---
 
@@ -164,7 +164,7 @@ There is **no visible login link in the public site navigation** by design — g
 | Username | `admin`          |
 | Password | `mjadmin2024`    |
 
-> **IMPORTANT:** Change these before going live by setting `ADMIN_USERNAME` / `ADMIN_PASSWORD` environment variables (or deleting `data/admin.json` after setting them). See [Environment Variables](#environment-variables).
+> **IMPORTANT:** Change these before going live by setting `ADMIN_USERNAME` / `ADMIN_PASSWORD` environment variables (or deleting `data/admin.json` after setting them). See [Environment Variables[...]
 
 ### What can you manage?
 
@@ -186,7 +186,7 @@ Every content collection supports **search**, **create**, **edit**, and **delete
 
 ### How admin edits reach the live site
 
-Content pages render from `data/store.json` at request time (server-side rendering, `prerender = false`). When you save a change in the admin panel, the JSON store is updated immediately — refresh the public page to see the change. **No rebuild or redeploy is required.**
+Content pages render from `data/store.json` at request time (server-side rendering, `prerender = false`). When you save a change in the admin panel, the JSON store is updated immediately — refr[...]
 
 ---
 
@@ -194,12 +194,11 @@ Content pages render from `data/store.json` at request time (server-side renderi
 
 All data lives in `data/` (auto-created on first run):
 
-- **`data/store.json`** — the single source of truth. Contains `doctors`, `blogPosts`, `camps`, `services`, `faqs`, `gallery`, `testimonials`, `appointments`, `campRegistrations`, `contacts`, `newsletter`.
+- **`data/store.json`** — the single source of truth. Contains `doctors`, `blogPosts`, `camps`, `services`, `faqs`, `gallery`, `testimonials`, `appointments`, `campRegistrations`, `contacts`, `[...]
 - On **first run**, the store is seeded from `src/data/*.ts` (the bundled defaults listed above).
 - The `data/` directory is **gitignored**, so runtime content (appointments, admin changes) is never committed to the repository.
 - **Persistence across restarts:** keep `data/` mounted on persistent disk in production (see deployment). It is a plain JSON file — back it up with normal file backups.
-
-> Deployment note: In serverless/stateless hosting, the JSON store is not persistent. For a multi-instance or serverless setup, switch the store to a database (see [Security & Scale Notes](#security-notes)).
+- **Deployment note:** In serverless/stateless hosting, the JSON store is not persistent. For a multi-instance or serverless setup, switch the store to a database (see [Security & Scale Notes](#secur[...]
 
 ---
 
@@ -241,27 +240,6 @@ curl https://your-domain/api/admin/stats \
 
 ## Email Notifications (Gmail SMTP)
 
-The site can send automatic emails through **Gmail SMTP** using Nodemailer. Emails are sent only when SMTP credentials are configured (via environment variables); otherwise the app continues to work silently without email.
-
-### Setup
-
-1. On the sending Gmail account, enable **2-Step Verification**, then create an **App Password** at <https://myaccount.google.com/apppasswords> (16 characters, no spaces).
-2. Set these environment variables (see [Environment Variables](#environment-variables)):
-
-```env
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_SECURE=false
-SMTP_USER=your-hospital@gmail.com
-SMTP_PASS=your-16-char-app-password
-ADMIN_NOTIFY_EMAILS=admin@mjhospital.in,reception@mjhospital.in
-SITE_URL=https://mjhospital.in
-```
-
-3. Restart the server. Emails are now enabled.
-
-### What gets sent
-
 | Event | Recipients | Subject example |
 |-------|-----------|-----------------|
 | Appointment requested | Patient | `Appointment request received — MJ-F9LX-R4R2` |
@@ -273,13 +251,6 @@ SITE_URL=https://mjhospital.in
 | Contact form message | Admin(s) | `New contact message — Ramesh Kumar` |
 | Newsletter subscription | Subscriber | `Welcome to Meenakshi Jain Hospital health updates` |
 | Newsletter subscription | Admin(s) | `New newsletter subscriber — user@example.com` |
-
-### Notes
-
-- Patient and camp emails require an email address on the booking/registration form (the booking form's email field is optional).
-- Doctor notifications go to the `email` field on each doctor profile (editable in the admin panel under **Doctors**).
-- Admin notifications go to `ADMIN_NOTIFY_EMAILS` (comma-separated).
-- Email failures are logged and never block the API response.
 
 ---
 
@@ -335,7 +306,7 @@ docker run -p 4321:4321 -v mj_data:/app/data mj-hospital
 
 ### Option 3 — Static hosting (limited)
 
-The public pages can be exported as static HTML, but the **admin panel and all forms/APIs will not work** on a purely static host (Netlify Pages, GitHub Pages, S3). For those features you need the Node runtime in Option 1 or 2.
+The public pages can be exported as static HTML, but the **admin panel and all forms/APIs will not work** on a purely static host (Netlify Pages, GitHub Pages, S3). For those features you need th[...]
 
 ### Deployment checklist
 
