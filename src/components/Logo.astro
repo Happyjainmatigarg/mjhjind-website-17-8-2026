@@ -8,13 +8,11 @@ const { class: className = '', light = false } = Astro.props
 
 <a href="/" class:list={['inline-flex items-center gap-3', className]} aria-label="Meenakshi Jain Hospital — Home">
   <span class:list={[
-    'relative flex h-11 w-11 items-center justify-center rounded-md shadow-card-md transition-transform hover:scale-105',
+    'relative flex h-11 w-11 items-center justify-center rounded-md shadow-card-md transition-transform hover:scale-105 overflow-hidden',
     light ? 'bg-white' : 'bg-brand-800',
   ]}>
-    <svg viewBox="0 0 40 40" class="h-7 w-7" aria-hidden="true">
-      <path d="M20 8v24M8 20h24" stroke={light ? '#1E40AF' : '#ffffff'} stroke-width="5" stroke-linecap="round" />
-      <path d="M28 8v4M26 10h4" stroke="#10B981" stroke-width="3" stroke-linecap="round" />
-    </svg>
+    <!-- Primary logo image (place public/logo.png) -->
+    <img src="/logo.png" alt="Meenakshi Jain Hospital logo" class="h-11 w-11 object-cover" />
   </span>
   <span class="leading-tight">
     <span class:list={['block text-lg font-bold tracking-tight', light ? 'text-white' : 'text-ink dark:text-night-text']}>
