@@ -1,3 +1,4 @@
+import type { APIRoute } from 'astro'
 import { createNewsletter } from '../../lib/server/store'
 import { notifyAdminNewsletter, sendNewsletterWelcomeToSubscriber } from '../../lib/server/notifications'
 

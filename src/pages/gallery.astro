@@ -82,12 +82,12 @@ const galleryCategories = Array.from(new Set(gallery.map((g) => g.category).filt
 </Layout>
 
 <script>
-  const items = Array.from(document.querySelectorAll('#gallery-grid > button'))
-  const filterBtns = Array.from(document.querySelectorAll('#gallery-filters [data-cat]'))
-  const lightbox = document.getElementById('lightbox')
-  const lbImage = document.getElementById('lightbox-image')
-  const lbTitle = document.getElementById('lightbox-title')
-  const lbCaption = document.getElementById('lightbox-caption')
+  const items = Array.from(document.querySelectorAll<HTMLElement>('#gallery-grid > button'))
+  const filterBtns = Array.from(document.querySelectorAll<HTMLElement>('#gallery-filters [data-cat]'))
+  const lightbox = document.getElementById('lightbox')!
+  const lbImage = document.getElementById('lightbox-image')!
+  const lbTitle = document.getElementById('lightbox-title')!
+  const lbCaption = document.getElementById('lightbox-caption')!
   let currentIndex = 0
 
   function applyFilter(cat: string) {

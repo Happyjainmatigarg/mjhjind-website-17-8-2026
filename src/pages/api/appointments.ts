@@ -1,3 +1,4 @@
+import type { APIRoute } from 'astro'
 import { createAppointment, getCollection } from '../../lib/server/store'
 import type { Doctor } from '../../data/doctors'
 import { notifyAdminAppointment, notifyDoctorAppointment, sendAppointmentRequestedToPatient } from '../../lib/server/notifications'

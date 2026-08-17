@@ -123,7 +123,6 @@ function fieldHtml(field: FieldConfig, value: unknown): string {
 }
 
 let rootEl: HTMLElement | null = null
-let currentConfig: CollectionConfig | null = null
 let currentItems: any[] = []
 let currentQuery = ''
 
@@ -229,7 +228,6 @@ function tableHtml(cfg: CollectionConfig): string {
 function showCollection(name: string): void {
   const cfg = getAdminConfig(name)
   if (!cfg || !rootEl) return
-  currentConfig = cfg
   rootEl.innerHTML = `
     <header class="mb-6 flex flex-wrap items-center justify-between gap-4">
       <div>
@@ -349,7 +347,6 @@ function openEditor(cfg: CollectionConfig, item: Record<string, unknown> | null)
 
 async function showDashboard(): Promise<void> {
   if (!rootEl) return
-  currentConfig = null
   const stats = await api('/api/admin/stats')
   const user = localStorage.getItem(USER_KEY) || 'admin'
   const cards = adminCollections.map((cfg) => `

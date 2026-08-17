@@ -1,6 +1,5 @@
 ---
 import Icon from './Icon.astro'
-import { hospital } from '../data/site'
 import type { HealthCamp } from '../data/camps'
 
 interface Props {
@@ -17,7 +16,7 @@ const remaining = Math.max(camp.capacity - camp.registrations, 0)
     Free registration · {remaining} of {camp.capacity} spots left
   </p>
 
-  <form id="camp-registration-form" class="mt-6 space-y-4" novalidate>
+  <form id="camp-registration-form" class="mt-6 space-y-4" novalidate data-camp-type={camp.type} data-camp-date={camp.date}>
     <input type="hidden" name="campSlug" value={camp.slug} />
     <input type="hidden" name="campTitle" value={camp.title} />
 
@@ -53,7 +52,7 @@ const remaining = Math.max(camp.capacity - camp.registrations, 0)
       <span class="label">Gender</span>
       <div class="flex flex-wrap gap-4">
         {['Female', 'Male', 'Other'].map((g) => (
-          <label class="flex cursor-pointer items-center gap-2 text-sm" key={g}>
+          <label class="flex cursor-pointer items-center gap-2 text-sm">
             <input type="radio" name="gender" value={g} class="h-4 w-4 accent-brand-800" />
             {g}
           </label>
@@ -65,7 +64,7 @@ const remaining = Math.max(camp.capacity - camp.registrations, 0)
       <span class="label">Existing health conditions (optional)</span>
       <div class="flex flex-wrap gap-3">
         {['Diabetes', 'High BP', 'Heart Disease', 'None'].map((c) => (
-          <label class="chip border-gray-300 text-gray-600 hover:border-brand-700 dark:border-night-border dark:text-slate-300" key={c}>
+          <label class="chip border-gray-300 text-gray-600 hover:border-brand-700 dark:border-night-border dark:text-slate-300">
             <input type="checkbox" name="conditions" value={c} class="mr-1.5 h-4 w-4 accent-brand-800" />
             {c}
           </label>
@@ -93,7 +92,7 @@ const remaining = Math.max(camp.capacity - camp.registrations, 0)
   </form>
 </div>
 
-<script define:vars={{ camp }}>
+<script>
   import { showToast } from '../lib/toast'
 
   const form = document.getElementById('camp-registration-form') as HTMLFormElement
@@ -194,7 +193,7 @@ const remaining = Math.max(camp.capacity - camp.registrations, 0)
         })
 
       function showSuccess(id?: string) {
-        const regId = id || 'CAMP-' + camp?.type?.slice(0, 1).toUpperCase() + '-' + (camp?.date || '').slice(2, 4) + '-' + String(Math.floor(100 + Math.random() * 900))
+        const regId = id || 'CAMP-' + (form.dataset.campType || '').slice(0, 1).toUpperCase() + '-' + (form.dataset.campDate || '').slice(2, 4) + '-' + String(Math.floor(100 + Math.random() * 900))
         const summary = document.createElement('div')
         summary.className = 'rounded-md border border-heal-200 bg-heal-50 p-6 text-center dark:border-heal-500/30 dark:bg-heal-500/10'
         summary.innerHTML = `

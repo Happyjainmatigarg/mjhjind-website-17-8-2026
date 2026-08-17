@@ -10,7 +10,7 @@ function json(body: unknown, status = 200) {
   })
 }
 
-export const GET: APIRoute = async ({ request }) => {
+export const GET: APIRoute = async () => {
   const storage = getDefaultStorage()
   const initial = await storage.getRaw('initial_password')
   if (!initial) return json({ ok: false, error: 'No initial password available.' }, 404)

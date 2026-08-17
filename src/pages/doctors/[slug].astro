@@ -15,7 +15,6 @@ const doctors = getCollection<Doctor>('doctors')
 const d = getItemById<Doctor>('doctors', slug || '')
 if (!d) return Astro.redirect('/404')
 const others = doctors.filter((x) => x.slug !== d.slug).slice(0, 4)
-const initials = d.name.replace('Dr. ', '').split(' ').map((p) => p[0]).join('').slice(0, 2)
 
 const doctorSchema = {
   '@context': 'https://schema.org',

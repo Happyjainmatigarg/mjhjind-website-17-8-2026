@@ -37,7 +37,7 @@ const timeSlots = [
       <!-- Stepper -->
       <ol class="mb-10 flex items-center justify-center gap-2 sm:gap-4" aria-label="Booking steps">
         {['Doctor', 'Date & Time', 'Your Details'].map((step, i) => (
-          <li class="flex items-center gap-2 sm:gap-4" key={step}>
+          <li class="flex items-center gap-2 sm:gap-4">
             <div class="flex items-center gap-2">
               <span data-step-dot={i + 1} class="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-semibold text-gray-500 transition-colors dark:bg-night-border dark:text-slate-400">{(i + 1).toString()}</span>
               <span data-step-label={i + 1} class="hidden text-sm font-medium text-gray-400 sm:inline dark:text-slate-500">{step}</span>
@@ -162,7 +162,7 @@ const timeSlots = [
               <span class="label">Patient Gender</span>
               <div class="flex flex-wrap gap-4">
                 {['Female', 'Male', 'Other'].map((g) => (
-                  <label class="flex cursor-pointer items-center gap-2 text-sm" key={g}>
+                  <label class="flex cursor-pointer items-center gap-2 text-sm">
                     <input type="radio" name="gender" value={g} class="h-4 w-4 accent-brand-800" />
                     {g}
                   </label>

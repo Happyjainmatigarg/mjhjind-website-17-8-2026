@@ -1,5 +1,5 @@
-import { emailRow, escapeHtml, hospital, sendMail, siteUrl, type MailMessage } from './mailer'
-import type { AppointmentRecord, CampRegistrationRecord, ContactRecord, NewsletterRecord } from './store'
+import { emailRow, escapeHtml, hospital, sendMail, siteUrl } from './mailer'
+import type { AppointmentRecord, CampRegistrationRecord, ContactRecord } from './store'
 import type { Doctor } from '../../data/doctors'
 
 function formatDate(date: string): string {

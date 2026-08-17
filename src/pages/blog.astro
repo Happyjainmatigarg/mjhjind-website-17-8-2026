@@ -59,10 +59,7 @@ const blogCategories = Array.from(new Set(blogPosts.map((p) => p.category).filte
   </section>
 </Layout>
 
-<script define:vars={{ blogPosts }}>
-  import type { BlogPost } from '../data/blog'
-
-  const posts: BlogPost[] = blogPosts
+<script>
   const search = document.getElementById('blog-search') as HTMLInputElement
   const grid = document.getElementById('blog-grid')!
   const empty = document.getElementById('blog-empty')!

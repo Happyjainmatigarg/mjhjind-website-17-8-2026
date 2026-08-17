@@ -51,7 +51,7 @@ const groups: { label: string; names: string[] }[] = [
             <Icon name="database" size={18} /> Dashboard
           </a>
           {groups.map((g) => (
-            <div class="mb-4" key={g.label}>
+            <div class="mb-4">
               <p class="px-3 pb-1.5 pt-3 text-[11px] font-semibold uppercase tracking-wider text-white/40">{g.label}</p>
               {g.names.map((name) => {
                 const cfg = adminCollections.find((c) => c.name === name)

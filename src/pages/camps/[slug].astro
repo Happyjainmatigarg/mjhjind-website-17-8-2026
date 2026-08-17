@@ -6,7 +6,7 @@ import Icon from '../../components/Icon.astro'
 import CampRegistrationForm from '../../components/CampRegistrationForm.astro'
 import { getCollection, getItemById } from '../../lib/server/store'
 import type { HealthCamp } from '../../data/camps'
-import { formatDate, isUpcoming, daysUntil } from '../../lib/utils'
+import { formatDate, isUpcoming } from '../../lib/utils'
 import { hospital } from '../../data/site'
 
 export const prerender = false
@@ -18,7 +18,6 @@ if (!camp) return Astro.redirect('/404')
 const upcoming = isUpcoming(camp.date)
 const isFull = camp.registrations >= camp.capacity
 const otherCamps = camps.filter((c) => c.slug !== camp.slug).slice(0, 3)
-const days = daysUntil(camp.date)
 
 const eventSchema = {
   '@context': 'https://schema.org',

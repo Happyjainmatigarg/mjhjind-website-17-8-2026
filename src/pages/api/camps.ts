@@ -1,3 +1,4 @@
+import type { APIRoute } from 'astro'
 import { createCampRegistration } from '../../lib/server/store'
 import { notifyAdminCampRegistration, sendCampRegistrationToPatient } from '../../lib/server/notifications'
 

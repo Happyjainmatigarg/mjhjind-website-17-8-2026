@@ -5,5 +5,5 @@
   var theme = stored === 'dark' || stored === 'light' ? stored : (prefersDark ? 'dark' : 'light');
   var root = document.documentElement;
   if (theme === 'dark') root.classList.add('dark');
-  window.__mjhTheme = theme;
+  (window as unknown as { __mjhTheme: string }).__mjhTheme = theme;
 })();

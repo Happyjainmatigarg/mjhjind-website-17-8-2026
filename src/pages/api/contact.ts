@@ -1,3 +1,4 @@
+import type { APIRoute } from 'astro'
 import { createContact } from '../../lib/server/store'
 import { notifyAdminContact } from '../../lib/server/notifications'
 

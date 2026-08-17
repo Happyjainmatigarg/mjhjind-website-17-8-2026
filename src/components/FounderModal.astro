@@ -12,8 +12,8 @@ const message = `At Meenakshi Jain Hospital, our greatest reward is the quiet sm
   </div>
 </div>
 
-<script type="module">
-  const modal = document.getElementById('founder-modal')
+<script>
+  const modal = document.getElementById('founder-modal')!
   const btn = document.getElementById('founder-dismiss')
   try {
     if (!localStorage.getItem('founderMessageDismissed')) {

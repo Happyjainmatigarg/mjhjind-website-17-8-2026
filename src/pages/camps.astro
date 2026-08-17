@@ -5,7 +5,6 @@ import CampCard from '../components/CampCard.astro'
 import Icon from '../components/Icon.astro'
 import { getCollection } from '../lib/server/store'
 import type { HealthCamp } from '../data/camps'
-import { isUpcoming, formatDate } from '../lib/utils'
 import { hospital } from '../data/site'
 
 export const prerender = false
@@ -78,13 +77,17 @@ const campTypes = Array.from(new Set(camps.map((c) => c.type).filter(Boolean)))
   </section>
 </Layout>
 
-<script define:vars={{ camps }}>
+<script is:inline type="application/json" id="camps-data" set:html={JSON.stringify(camps)}></script>
+<script>
   import { showToast } from '../lib/toast'
   import type { HealthCamp } from '../data/camps'
 
+  const dataEl = document.getElementById('camps-data')
+  const camps = dataEl ? (JSON.parse(dataEl.textContent || '[]') as HealthCamp[]) : []
+
   const campsData: (HealthCamp & { card: HTMLElement })[] = []
   Array.from(document.querySelectorAll<HTMLElement>('#camps-grid > article')).forEach((card) => {
-    const camp = (camps as HealthCamp[]).find((c) => c.slug === card.dataset.campSlug)
+    const camp = camps.find((c) => c.slug === card.dataset.campSlug)
     if (camp) campsData.push({ ...camp, card })
   })
 

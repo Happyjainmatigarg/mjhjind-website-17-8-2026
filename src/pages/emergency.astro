@@ -39,7 +39,7 @@ import { hospital, emergencyNumbers } from '../data/site'
           { icon: 'car', title: 'Accidents & Injuries', text: 'Road accidents, deep cuts, fractures, head injuries or severe bleeding.' },
           { icon: 'breath', title: 'Breathing Difficulty', text: 'Severe asthma attack, choking, or sudden trouble breathing.' },
         ].map((c) => (
-          <div class="card" key={c.title}>
+          <div class="card">
             <span class="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-400">
               {c.icon === 'breath' ? <Icon name="therapy" size={24} /> : <Icon name={c.icon} size={24} />}
             </span>
@@ -65,7 +65,7 @@ import { hospital, emergencyNumbers } from '../data/site'
 
       <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
         {emergencyNumbers.map((n) => (
-          <div class="card text-center" key={n.label}>
+          <div class="card text-center">
             <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-800 text-white"><Icon name="phone" size={24} /></span>
             <p class="mt-4 text-sm font-medium uppercase tracking-wide text-gray-500 dark:text-slate-400">{n.label}</p>
             <a href={`tel:${n.number.replace(/-/g, '')}`} class="mt-1 block text-2xl font-bold hover:underline" style="color: var(--color-primary)">{n.number}</a>
@@ -98,7 +98,7 @@ import { hospital, emergencyNumbers } from '../data/site'
           { n: '5', t: 'Keep details ready', d: 'Your location, the person\'s age, and what happened.' },
           { n: '6', t: 'Stay with the person', d: 'Keep watching for changes and report them to the ambulance team.' },
         ].map((s) => (
-          <div class="card flex items-start gap-4" key={s.n}>
+          <div class="card flex items-start gap-4">
             <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-lg font-bold text-gray-600 dark:bg-night-border dark:text-slate-300">{s.n}</span>
             <div>
               <h3 class="font-semibold">{s.t}</h3>
