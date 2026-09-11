@@ -7,12 +7,8 @@ const { class: className = '', light = false } = Astro.props
 ---
 
 <a href="/" class:list={['inline-flex items-center gap-3', className]} aria-label="Meenakshi Jain Hospital — Home">
-  <span class:list={[
-    'relative flex h-11 w-11 items-center justify-center rounded-md shadow-card-md transition-transform hover:scale-105 overflow-hidden',
-    light ? 'bg-white' : 'bg-brand-800',
-  ]}>
-    <!-- Primary logo image (place public/logo.png) -->
-    <img src="/logo.svg" alt="Meenakshi Jain Hospital logo" class="h-11 w-11 object-cover" />
+  <span class="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-md bg-black shadow-card-md transition-transform hover:scale-105">
+    <img src="/logo.png" alt="Meenakshi Jain Hospital logo" class="h-11 w-11 object-contain" />
   </span>
   <span class="leading-tight">
     <span class:list={['block text-lg font-bold tracking-tight', light ? 'text-white' : 'text-ink dark:text-night-text']}>

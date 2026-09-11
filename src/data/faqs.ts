@@ -26,12 +26,12 @@ export const faqs: Faq[] = [
   },
   {
     question: 'What are the OPD timings?',
-    answer: 'OPD runs from 9:00 AM to 2:00 PM and again from 4:00 PM to 8:00 PM, Monday to Saturday. Emergency services are available 24×7.',
+    answer: 'OPD is only during morning hours i.e. 9 AM to 2 PM. Emergency, ICU and other hospital services are available 24×7.',
     category: 'OPD & Timings',
   },
   {
-    question: 'Is the hospital open on Sundays?',
-    answer: 'OPD is closed on Sundays, but our emergency department, ICU and ambulance services operate round the clock, including Sundays and public holidays.',
+    question: 'Is OPD closed on Sundays?',
+    answer: 'OPD is only during morning hours i.e. 9 AM to 2 PM during services. Rest services like ICU, Emergency etc are available 24 X 7.',
     category: 'OPD & Timings',
   },
   {

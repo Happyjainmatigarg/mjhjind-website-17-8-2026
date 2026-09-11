@@ -18,13 +18,13 @@ export const hospital: HospitalInfo = {
   shortName: 'MJ Hospital',
   tagline: 'Compassionate Care, Trusted by Jind',
   foundedYear: 1998,
-  email: 'info@mjhospital.in',
+  email: 'mjhospital2003@gmail.com',
   domains: { primary: 'mjhospital.in', secondary: 'www.mjhospital.in' },
   phones: {
-    emergency: '01681-242-456',
-    ambulance: '01681-242-456',
-    appointment: '01681-242-400',
-    reception: '01681-242-456',
+    emergency: '8278170381',
+    ambulance: '8278170381',
+    appointment: '8278170381',
+    reception: '8278170381',
   },
   address: {
     line1: 'Circular Road',
@@ -33,12 +33,12 @@ export const hospital: HospitalInfo = {
     state: 'Haryana',
     pincode: '126102',
   },
-  hours: { opd: '9:00 AM – 2:00 PM, 4:00 PM – 8:00 PM' },
+  hours: { opd: '9:00 AM – 2:00 PM' },
   social: {
-    facebook: 'https://www.facebook.com/mjhospitaljind',
-    instagram: 'https://www.instagram.com/mjhospitaljind',
+    facebook: 'https://www.facebook.com/share/1FLNJvwyw4/',
+    instagram: 'https://www.instagram.com/meenakshi_jain_hospital',
     youtube: 'https://www.youtube.com/@mjhospitaljind',
-    whatsapp: 'https://wa.me/911681242456',
+    whatsapp: 'https://wa.me/918278170381',
   },
   mapsDirections: 'https://www.google.com/maps/dir/?api=1&destination=Meenakshi+Jain+Hospital+Circular+Road+Jind',
   mapsEmbed: 'https://www.google.com/maps?q=Meenakshi+Jain+Hospital+Circular+Road+Jind&output=embed',
@@ -51,9 +51,9 @@ export interface EmergencyNumber {
 }
 
 export const emergencyNumbers: EmergencyNumber[] = [
-  { label: 'Emergency', number: '01681-242-456', note: '24 × 7' },
-  { label: 'Ambulance', number: '01681-242-456', note: '24 × 7' },
-  { label: 'Reception', number: '01681-242-400', note: 'OPD hours' },
+  { label: 'Emergency', number: '8278170381', note: '24 × 7' },
+  { label: 'Ambulance', number: '8278170381', note: '24 × 7' },
+  { label: 'Reception', number: '8278170381', note: 'OPD hours' },
 ]
 
 export interface SiteSection {
