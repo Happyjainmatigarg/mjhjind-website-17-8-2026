@@ -2,19 +2,29 @@
 interface Props {
   class?: string
   light?: boolean
+  compact?: boolean
 }
-const { class: className = '', light = false } = Astro.props
+const { class: className = '', light = false, compact = false } = Astro.props
 ---
 
 <a href="/" class:list={['inline-flex items-center gap-3', className]} aria-label="Meenakshi Jain Hospital — Home">
-  <span class="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-md bg-black shadow-card-md transition-transform hover:scale-105">
-    <img src="/logo.png" alt="Meenakshi Jain Hospital logo" class="h-11 w-11 object-contain" />
+  <span
+    class:list={[
+      'relative flex shrink-0 items-center justify-center overflow-hidden rounded-md bg-black shadow-card-md transition-transform hover:scale-105',
+      compact ? 'h-9 w-9' : 'h-12 w-12 md:h-14 md:w-14',
+    ]}
+  >
+    <img
+      src="/logo.png"
+      alt="Meenakshi Jain Hospital logo"
+      class:list={['object-contain', compact ? 'h-9 w-9' : 'h-12 w-12 md:h-14 md:w-14']}
+    />
   </span>
   <span class="leading-tight">
-    <span class:list={['block text-lg font-bold tracking-tight', light ? 'text-white' : 'text-ink dark:text-night-text']}>
+    <span class:list={['block font-bold tracking-tight', compact ? 'text-sm' : 'text-lg', light ? 'text-white' : 'text-ink dark:text-night-text']}>
       Meenakshi Jain
     </span>
-    <span class:list={['block text-xs font-semibold uppercase tracking-[0.18em]', light ? 'text-white/70' : 'text-brand-700 dark:text-brand-400']}>
+    <span class:list={['block font-semibold uppercase', compact ? 'text-[10px] tracking-[0.14em]' : 'text-xs tracking-[0.18em]', light ? 'text-white/70' : 'text-brand-700 dark:text-brand-400']}>
       Hospital · Jind
     </span>
   </span>

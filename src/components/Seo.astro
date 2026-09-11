@@ -21,7 +21,7 @@ const hospitalSchema = {
   email,
   foundingDate: String(foundedYear),
   image: `https://${hospital.domains.primary}/og-image.png`,
-  logo: `https://${hospital.domains.primary}/favicon-512.png`,
+  logo: `https://${hospital.domains.primary}/logo.png`,
   address: {
     '@type': 'PostalAddress',
     streetAddress: `${address.line1}, ${address.line2}`,
@@ -48,4 +48,4 @@ const hospitalSchema = {
 <link rel="canonical" href={url} />
 <meta name="robots" content="index, follow, max-image-preview:large" />
 
-<script is:inline set:html={`<script type="application/ld+json">${JSON.stringify([hospitalSchema, ...schema]).replace(/<\/script>/g, '<\\/script>')}<\/script>`}></script>
+<script is:inline type="application/ld+json" set:html={JSON.stringify([hospitalSchema, ...schema]).replace(/<\/script>/gi, '<\\/script>')} />

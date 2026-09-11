@@ -17,7 +17,11 @@ export const POST: APIRoute = async ({ request }) => {
   } catch {
     return json({ ok: false, error: 'Invalid JSON body.' }, 400)
   }
-  const result = await verifyLogin(String(data.username || ''), String(data.password || ''))
-  if (!result) return json({ ok: false, error: 'Invalid username or password.' }, 401)
-  return json({ ok: true, ...result })
+  try {
+    const result = await verifyLogin(String(data.username || ''), String(data.password || ''))
+    if (!result) return json({ ok: false, error: 'Invalid username or password.' }, 401)
+    return json({ ok: true, ...result })
+  } catch {
+    return json({ ok: false, error: 'Login failed. Please try again.' }, 500)
+  }
 }

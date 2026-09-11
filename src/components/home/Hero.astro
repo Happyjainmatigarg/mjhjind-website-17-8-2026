@@ -1,5 +1,4 @@
 ---
-import Hero3D from '../Hero3D.astro'
 import Icon from '../Icon.astro'
 import { hospital } from '../../data/site'
 import { telHref } from '../../lib/utils'
@@ -50,8 +49,11 @@ const stats = [
       </div>
     </div>
 
-    <div class="relative hidden lg:block">
-      <Hero3D />
+    <div class="relative hidden lg:flex items-center justify-center">
+      <div class="absolute h-80 w-80 rounded-full bg-heal-500/25 blur-3xl"></div>
+      <div class="relative flex h-72 w-72 items-center justify-center overflow-hidden rounded-2xl bg-black shadow-card-xl ring-1 ring-white/15 xl:h-80 xl:w-80">
+        <img src="/logo.png" alt="Meenakshi Jain Hospital logo" class="h-full w-full object-contain p-8" />
+      </div>
     </div>
   </div>
 

@@ -78,7 +78,7 @@ async function api(path: string, method = 'GET', body?: unknown): Promise<any> {
     headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,
   })
-  if (res.status === 401) {
+  if (res.status === 401 && path !== '/api/admin/login') {
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(USER_KEY)
     showLogin()
@@ -131,7 +131,7 @@ function showLogin(message = ''): void {
   rootEl.innerHTML = `
     <div class="mx-auto mt-10 max-w-md">
       <div class="card p-8">
-        <div class="flex h-12 w-12 items-center justify-center rounded-md bg-brand-800 text-white"><span class="text-lg font-bold">MJ</span></div>
+        <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-md bg-black"><img src="/logo.png" alt="" class="h-14 w-14 object-contain" /></div>
         <h1 class="mt-4 text-xl font-bold" style="color: var(--color-heading)">Admin Sign In</h1>
         <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Sign in to manage appointments, doctors, blog posts and more.</p>
         ${message ? `<p class="mt-3 rounded-sm bg-danger-500/10 px-3 py-2 text-sm text-danger-600">${esc(message)}</p>` : ''}

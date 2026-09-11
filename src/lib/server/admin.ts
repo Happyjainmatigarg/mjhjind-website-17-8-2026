@@ -1,66 +1,67 @@
-import { getDefaultStorage, type Storage } from './storage'
-import { randomHex, hashPassword, timingSafeEqualHex } from '../crypto'
-
-const storage: Storage = getDefaultStorage()
+import { hmacSha256Hex, timingSafeEqualString, toBase64Url, fromBase64Url } from '../crypto'
 
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000
+const DEFAULT_USERNAME = 'admin'
+const DEFAULT_PASSWORD = 'mjadmin2024'
 
-interface AdminConfig {
-  username: string
-  passwordHash: string
-  salt: string
-}
-
-interface Session {
-  token: string
-  username: string
-  createdAt: number
-}
-
-async function ensureAdmin(): Promise<AdminConfig> {
-  const cfg = await storage.readAdmin()
-  if (cfg && cfg.username && cfg.passwordHash && cfg.salt) return cfg
-  const username = process.env.ADMIN_USERNAME || 'admin'
-  const password = process.env.ADMIN_PASSWORD || 'mjadmin2024'
-  const salt = await randomHex(16)
-  const passwordHash = await hashPassword(password, salt)
-  const config: AdminConfig = { username, passwordHash, salt }
-  await storage.writeAdmin(config)
-  if (!process.env.ADMIN_PASSWORD) {
-    try {
-      // eslint-disable-next-line no-console
-      console.warn('[admin] No ADMIN_PASSWORD set — using default credentials. Set ADMIN_USERNAME / ADMIN_PASSWORD to change.')
-    } catch {
-      // ignore
+function readEnv(name: string): string | undefined {
+  try {
+    if (typeof process !== 'undefined' && process.env) {
+      const value = process.env[name]
+      if (typeof value === 'string' && value.length > 0) return value
     }
+  } catch {
+    // Cloudflare Workers may not expose process.env
   }
-  return config
+  return undefined
 }
 
-async function readSessions(): Promise<Session[]> {
-  return await storage.readSessions()
+function adminUsername(): string {
+  return readEnv('ADMIN_USERNAME') || DEFAULT_USERNAME
 }
 
-async function writeSessions(sessions: Session[]): Promise<void> {
-  await storage.writeSessions(sessions)
+function adminPassword(): string {
+  return readEnv('ADMIN_PASSWORD') || DEFAULT_PASSWORD
 }
 
-function pruneExpired(sessions: Session[]): Session[] {
-  const now = Date.now()
-  return sessions.filter((s) => now - s.createdAt < SESSION_TTL_MS)
+function sessionSecret(): string {
+  return readEnv('ADMIN_SESSION_SECRET') || `${adminPassword()}:mjh-admin-session`
+}
+
+async function signSession(username: string): Promise<string> {
+  const body = toBase64Url(JSON.stringify({ u: username, exp: Date.now() + SESSION_TTL_MS }))
+  const sig = await hmacSha256Hex(sessionSecret(), body)
+  return `${body}.${sig}`
+}
+
+async function verifySession(token: string): Promise<string | null> {
+  const dot = token.lastIndexOf('.')
+  if (dot <= 0) return null
+  const body = token.slice(0, dot)
+  const sig = token.slice(dot + 1)
+  if (!body || !sig) return null
+  const expected = await hmacSha256Hex(sessionSecret(), body)
+  if (!timingSafeEqualString(sig, expected)) return null
+  try {
+    const payload = JSON.parse(fromBase64Url(body)) as { u?: string; exp?: number }
+    if (!payload.u || typeof payload.exp !== 'number') return null
+    if (Date.now() > payload.exp) return null
+    if (payload.u !== adminUsername()) return null
+    return payload.u
+  } catch {
+    return null
+  }
 }
 
 export async function verifyLogin(username: string, password: string): Promise<{ token: string; username: string } | null> {
-  const config = await ensureAdmin()
   const user = String(username || '').trim()
   const pass = String(password || '')
-  if (user !== config.username) return null
-  const hash = await hashPassword(pass, config.salt)
-  if (!timingSafeEqualHex(config.passwordHash, hash)) return null
-  const token = await randomHex(24)
-  const sessions = pruneExpired(await readSessions())
-  sessions.push({ token, username: user, createdAt: Date.now() })
-  await writeSessions(sessions)
+  const expectedUser = adminUsername()
+  const expectedPass = adminPassword()
+  const userOk = user.length === expectedUser.length && timingSafeEqualString(user, expectedUser)
+  const passOk = pass.length === expectedPass.length && timingSafeEqualString(pass, expectedPass)
+  if (!userOk || !passOk) return null
+  const token = await signSession(user)
   return { token, username: user }
 }
 
@@ -68,10 +69,5 @@ export async function requireAdmin(request: Request): Promise<string | null> {
   const header = request.headers.get('authorization') || ''
   const match = header.match(/^Bearer\s+(.+)$/i)
   if (!match) return null
-  const token = match[1].trim()
-  const sessions = pruneExpired(await readSessions())
-  const session = sessions.find((s) => s.token === token)
-  if (!session) return null
-  await writeSessions(sessions)
-  return session.username
+  return verifySession(match[1].trim())
 }
