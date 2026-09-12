@@ -72,7 +72,7 @@ export async function notifyAdminAppointment(a: AppointmentRecord): Promise<bool
   const html = `
   <p style="margin:0 0 14px;color:#374151;font-size:14px;line-height:1.7;">A new appointment request was submitted through the website.</p>
   ${appointmentTable(a)}
-  <p style="margin:14px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">Manage it in the admin panel: <a href="${siteUrl()}/admin" style="color:#1e40af;">${siteUrl()}/admin</a></p>`
+  <p style="margin:14px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">Manage it in the admin panel: <a href="${siteUrl()}/admin" style="color:#2d5f8a;">${siteUrl()}/admin</a></p>`
   return sendMail({
     to: to.join(', '),
     subject: `New appointment request — ${a.id}`,
@@ -87,7 +87,7 @@ export async function notifyDoctorAppointment(a: AppointmentRecord, doctor?: Doc
   <p style="margin:0 0 14px;color:#374151;font-size:14px;line-height:1.7;">Dear <strong>${escapeHtml(doctor.name)}</strong>,</p>
   <p style="margin:0 0 14px;color:#374151;font-size:14px;line-height:1.7;">A patient has requested an appointment with you.</p>
   ${appointmentTable(a)}
-  <p style="margin:14px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">Review the request in the admin panel: <a href="${siteUrl()}/admin" style="color:#1e40af;">${siteUrl()}/admin</a></p>`
+  <p style="margin:14px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">Review the request in the admin panel: <a href="${siteUrl()}/admin" style="color:#2d5f8a;">${siteUrl()}/admin</a></p>`
   return sendMail({
     to: doctor.email,
     subject: `New appointment request for you — ${a.id}`,
@@ -133,7 +133,7 @@ export async function notifyAdminCampRegistration(r: CampRegistrationRecord): Pr
     ${r.conditions.length ? emailRow('Health Conditions', r.conditions.join(', ')) : ''}
     ${r.notes ? emailRow('Notes', r.notes) : ''}
   </table>
-  <p style="margin:14px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">Manage registrations in the admin panel: <a href="${siteUrl()}/admin" style="color:#1e40af;">${siteUrl()}/admin</a></p>`
+  <p style="margin:14px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">Manage registrations in the admin panel: <a href="${siteUrl()}/admin" style="color:#2d5f8a;">${siteUrl()}/admin</a></p>`
   return sendMail({
     to: to.join(', '),
     subject: `New camp registration — ${r.campTitle}`,
@@ -155,7 +155,7 @@ export async function notifyAdminContact(c: ContactRecord): Promise<boolean> {
     ${emailRow('Topic', c.topic)}
     ${emailRow('Message', c.message)}
   </table>
-  <p style="margin:14px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">Reply in the admin panel: <a href="${siteUrl()}/admin" style="color:#1e40af;">${siteUrl()}/admin</a></p>`
+  <p style="margin:14px 0 0;color:#6b7280;font-size:13px;line-height:1.6;">Reply in the admin panel: <a href="${siteUrl()}/admin" style="color:#2d5f8a;">${siteUrl()}/admin</a></p>`
   return sendMail({
     to: to.join(', '),
     subject: `New contact message — ${c.name}`,

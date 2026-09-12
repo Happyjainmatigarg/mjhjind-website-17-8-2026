@@ -109,7 +109,7 @@ const timeSlots = [
           <div class="mt-4 rounded-md bg-gray-50 p-4 text-sm text-gray-600 dark:bg-night-surface dark:text-slate-400">
             <p class="flex items-start gap-2">
               <Icon name="info" size={16} class="mt-0.5 shrink-0" />
-              <span>Times are indicative. Our team will confirm the exact slot with you over the phone. Walk-ins are welcome during OPD hours.</span>
+              <span>Times are indicative. Walk-ins are welcome during OPD hours.</span>
             </p>
           </div>
 
@@ -212,7 +212,6 @@ const timeSlots = [
           <p class="mt-2 text-sm text-gray-600 dark:text-slate-400" id="booking-summary"></p>
           <p class="mt-2 text-sm text-gray-600 dark:text-slate-400">Booking ID: <strong id="booking-id"></strong></p>
           <div class="mx-auto mt-6 max-w-sm space-y-2 text-left text-sm">
-            <p class="rounded-md bg-white px-4 py-2 text-gray-700 shadow-sm dark:bg-night-surface dark:text-slate-300">We will call you within <strong>30 minutes</strong> during working hours to confirm.</p>
             <p class="rounded-md bg-white px-4 py-2 text-gray-700 shadow-sm dark:bg-night-surface dark:text-slate-300">For urgent needs, call <a href={`tel:${hospital.phones.emergency.replace(/-/g, '')}`} class="font-semibold hover:underline" style="color: var(--color-primary)">{hospital.phones.emergency}</a>.</p>
           </div>
           <div class="mt-6 flex flex-wrap justify-center gap-3">
@@ -245,7 +244,7 @@ const timeSlots = [
             <tr><td>Issued On</td><td id="r-issued"></td></tr>
           </tbody>
         </table>
-        <p class="print-receipt-note">This is a booking request, not a confirmed appointment. Our team will call you to confirm the slot. For urgent needs please call {hospital.phones.emergency}.</p>
+        <p class="print-receipt-note">For urgent needs please call {hospital.phones.emergency}.</p>
         <p class="print-receipt-footer">{hospital.name} · {hospital.domains.primary}</p>
       </div>
 

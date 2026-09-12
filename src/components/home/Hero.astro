@@ -16,23 +16,23 @@ const stats = [
   <div class="absolute -left-32 top-20 h-96 w-96 rounded-full bg-heal-500/20 blur-3xl"></div>
   <div class="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-brand-500/20 blur-3xl"></div>
 
-  <div class="container-site relative grid items-center gap-12 py-16 md:py-24 lg:grid-cols-2">
+  <div class="container-site relative grid items-center gap-10 py-12 md:gap-12 md:py-24 lg:grid-cols-2">
     <div>
-      <p class="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur">
-        <Icon name="shield" size={16} class="text-heal-500" />
-        NABH-Certified Multi-Specialty Hospital · Jind
+      <p class="inline-flex max-w-full items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-semibold backdrop-blur sm:px-4 sm:text-sm">
+        <Icon name="shield" size={16} class="shrink-0 text-heal-500" />
+        <span class="min-w-0">NABH-Certified Multi-Specialty Hospital · Jind</span>
       </p>
-      <h1 class="mt-6 text-4xl font-bold leading-tight tracking-tight text-balance md:text-5xl lg:text-6xl">
+      <h1 class="mt-6 text-3xl font-bold leading-tight tracking-tight text-balance sm:text-4xl md:text-5xl lg:text-6xl">
         {hospital.tagline}
       </h1>
-      <p class="mt-5 max-w-xl text-lg leading-relaxed text-white/85">
+      <p class="mt-5 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
         Meenakshi Jain Hospital is a modern, patient-first hospital serving the people of Jind and nearby districts — trusted doctors, advanced diagnostics, compassionate 24×7 emergency care, and simple online appointment booking.
       </p>
-      <div class="mt-8 flex flex-wrap gap-4">
-        <a href="/book" class="btn-white !text-base">
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-4">
+        <a href="/book" class="btn-white w-full !text-base sm:w-auto">
           <Icon name="calendar" size={20} /> Book Appointment
         </a>
-        <a href="/services" class="btn border-2 border-white/40 bg-transparent text-white hover:bg-white/10">
+        <a href="/services" class="btn w-full border-2 border-white/40 bg-transparent text-white hover:bg-white/10 sm:w-auto">
           View Our Services
         </a>
       </div>

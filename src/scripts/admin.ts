@@ -129,8 +129,8 @@ let currentQuery = ''
 function showLogin(message = ''): void {
   if (!rootEl) return
   rootEl.innerHTML = `
-    <div class="mx-auto mt-10 max-w-md">
-      <div class="card p-8">
+    <div class="mx-auto mt-4 max-w-md px-1 sm:mt-10">
+      <div class="card p-5 sm:p-8">
         <div class="flex h-14 w-14 items-center justify-center overflow-hidden rounded-md bg-black"><img src="/logo.png" alt="" class="h-14 w-14 object-contain" /></div>
         <h1 class="mt-4 text-xl font-bold" style="color: var(--color-heading)">Admin Sign In</h1>
         <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Sign in to manage appointments, doctors, blog posts and more.</p>

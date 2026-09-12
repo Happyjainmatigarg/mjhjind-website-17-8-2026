@@ -10,7 +10,6 @@ import TestimonialsSection from '../components/home/TestimonialsSection.astro'
 import ContactCTA from '../components/home/ContactCTA.astro'
 import FaqAccordion from '../components/FaqAccordion.astro'
 import SectionHeading from '../components/SectionHeading.astro'
-import FounderModal from '../components/FounderModal.astro'
 import { getCollection } from '../lib/server/store'
 import type { Doctor } from '../data/doctors'
 import type { BlogPost } from '../data/blog'
@@ -49,6 +48,4 @@ const testimonials = getCollection<Testimonial & { id: string }>('testimonials')
     </div>
   </section>
   <ContactCTA />
-
-  <FounderModal />
 </Layout>

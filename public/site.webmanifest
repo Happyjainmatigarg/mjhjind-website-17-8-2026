@@ -4,8 +4,8 @@
   "description": "Quality healthcare in Jind — multi-specialty hospital with 24×7 emergency care.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1E40AF",
-  "theme_color": "#1E40AF",
+  "background_color": "#2D5F8A",
+  "theme_color": "#2D5F8A",
   "icons": [
     {
       "src": "/favicon-192x192.png",

@@ -24,9 +24,9 @@ const navItems = [
 
 <!-- Top emergency strip -->
 <div class="bg-brand-900 text-white dark:bg-black/40">
-  <div class="container-site flex items-center justify-between gap-4 py-2">
-    <p class="flex items-center gap-2 text-xs font-medium sm:text-sm">
-      <span class="relative flex h-2 w-2">
+  <div class="container-site flex items-center justify-between gap-3 py-2">
+    <p class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs font-medium sm:text-sm">
+      <span class="relative flex h-2 w-2 shrink-0">
         <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-heal-500 opacity-75"></span>
         <span class="relative inline-flex h-2 w-2 rounded-full bg-heal-500"></span>
       </span>
@@ -34,8 +34,8 @@ const navItems = [
       <a href={telHref(hospital.phones.emergency)} class="font-bold text-heal-500 underline-offset-2 hover:underline">
         {hospital.phones.emergency}
       </a>
-      <span class="text-white/40">|</span>
-      <a href={telHref(hospital.phones.ambulance)} class="font-bold text-white underline-offset-2 hover:underline">
+      <span class="hidden text-white/40 sm:inline">|</span>
+      <a href={telHref(hospital.phones.ambulance)} class="hidden font-bold text-white underline-offset-2 hover:underline sm:inline">
         Ambulance: {hospital.phones.ambulance}
       </a>
     </p>
@@ -50,8 +50,8 @@ const navItems = [
 
 <!-- Main header -->
 <header class="sticky top-0 z-50 border-b bg-white/90 backdrop-blur-md dark:border-night-border dark:bg-night-bg/90" id="site-header">
-  <div class="container-site flex h-16 items-center justify-between gap-4 md:h-20">
-    <Logo />
+  <div class="container-site flex h-16 min-w-0 items-center justify-between gap-2 sm:gap-4 md:h-20">
+    <Logo class="min-w-0" />
 
     <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
       {
@@ -81,7 +81,7 @@ const navItems = [
       <button
         type="button"
         id="open-search"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-brand-50 hover:text-brand-800 dark:text-slate-300 dark:hover:bg-night-border dark:hover:text-white"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-brand-50 hover:text-brand-800 dark:text-slate-300 dark:hover:bg-night-border dark:hover:text-white"
         aria-label="Open search"
         title="Search"
       >
@@ -90,7 +90,7 @@ const navItems = [
       <button
         type="button"
         id="menu-toggle"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-700 lg:hidden dark:text-slate-200"
+        class="inline-flex h-11 w-11 items-center justify-center rounded-full text-gray-700 lg:hidden dark:text-slate-200"
         aria-label="Open menu"
         aria-expanded="false"
         aria-controls="mobile-drawer"
@@ -106,14 +106,14 @@ const navItems = [
   <div id="drawer-overlay" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300"></div>
   <div
     id="drawer-panel"
-    class="absolute right-0 top-0 flex h-full w-[85%] max-w-sm flex-col overflow-y-auto bg-white shadow-card-xl transition-transform duration-300 ease-in-out dark:bg-night-surface"
+    class="absolute right-0 top-0 flex h-full w-[min(85%,20rem)] max-w-full translate-x-full flex-col overflow-y-auto bg-white shadow-card-xl transition-transform duration-300 ease-in-out dark:bg-night-surface"
     role="dialog"
     aria-modal="true"
     aria-label="Mobile menu"
   >
     <div class="flex items-center justify-between border-b px-5 py-4 dark:border-night-border">
       <Logo compact />
-      <button type="button" id="drawer-close" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-night-border" aria-label="Close menu">
+      <button type="button" id="drawer-close" class="inline-flex h-11 w-11 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100 dark:text-slate-300 dark:hover:bg-night-border" aria-label="Close menu">
         <Icon name="x" size={24} />
       </button>
     </div>

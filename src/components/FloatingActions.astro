@@ -3,7 +3,7 @@ import Icon from './Icon.astro'
 import { hospital } from '../data/site'
 ---
 
-<div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3" id="floating-actions">
+<div class="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-4 z-40 flex flex-col gap-3 sm:bottom-6 sm:right-6" id="floating-actions">
   <a
     href={hospital.social.whatsapp}
     target="_blank"

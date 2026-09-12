@@ -17,7 +17,7 @@ interface Variant {
 const variants: Record<string, Variant> = {
   'womens-health': { label: 'Women’s Health', colors: ['#BE185D', '#F472B6'], icon: 'M100 40c-30 8-50 32-50 64 0 40 50 70 50 70s50-30 50-70c0-32-20-56-50-64z' },
   'diabetes': { label: 'Diabetes Care', colors: ['#047857', '#34D399'], icon: 'M30 120h140M30 150h140M100 50c0 20-12 30-12 46s12 26 12 26 12-10 12-26-12-26-12-46z' },
-  'child-care': { label: 'Child Care', colors: ['#1E40AF', '#60A5FA'], icon: 'M100 60a18 18 0 100 .01M100 90c22 0 34 14 36 36-10 6-22 10-36 10s-26-4-36-10c2-22 14-36 36-36z' },
+  'child-care': { label: 'Child Care', colors: ['#2D5F8A', '#5A8AAD'], icon: 'M100 60a18 18 0 100 .01M100 90c22 0 34 14 36 36-10 6-22 10-36 10s-26-4-36-10c2-22 14-36 36-36z' },
   'eye-camp': { label: 'Eye Camp', colors: ['#1E3A8A', '#38BDF8'], icon: 'M50 100c12-30 25-40 50-40s38 10 50 40c-12 30-25 40-50 40s-38-10-50-40zM100 78a22 22 0 100 .01' },
   'general': { label: 'Community Health', colors: ['#7C3AED', '#C084FC'], icon: 'M100 55c-8 0-15 7-15 15 0 14 15 22 15 22s15-8 15-22c0-8-7-15-15-15zM60 155c2-30 18-45 40-45s38 15 40 45z' },
   'cardiac': { label: 'Heart Health', colors: ['#BE123C', '#F87171'], icon: 'M100 165s-48-30-48-68c0-20 16-34 32-34 12 0 16 8 16 8s4-8 16-8c16 0 32 14 32 34 0 38-48 68-48 68z' },
@@ -27,14 +27,14 @@ const variants: Record<string, Variant> = {
   'women': { label: 'Women’s Health', colors: ['#BE185D', '#F472B6'], icon: 'M100 46a20 20 0 100 .01M100 72v70M78 130l22 30 22-30' },
   'back-pain': { label: 'Orthopedics', colors: ['#7C3AED', '#A78BFA'], icon: 'M72 170V70c0-8 12-14 28-14s28 6 28 14v100M86 70v40h28V70' },
   'summer': { label: 'Summer Health', colors: ['#B45309', '#FBBF24'], icon: 'M100 40v12M100 148v12M44 100h12M144 100h12M58 58l8 8M134 134l8 8M58 142l8-8M134 66l8-8M100 78a22 22 0 100 .01M100 128a28 28 0 100 .01' },
-  'bp': { label: 'Heart Health', colors: ['#1E40AF', '#3B82F6'], icon: 'M50 130V90h20v60M85 130V70h20v90M120 130V50h20v110' },
+  'bp': { label: 'Heart Health', colors: ['#2D5F8A', '#3E7399'], icon: 'M50 130V90h20v60M85 130V70h20v90M120 130V50h20v110' },
   'reception': { label: 'Reception', colors: ['#0F766E', '#2DD4BF'], icon: 'M60 150V80h80v70M80 150v-35h40v35M70 100h60M70 115h60' },
   'icu': { label: 'ICU', colors: ['#1E3A8A', '#3B82F6'], icon: 'M100 60v80M60 100h80M100 40a60 60 0 100 .01' },
   'lab': { label: 'Laboratory', colors: ['#7C3AED', '#A78BFA'], icon: 'M80 40v50l-30 60h100l-30-60V40M80 40h40M65 130h70' },
   'ot': { label: 'Operation Theatre', colors: ['#0F766E', '#14B8A6'], icon: 'M60 130h80M100 60v70M82 130v20h36v-20M60 60c22-10 58-10 80 0' },
   'maternity': { label: 'Maternity', colors: ['#BE185D', '#F9A8D4'], icon: 'M100 44a16 16 0 100 .01M100 66c-24 0-36 12-38 32 10 8 22 12 38 12s28-4 38-12c-2-20-14-32-38-32z' },
   'pharmacy': { label: 'Pharmacy', colors: ['#047857', '#34D399'], icon: 'M100 40a26 26 0 00-26 26c0 26 26 30 26 54 0-24 26-28 26-54a26 26 0 00-26-26zM80 40h40' },
-  'doctor-w1': { label: 'Doctor', colors: ['#1E40AF', '#60A5FA'], icon: 'M100 48a20 20 0 100 .01M100 74c-16 0-26 12-28 28 8 6 17 10 28 10s20-4 28-10c-2-16-12-28-28-28zM60 170c2-28 18-40 40-40s38 12 40 40z' },
+  'doctor-w1': { label: 'Doctor', colors: ['#2D5F8A', '#5A8AAD'], icon: 'M100 48a20 20 0 100 .01M100 74c-16 0-26 12-28 28 8 6 17 10 28 10s20-4 28-10c-2-16-12-28-28-28zM60 170c2-28 18-40 40-40s38 12 40 40z' },
   'doctor-m1': { label: 'Doctor', colors: ['#0F766E', '#2DD4BF'], icon: 'M100 48a20 20 0 100 .01M100 74c-16 0-26 12-28 28 8 6 17 10 28 10s20-4 28-10c-2-16-12-28-28-28zM60 170c2-28 18-40 40-40s38 12 40 40z' },
   'doctor-w2': { label: 'Doctor', colors: ['#9D174D', '#F472B6'], icon: 'M100 48a20 20 0 100 .01M100 74c-16 0-26 12-28 28 8 6 17 10 28 10s20-4 28-10c-2-16-12-28-28-28zM60 170c2-28 18-40 40-40s38 12 40 40z' },
   'doctor-m2': { label: 'Doctor', colors: ['#B45309', '#FBBF24'], icon: 'M100 48a20 20 0 100 .01M100 74c-16 0-26 12-28 28 8 6 17 10 28 10s20-4 28-10c-2-16-12-28-28-28zM60 170c2-28 18-40 40-40s38 12 40 40z' },
@@ -43,7 +43,7 @@ const variants: Record<string, Variant> = {
   'event1': { label: 'Health Talk', colors: ['#7C3AED', '#C084FC'], icon: 'M60 170v-40l-12-6M60 130h80M140 170v-40l12-6M140 130H60' },
   'event2': { label: 'World Health Day', colors: ['#0F766E', '#2DD4BF'], icon: 'M100 60v80M60 100h80M100 38a62 62 0 100 .01M100 34v0' },
   'event3': { label: 'Training', colors: ['#B45309', '#FBBF24'], icon: 'M50 150c6-40 30-60 50-60s44 20 50 60zM82 62h36M100 48v28' },
-  'campus': { label: 'Hospital Campus', colors: ['#1E40AF', '#38BDF8'], icon: 'M60 170V60l40-16 40 16v110M60 170h80M76 170V90h48v80M84 170v-30h32v30M84 104h6M108 104h6M84 120h6M108 120h6' },
+  'campus': { label: 'Hospital Campus', colors: ['#2D5F8A', '#5A8AAD'], icon: 'M60 170V60l40-16 40 16v110M60 170h80M76 170V90h48v80M84 170v-30h32v30M84 104h6M108 104h6M84 120h6M108 120h6' },
 }
 
 const v = variants[image] || variants.general

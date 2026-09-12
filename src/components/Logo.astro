@@ -20,11 +20,11 @@ const { class: className = '', light = false, compact = false } = Astro.props
       class:list={['object-contain', compact ? 'h-9 w-9' : 'h-12 w-12 md:h-14 md:w-14']}
     />
   </span>
-  <span class="leading-tight">
-    <span class:list={['block font-bold tracking-tight', compact ? 'text-sm' : 'text-lg', light ? 'text-white' : 'text-ink dark:text-night-text']}>
+  <span class="min-w-0 leading-tight">
+    <span class:list={['block truncate font-bold tracking-tight', compact ? 'text-sm' : 'text-base sm:text-lg', light ? 'text-white' : 'text-ink dark:text-night-text']}>
       Meenakshi Jain
     </span>
-    <span class:list={['block font-semibold uppercase', compact ? 'text-[10px] tracking-[0.14em]' : 'text-xs tracking-[0.18em]', light ? 'text-white/70' : 'text-brand-700 dark:text-brand-400']}>
+    <span class:list={['block font-semibold uppercase', compact ? 'text-[10px] tracking-[0.14em]' : 'text-[10px] tracking-[0.14em] sm:text-xs sm:tracking-[0.18em]', light ? 'text-white/70' : 'text-brand-700 dark:text-brand-400']}>
       Hospital · Jind
     </span>
   </span>

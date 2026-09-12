@@ -35,15 +35,27 @@ const groups: { label: string; names: string[] }[] = [
       }
     </script>
   </head>
-  <body class="min-h-screen bg-gray-100 text-gray-900 antialiased dark:bg-night-bg dark:text-slate-200">
+  <body class="min-h-screen overflow-x-hidden bg-surface-alt text-gray-900 antialiased dark:bg-night-bg dark:text-slate-200">
     <div class="flex min-h-screen">
-      <aside class="fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-brand-900 text-white dark:bg-night-surface">
+      <header class="fixed inset-x-0 top-0 z-50 flex h-14 items-center justify-between bg-brand-900 px-4 text-white lg:hidden">
+        <a href="/admin" class="flex min-w-0 items-center gap-2">
+          <span class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black">
+            <img src="/logo.png" alt="" class="h-9 w-9 object-contain" />
+          </span>
+          <span class="truncate text-sm font-bold">Admin</span>
+        </a>
+        <button type="button" id="admin-menu-toggle" class="inline-flex h-11 w-11 items-center justify-center rounded-full" aria-label="Open admin menu" aria-expanded="false" aria-controls="admin-sidebar">
+          <Icon name="menu" size={24} />
+        </button>
+      </header>
+      <div id="admin-overlay" class="fixed inset-0 z-40 hidden bg-black/50 lg:hidden"></div>
+      <aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-50 flex w-64 max-w-[85vw] -translate-x-full flex-col bg-brand-900 text-white transition-transform duration-200 lg:!translate-x-0 dark:bg-night-surface">
         <a href="/admin" class="flex items-center gap-3 border-b border-white/10 px-5 py-5">
           <span class="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-black">
             <img src="/logo.png" alt="" class="h-10 w-10 object-contain" />
           </span>
-          <span>
-            <span class="block text-sm font-bold leading-tight">{hospital.name}</span>
+          <span class="min-w-0">
+            <span class="block truncate text-sm font-bold leading-tight">{hospital.name}</span>
             <span class="block text-xs text-white/60">Admin Panel</span>
           </span>
         </a>
@@ -82,7 +94,7 @@ const groups: { label: string; names: string[] }[] = [
         </div>
       </aside>
 
-      <main class="ml-64 min-w-0 flex-1 p-6 lg:p-10">
+      <main class="min-w-0 flex-1 px-4 pb-8 pt-20 lg:ml-64 lg:p-10">
         <slot />
       </main>
     </div>
@@ -92,6 +104,32 @@ const groups: { label: string; names: string[] }[] = [
         localStorage.removeItem('mj-admin-token')
         localStorage.removeItem('mj-admin-user')
         window.location.href = '/admin'
+      })
+      const sidebar = document.getElementById('admin-sidebar')
+      const overlay = document.getElementById('admin-overlay')
+      const toggle = document.getElementById('admin-menu-toggle')
+      function openAdminNav() {
+        sidebar?.classList.remove('-translate-x-full')
+        overlay?.classList.remove('hidden')
+        toggle?.setAttribute('aria-expanded', 'true')
+        document.body.style.overflow = 'hidden'
+      }
+      function closeAdminNav() {
+        sidebar?.classList.add('-translate-x-full')
+        overlay?.classList.add('hidden')
+        toggle?.setAttribute('aria-expanded', 'false')
+        document.body.style.overflow = ''
+      }
+      toggle?.addEventListener('click', () => {
+        const open = toggle.getAttribute('aria-expanded') === 'true'
+        if (open) closeAdminNav()
+        else openAdminNav()
+      })
+      overlay?.addEventListener('click', closeAdminNav)
+      sidebar?.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.matchMedia('(max-width: 1023px)').matches) closeAdminNav()
+        })
       })
     </script>
   </body>

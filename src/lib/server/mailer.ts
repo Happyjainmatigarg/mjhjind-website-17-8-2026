@@ -87,13 +87,13 @@ export function wrapEmailHtml(title: string, bodyHtml: string): string {
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>${escapeHtml(title)}</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f3f4f6;font-family:Arial,Helvetica,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f3f4f6;padding:24px 12px;">
+<body style="margin:0;padding:0;background-color:#f7f5f2;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#f7f5f2;padding:24px 12px;">
     <tr>
       <td align="center">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background-color:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
           <tr>
-            <td style="background-color:#1e40af;padding:24px 28px;">
+            <td style="background-color:#2d5f8a;padding:24px 28px;">
               <p style="margin:0;color:#ffffff;font-size:20px;font-weight:bold;letter-spacing:0.3px;">${escapeHtml(hospital.name)}</p>
               <p style="margin:4px 0 0;color:#bfdbfe;font-size:13px;">${escapeHtml(hospital.tagline)}</p>
             </td>
@@ -110,9 +110,9 @@ export function wrapEmailHtml(title: string, bodyHtml: string): string {
                 ${escapeHtml(hospital.name)} · ${escapeHtml(hospital.address.line1)}, ${escapeHtml(hospital.address.city)}, ${escapeHtml(hospital.address.state)} ${escapeHtml(hospital.address.pincode)}
               </p>
               <p style="margin:0;color:#6b7280;font-size:12px;line-height:1.6;">
-                Emergency: <a href="tel:${escapeHtml(hospital.phones.emergency)}" style="color:#1e40af;text-decoration:none;">${escapeHtml(hospital.phones.emergency)}</a> · Appointments: <a href="tel:${escapeHtml(hospital.phones.appointment)}" style="color:#1e40af;text-decoration:none;">${escapeHtml(hospital.phones.appointment)}</a>
+                Emergency: <a href="tel:${escapeHtml(hospital.phones.emergency)}" style="color:#2d5f8a;text-decoration:none;">${escapeHtml(hospital.phones.emergency)}</a> · Appointments: <a href="tel:${escapeHtml(hospital.phones.appointment)}" style="color:#2d5f8a;text-decoration:none;">${escapeHtml(hospital.phones.appointment)}</a>
               </p>
-              <p style="margin:8px 0 0;color:#9ca3af;font-size:11px;">© ${new Date().getFullYear()} ${escapeHtml(hospital.name)} · <a href="${site}" style="color:#1e40af;text-decoration:none;">${site}</a></p>
+              <p style="margin:8px 0 0;color:#9ca3af;font-size:11px;">© ${new Date().getFullYear()} ${escapeHtml(hospital.name)} · <a href="${site}" style="color:#2d5f8a;text-decoration:none;">${site}</a></p>
             </td>
           </tr>
         </table>
