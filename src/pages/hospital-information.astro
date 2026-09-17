@@ -1,0 +1,103 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Hospital Information"
+  subtitle="Registered details, accreditation, services and statutory information."
+  updated="September 2026"
+>
+  <h2>About {hospital.name}</h2>
+  <p>
+    {hospital.name} is a multi-specialty hospital located in {hospital.address.city}, {hospital.address.state}, serving
+    patients from {hospital.address.city} and the surrounding districts since {hospital.foundedYear}. We provide
+    out-patient, in-patient, critical-care, maternity and diagnostic services.
+  </p>
+
+  <h2>Registered Address</h2>
+  <p>
+    {hospital.name}<br />
+    {hospital.address.line1}, {hospital.address.line2}<br />
+    {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    India
+  </p>
+
+  <h2>Accreditation &amp; Quality</h2>
+  <ul>
+    <li><strong>NABH Certified</strong> — accredited by the National Accreditation Board for Hospitals &amp; Healthcare Providers.</li>
+    <li>Quality systems aligned to NABH standards, including patient-safety, infection-control and quality-improvement programmes.</li>
+  </ul>
+
+  <h2>Services</h2>
+  <ul>
+    <li>Out-patient consultation across multiple specialties.</li>
+    <li>24 × 7 Emergency and Intensive Care (ICU).</li>
+    <li>In-patient wards and maternity services.</li>
+    <li>Diagnostics — laboratory and imaging, as available.</li>
+    <li>Ambulance services and community health camps.</li>
+    <li>Teleconsultation for suitable, non-emergency conditions.</li>
+  </ul>
+
+  <h2>Timings</h2>
+  <ul>
+    <li><strong>OPD:</strong> {hospital.hours.opd} (Monday to Saturday).</li>
+    <li><strong>Emergency &amp; ICU:</strong> 24 × 7, including Sundays and public holidays.</li>
+    <li><strong>Pharmacy:</strong> 24 × 7.</li>
+  </ul>
+
+  <h2>Emergency Contact</h2>
+  <ul>
+    <li><strong>Hospital emergency line (24 × 7):</strong> {hospital.phones.emergency}</li>
+    <li><strong>Ambulance:</strong> {hospital.phones.ambulance} (hospital) · 108 (national free ambulance)</li>
+    <li><strong>All-in-one national emergency:</strong> 112</li>
+    <li><strong>Women helpline:</strong> 181</li>
+  </ul>
+
+  <h2>Key Policies &amp; Patient Information</h2>
+  <ul>
+    <li><a href="/patient-rights">Patient Rights &amp; Responsibilities</a></li>
+    <li><a href="/patient-guide">Patient &amp; Visitor Guide</a></li>
+    <li><a href="/grievance">Grievance Redressal</a></li>
+    <li><a href="/refund-cancellation">Refund &amp; Cancellation Policy</a></li>
+    <li><a href="/insurance">Insurance &amp; TPA</a></li>
+    <li><a href="/telemedicine">Telemedicine &amp; Teleconsultation</a></li>
+    <li><a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · <a href="/disclaimer">Medical Disclaimer</a></li>
+    <li><a href="/accessibility">Accessibility Statement</a></li>
+  </ul>
+
+  <h2>Statutory and Regulatory Information</h2>
+  <p>
+    The hospital operates in accordance with applicable Indian law, including the Clinical Establishments Act, 2010, where
+    applicable, the Drugs and Cosmetics Act, biomedical-waste management rules, and the registration and licensing
+    requirements of the State of {hospital.address.state}. Clinical establishments and pharmacies operate under the
+    requisite licences issued by the competent authorities.
+  </p>
+  <p>
+    Registered medical practitioners practising at the hospital hold valid registration with the relevant State Medical
+    Council or the National Medical Commission. Doctor registration numbers are available on request and, where displayed,
+    on individual doctor profiles.
+  </p>
+
+  <h2>Medical Records</h2>
+  <p>
+    Medical records are maintained and retained in accordance with applicable law and professional regulations. Patients, or
+    their authorised representatives, may request copies of records by contacting the hospital. Requests are processed after
+    verifying identity, and statutory retention periods apply.
+  </p>
+
+  <h2>Anti-Fraud and Grievance</h2>
+  <p>
+    Concerns regarding billing, treatment, safety or conduct may be raised through our
+    <a href="/grievance">Grievance Redressal</a> process. Reports of suspected fraud or impersonation may be directed to
+    the hospital administration.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    {hospital.name}<br />
+    {hospital.address.line1}, {hospital.address.line2}, {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    Reception: {hospital.phones.reception} · Appointments: {hospital.phones.appointment}<br />
+    Email: {hospital.email}
+  </p>
+</LegalLayout>

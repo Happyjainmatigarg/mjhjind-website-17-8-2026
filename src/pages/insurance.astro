@@ -1,0 +1,79 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Insurance & TPA"
+  subtitle="Cashless treatment, empanelled insurers and third-party administrators, and the documents you need."
+  updated="September 2026"
+>
+  <h2>Cashless Treatment at {hospital.name}</h2>
+  <p>
+    We work with leading health insurers and Third-Party Administrators (TPAs) to offer cashless or reimbursement-based
+    treatment. If your insurer is in our network, you may be able to receive treatment without paying the full cost upfront,
+    subject to your policy terms, network conditions and the insurer's approval.
+  </p>
+
+  <h2>Insurers &amp; TPAs</h2>
+  <p>
+    The list of empanelled insurers and TPAs is displayed at the hospital reception and is shown below. The list is updated
+    from time to time as new tie-ups are added. Please confirm your specific policy and network status with our insurance
+    desk or your insurer before admission.
+  </p>
+  <div id="tpa-list" data-tpa-list>
+    <p class="text-sm text-gray-600 dark:text-slate-400">Loading the current list of empanelled insurers and TPAs…</p>
+  </div>
+  <p class="mt-4 text-sm">
+    If your insurer is not listed, you may still be eligible for treatment on a reimbursement basis. Contact our insurance
+    desk for assistance.
+  </p>
+
+  <h2>The Cashless Process</h2>
+  <ol>
+    <li><strong>Before admission (planned):</strong> Share your health-card and policy details with the insurance desk at least 48 hours before a planned admission so we can send a pre-authorisation request to your insurer/TPA.</li>
+    <li><strong>Emergency admission:</strong> Treatment begins immediately. The insurance desk submits the pre-authorisation request to your insurer/TPA at the earliest, and you may be asked for a deposit pending approval.</li>
+    <li><strong>Approval:</strong> The insurer/TPA reviews the request and issues an approval, a modified approval or a rejection. We inform you of the outcome.</li>
+    <li><strong>During treatment:</strong> Additional approvals may be sought for extended stay or procedures, as required by your policy.</li>
+    <li><strong>At discharge:</strong> The insurer/TPA settles the approved amount directly with the hospital. You pay any non-covered items, deductibles, co-payments or amounts beyond the sanctioned limit.</li>
+  </ol>
+
+  <h2>Documents You Will Need</h2>
+  <ul>
+    <li>Health insurance card and policy number.</li>
+    <li>Government photo identity proof (Aadhaar, voter ID, driving licence, passport or similar).</li>
+    <li>Doctor's referral or prescription, and previous medical records where available.</li>
+    <li>Employer or corporate authorisation letter, where applicable.</li>
+    <li>Any insurer-specific forms required at admission.</li>
+  </ul>
+
+  <h2>Reimbursement Claims</h2>
+  <p>
+    Where cashless approval is not available, you may pay for treatment and claim reimbursement from your insurer. We
+    provide an itemised bill, discharge summary and relevant reports to support your claim. Please verify your insurer's
+    submission deadlines and required documents.
+  </p>
+
+  <h2>What Is Usually Not Covered</h2>
+  <p>
+    Coverages and exclusions vary by policy. Common exclusions include certain waiting periods, pre-existing conditions,
+    cosmetic procedures, non-medical consumables and specific room-rent caps. Please refer to your policy wording or ask
+    your insurer/TPA for clarification.
+  </p>
+
+  <h2>Insurance Desk</h2>
+  <p>
+    For pre-authorisation, network confirmation or claim assistance, contact the hospital insurance desk:
+  </p>
+  <p>
+    {hospital.name}<br />
+    {hospital.address.line1}, {hospital.address.line2}, {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    Email: {hospital.email}<br />
+    Phone: {hospital.phones.reception}
+  </p>
+
+  <script>
+    import { initTpaList } from '../scripts/tpa-list'
+    initTpaList()
+  </script>
+</LegalLayout>

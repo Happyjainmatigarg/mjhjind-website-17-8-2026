@@ -5,7 +5,7 @@ import Icon from '../components/Icon.astro'
 import { hospital, emergencyNumbers } from '../data/site'
 ---
 
-<Layout title="Emergency & Ambulance" active="emergency" description={`24×7 emergency and ambulance services at ${hospital.name}, Jind. Call ${hospital.phones.emergency} for medical emergencies or dial 102 for an ambulance.`}>
+<Layout title="Emergency & Ambulance" active="emergency" description={`24×7 emergency and ambulance services at ${hospital.name}, Jind. Call ${hospital.phones.emergency} for medical emergencies, dial 112 for any emergency or 108 for a free ambulance.`}>
   <PageHero
     eyebrow="Emergency Care"
     title="24×7 Emergency & Ambulance"
@@ -75,11 +75,12 @@ import { hospital, emergencyNumbers } from '../data/site'
       </div>
 
       <div class="mx-auto mt-10 max-w-2xl rounded-md bg-white p-6 text-center shadow-card-md dark:bg-night-surface">
-        <h3 class="text-lg font-semibold">Save the Ambulance Number</h3>
-        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">India's national ambulance number is 108. Our hospital ambulance line is <strong>102</strong>.</p>
-        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Ambulance to the hospital is also available by calling our emergency line at <strong>{hospital.phones.emergency}</strong>.</p>
+        <h3 class="text-lg font-semibold">Save These Numbers</h3>
+        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">Dial <strong>112</strong> for any emergency (police, fire, ambulance or disaster response). Dial <strong>108</strong> for a free emergency ambulance.</p>
+        <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">For an ambulance directly to our hospital, call our 24 × 7 line at <strong>{hospital.phones.emergency}</strong>.</p>
         <div class="mt-5 flex flex-wrap justify-center gap-3">
-          <a href={`tel:102`} class="btn-primary"><Icon name="car" size={18} /> Call 102</a>
+          <a href={`tel:112`} class="btn-primary"><Icon name="emergency" size={18} /> Call 112</a>
+          <a href={`tel:108`} class="btn-secondary"><Icon name="car" size={18} /> Call 108</a>
           <a href={`tel:${hospital.phones.emergency.replace(/-/g, '')}`} class="btn-secondary"><Icon name="phone" size={18} /> {hospital.phones.emergency}</a>
         </div>
       </div>
@@ -92,7 +93,7 @@ import { hospital, emergencyNumbers } from '../data/site'
       <div class="mt-8 grid gap-5 md:grid-cols-3">
         {[
           { n: '1', t: 'Stay calm', d: 'Reassure the person. Panic only adds to the confusion.' },
-          { n: '2', t: 'Call the emergency number', d: `Dial ${hospital.phones.emergency} or 102 and answer all questions clearly.` },
+          { n: '2', t: 'Call the emergency number', d: `Dial ${hospital.phones.emergency} or 112, and answer all questions clearly.` },
           { n: '3', t: 'Keep the person still', d: 'Do not move someone with a suspected head, neck or spine injury.' },
           { n: '4', t: 'Follow instructions', d: 'The dispatcher may give you first-aid steps while help is on the way.' },
           { n: '5', t: 'Keep details ready', d: 'Your location, the person\'s age, and what happened.' },

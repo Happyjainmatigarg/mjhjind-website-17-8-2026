@@ -31,19 +31,19 @@ const navItems = [
         <span class="relative inline-flex h-2 w-2 rounded-full bg-heal-500"></span>
       </span>
       <span class="hidden sm:inline">24 × 7 Emergency</span>
-      <a href={telHref(hospital.phones.emergency)} class="font-bold text-heal-500 underline-offset-2 hover:underline">
+      <a href={telHref(hospital.phones.emergency)} data-site-phone="emergency" class="font-bold text-white underline-offset-2 hover:underline">
         {hospital.phones.emergency}
       </a>
       <span class="hidden text-white/40 sm:inline">|</span>
-      <a href={telHref(hospital.phones.ambulance)} class="hidden font-bold text-white underline-offset-2 hover:underline sm:inline">
+      <a href={telHref(hospital.phones.ambulance)} data-site-phone="ambulance" class="hidden font-bold text-white underline-offset-2 hover:underline sm:inline">
         Ambulance: {hospital.phones.ambulance}
       </a>
     </p>
     <div class="hidden items-center gap-4 md:flex">
-      <a href={`mailto:${hospital.email}`} class="flex items-center gap-1.5 text-xs text-white/80 hover:text-white">
+      <a href={`mailto:${hospital.email}`} data-site-email class="flex items-center gap-1.5 text-xs text-white/80 hover:text-white">
         <Icon name="mail" size={14} /> {hospital.email}
       </a>
-      <span class="text-xs text-white/60">{hospital.hours.opd}</span>
+      <span class="text-xs text-white/60" data-site-hours="opd">{hospital.hours.opd}</span>
     </div>
   </div>
 </div>

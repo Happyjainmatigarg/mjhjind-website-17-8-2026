@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro'
-import { ADMIN_COLLECTIONS, deleteItem, getItemById, updateItem, type AppointmentRecord, type StoreCollection } from '../../../../lib/server/store'
+import { ADMIN_COLLECTIONS, deleteItem, getItemById, logActivity, updateItem, type AppointmentRecord, type StoreCollection } from '../../../../lib/server/store'
 import { requireAdmin } from '../../../../lib/server/admin'
 import { sendAppointmentStatusToPatient } from '../../../../lib/server/notifications'
 
@@ -26,7 +26,8 @@ export const GET: APIRoute = async ({ params, request }) => {
 }
 
 export const PUT: APIRoute = async ({ params, request }) => {
-  if (!(await requireAdmin(request))) return json({ ok: false, error: 'Unauthorized.' }, 401)
+  const user = await requireAdmin(request)
+  if (!user) return json({ ok: false, error: 'Unauthorized.' }, 401)
   const { collection, id } = params
   if (!collection || !isCollection(collection) || !id) return json({ ok: false, error: 'Unknown collection.' }, 404)
   let data: Record<string, unknown>
@@ -41,15 +42,20 @@ export const PUT: APIRoute = async ({ params, request }) => {
   if (collection === 'appointments' && prev && prev.status !== item.status) {
     const record = item as unknown as AppointmentRecord
     Promise.resolve(sendAppointmentStatusToPatient(record)).catch(() => {})
+    logActivity({ user, action: 'status.change', collection, itemId: id, summary: `Appointment ${id} status ${String(prev.status)} → ${String(item.status)}` })
+  } else {
+    logActivity({ user, action: 'update', collection, itemId: id, summary: `Updated ${collection}: ${id}` })
   }
   return json({ ok: true, item })
 }
 
 export const DELETE: APIRoute = async ({ params, request }) => {
-  if (!(await requireAdmin(request))) return json({ ok: false, error: 'Unauthorized.' }, 401)
+  const user = await requireAdmin(request)
+  if (!user) return json({ ok: false, error: 'Unauthorized.' }, 401)
   const { collection, id } = params
   if (!collection || !isCollection(collection) || !id) return json({ ok: false, error: 'Unknown collection.' }, 404)
   const removed = deleteItem(collection, id)
   if (!removed) return json({ ok: false, error: 'Item not found.' }, 404)
+  logActivity({ user, action: 'delete', collection, itemId: id, summary: `Deleted ${collection}: ${id}` })
   return json({ ok: true })
 }

@@ -1,0 +1,104 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Telemedicine & Teleconsultation"
+  subtitle="Terms of use and informed consent for online consultations, in line with the Telemedicine Practice Guidelines, 2020."
+  updated="September 2026"
+>
+  <h2>1. About Teleconsultation</h2>
+  <p>
+    {hospital.name} offers teleconsultation as an alternative to an in-person visit for suitable, non-emergency conditions.
+    Teleconsultation is provided by a registered medical practitioner in accordance with the
+    <strong>Telemedicine Practice Guidelines, 2020</strong> notified under the Indian Medical Council (Professional Conduct,
+    Etiquette and Ethics) Regulations, 2002, and any subsequent amendments.
+  </p>
+
+  <h2>2. When Teleconsultation Is Suitable</h2>
+  <ul>
+    <li>Follow-up reviews of an existing condition where an in-person examination is not essential.</li>
+    <li>Review of test or investigation reports and advice on the next steps.</li>
+    <li>Minor, stable or self-limiting complaints where a physical examination is not indicated.</li>
+    <li>Second opinions and lifestyle or preventive-health guidance.</li>
+  </ul>
+
+  <h2>3. When Teleconsultation Is NOT Suitable</h2>
+  <p>
+    Teleconsultation is <strong>not</strong> a substitute for emergency care. Do not use it for any medical emergency.
+    If you experience chest pain, severe breathlessness, stroke symptoms, uncontrolled bleeding, serious injury, severe
+    allergic reaction, or any rapidly worsening condition, call our emergency line
+    <strong>{hospital.phones.emergency}</strong> or dial <strong>112</strong> immediately (ambulance <strong>108</strong>).
+  </p>
+
+  <h2>4. Informed Consent</h2>
+  <p>
+    By requesting a teleconsultation you confirm that you understand and consent to the following:
+  </p>
+  <ul>
+    <li>The consultation is conducted remotely using audio and/or video, and the doctor cannot perform a physical examination.</li>
+    <li>Diagnosis and treatment may therefore be more limited, and the doctor may advise an in-person visit or further tests if required.</li>
+    <li>You will provide accurate and complete information about your symptoms, medical history, current medicines and allergies.</li>
+    <li>You may withdraw consent and end the consultation at any time.</li>
+    <li>Clinical records of the consultation will be created and retained as required by law.</li>
+    <li>Technology may occasionally fail or the connection may drop; the doctor will attempt to reconnect or reschedule.</li>
+  </ul>
+
+  <h2>5. Prescriptions</h2>
+  <p>
+    Prescribing rules follow the Telemedicine Practice Guidelines. Depending on the category of medicine, the doctor may
+    issue a prescription, advise an in-person consultation, or decline to prescribe. Medicines in the prohibited category
+    for teleconsultation will not be prescribed remotely. Where permitted, a digital prescription may be shared with you,
+    and you may be asked to visit the hospital for certain treatments.
+  </p>
+
+  <h2>6. Identity and Confidentiality</h2>
+  <p>
+    The doctor will verify your identity before the consultation using the details you provide. Your consultation is
+    confidential and follows the same privacy standards as an in-person visit. Please see our
+    <a href="/privacy">Privacy Policy</a>.
+  </p>
+
+  <h2>7. Fees and Payment</h2>
+  <p>
+    Teleconsultation fees are as communicated at the time of booking. Unless otherwise stated, teleconsultation fees are
+    not refundable once the consultation has taken place. See our
+    <a href="/refund-cancellation">Refund &amp; Cancellation Policy</a>.
+  </p>
+
+  <h2>8. Technical Requirements</h2>
+  <ul>
+    <li>A stable internet connection and a smartphone, tablet or computer with a working camera and microphone.</li>
+    <li>A private, quiet place where you can speak freely.</li>
+    <li>Your previous prescriptions, reports and a list of current medicines where relevant.</li>
+  </ul>
+
+  <h2>9. Doctor's Right to Decline</h2>
+  <p>
+    A doctor may decline or discontinue a teleconsultation if it is not clinically appropriate, if identity cannot be
+    verified, or if the consultation falls outside the permitted scope. In such cases, the fee may be refunded in
+    accordance with our refund policy, and you will be advised on the appropriate next step.
+  </p>
+
+  <h2>10. Limitation of Liability</h2>
+  <p>
+    Teleconsultation advice is based on the information you provide and what is observable remotely. To the extent
+    permitted by law, the hospital and treating doctor are not liable for outcomes arising from incomplete or inaccurate
+    information provided by the patient, or from the patient's failure to follow referred advice for in-person evaluation
+    or emergency care.
+  </p>
+
+  <h2>11. Record Keeping</h2>
+  <p>
+    Teleconsultation records are maintained in accordance with the Telemedicine Practice Guidelines and applicable law, and
+    are kept confidential. You may request a copy of your consultation record through the hospital.
+  </p>
+
+  <h2>12. Contact</h2>
+  <p>
+    {hospital.name}<br />
+    {hospital.address.line1}, {hospital.address.line2}, {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    Email: {hospital.email} · Phone: {hospital.phones.appointment}
+  </p>
+</LegalLayout>

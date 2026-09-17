@@ -59,6 +59,22 @@
     color: var(--color-text);
   }
 
+  .text-white,
+  .bg-hero,
+  .bg-brand-900,
+  .bg-brand-800,
+  .bg-ink {
+    --color-heading: #ffffff;
+    --color-text: rgba(255, 255, 255, 0.92);
+    --color-text-muted: rgba(255, 255, 255, 0.75);
+  }
+
+  footer {
+    --color-heading: var(--color-footer-heading);
+    --color-text: var(--color-footer-text);
+    --color-text-muted: var(--color-footer-text);
+  }
+
   ::selection {
     background-color: #2d5f8a;
     color: #ffffff;

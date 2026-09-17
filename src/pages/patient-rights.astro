@@ -1,0 +1,115 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Patient Rights & Responsibilities"
+  subtitle="Our commitment to the Charter of Patients' Rights notified by the Ministry of Health & Family Welfare, Government of India."
+  updated="September 2026"
+>
+  <h2>Our Commitment</h2>
+  <p>
+    {hospital.name} is committed to delivering care that is safe, respectful, dignified and free from discrimination.
+    This page summarises the <strong>Charter of Patients' Rights</strong> issued by the Ministry of Health &amp; Family
+    Welfare (MoHFW), Government of India, and the responsibilities we ask of patients and their families.
+  </p>
+
+  <h2>Your Rights as a Patient</h2>
+
+  <h3>1. Right to Information</h3>
+  <ul>
+    <li>You have the right to receive complete, accurate and understandable information about your diagnosis, proposed treatment, expected outcomes, risks and alternatives.</li>
+    <li>You have the right to know the name and qualification of the doctor(s) treating you.</li>
+    <li>You have the right to receive an itemised bill and an estimate of the expected cost of treatment.</li>
+    <li>You have the right to access your medical records and to a copy of your discharge summary.</li>
+  </ul>
+
+  <h3>2. Right to Records</h3>
+  <p>
+    You or your authorised representative may request copies of your clinical records. Requests are processed within a
+    reasonable time after identity verification, and applicable copying charges, if any, are disclosed in advance.
+  </p>
+
+  <h3>3. Right to Emergency Care</h3>
+  <p>
+    Under law, no hospital may refuse emergency medical treatment on any ground, including the ability to pay. Our
+    emergency department operates <strong>24 × 7</strong> and will stabilise every patient who presents with an emergency.
+  </p>
+
+  <h3>4. Right to Informed Consent</h3>
+  <p>
+    No investigation or treatment will be carried out without your informed consent, except in a life-threatening
+    emergency where delay would be harmful. You have the right to refuse treatment and to be informed of the consequences
+    of that decision. For minors and patients unable to consent, consent is taken from a parent, guardian or legal
+    representative.
+  </p>
+
+  <h3>5. Right to Confidentiality and Privacy</h3>
+  <p>
+    Your medical information and records are kept confidential. It is shared only with those directly involved in your
+    care, when you authorise it, or where the law requires disclosure. You have the right to a private consultation
+    environment and to have your dignity protected during examination and procedures.
+  </p>
+
+  <h3>6. Right to Second Opinion</h3>
+  <p>
+    You have the right to seek a second opinion from another qualified practitioner and to request that copies of relevant
+    records be made available for that purpose.
+  </p>
+
+  <h3>7. Right to Transparency in Charges &amp; Estimates</h3>
+  <ul>
+    <li>We provide an estimated cost of planned admissions, surgeries and packages in advance where possible.</li>
+    <li>You are entitled to know the breakdown of charges before incurring them.</li>
+    <li>Cashless insurance and TPA arrangements, where applicable, are explained at the time of admission.</li>
+  </ul>
+
+  <h3>8. Right to Dignity and Non-Discrimination</h3>
+  <p>
+    Care is provided without discrimination on the basis of religion, caste, gender, sexual orientation, disability,
+    language, nationality or ability to pay. You have the right to be treated with courtesy and to have your cultural and
+    religious sensitivities respected.
+  </p>
+
+  <h3>9. Right to Grievance Redressal</h3>
+  <p>
+    You have the right to raise a complaint about your care or experience and to receive a timely, documented response.
+    See our <a href="/grievance">Grievance Redressal</a> page for the process, timelines and escalation matrix.
+  </p>
+
+  <h3>10. Right to Respect in Communication</h3>
+  <p>
+    You have the right to receive information in a language and manner you understand, including the support of a
+    translator or attendant where reasonably possible.
+  </p>
+
+  <h2>Patient &amp; Family Responsibilities</h2>
+  <p>To help us provide the safest possible care, we ask you to:</p>
+  <ul>
+    <li>Provide complete and accurate information about your symptoms, past illnesses, medications, allergies and previous treatments.</li>
+    <li>Follow the treatment plan and medication instructions agreed with your care team, and inform the team of any change in your condition.</li>
+    <li>Respect the hospital's staff, other patients and visitors, and observe visiting hours, silence zones and infection-control rules.</li>
+    <li>Keep appointments punctually, and inform us in advance if you must reschedule or cancel.</li>
+    <li>Take reasonable care of your belongings and of hospital property.</li>
+    <li>Meet your financial obligations for services received, and keep your insurance documents ready where applicable.</li>
+    <li>Follow the no-smoking, infection-control and medication-safety rules of the hospital.</li>
+  </ul>
+
+  <h2>How to Raise a Concern</h2>
+  <p>
+    You may raise a concern directly with any staff member, the nursing station, the treating doctor, or our
+    <strong>Grievance Officer</strong>:
+  </p>
+  <p>
+    Grievance Officer — {hospital.name}<br />
+    {hospital.address.line1}, {hospital.address.line2}, {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    Email: {hospital.email}<br />
+    Phone: {hospital.phones.reception}
+  </p>
+
+  <p class="mt-6 text-sm">
+    This charter is based on the Charter of Patients' Rights notified by the Ministry of Health &amp; Family Welfare,
+    Government of India, and the National Accreditation Board for Hospitals &amp; Healthcare Providers (NABH) standards.
+  </p>
+</LegalLayout>

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro'
 import { verifyLogin } from '../../../lib/server/admin'
+import { logActivity } from '../../../lib/server/store'
 
 export const prerender = false
 
@@ -19,7 +20,17 @@ export const POST: APIRoute = async ({ request }) => {
   }
   try {
     const result = await verifyLogin(String(data.username || ''), String(data.password || ''))
-    if (!result) return json({ ok: false, error: 'Invalid username or password.' }, 401)
+    if (!result) {
+      logActivity({
+        user: String(data.username || 'unknown'),
+        action: 'login.failed',
+        collection: 'auth',
+        itemId: '',
+        summary: 'Failed sign-in attempt',
+      })
+      return json({ ok: false, error: 'Invalid username or password.' }, 401)
+    }
+    logActivity({ user: result.username, action: 'login', collection: 'auth', itemId: '', summary: 'Signed in to admin panel' })
     return json({ ok: true, ...result })
   } catch {
     return json({ ok: false, error: 'Login failed. Please try again.' }, 500)

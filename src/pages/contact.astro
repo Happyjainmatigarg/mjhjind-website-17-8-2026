@@ -17,7 +17,7 @@ import { hospital, emergencyNumbers } from '../data/site'
     <div class="container-site flex flex-wrap items-center justify-center gap-x-8 gap-y-3 py-4">
       {emergencyNumbers.map((n) => (
         <a href={`tel:${n.number.replace(/-/g, '')}`} class="group flex items-center gap-2 text-sm hover:opacity-90">
-          <Icon name="phone" size={16} class="text-heal-300" />
+          <Icon name="phone" size={16} class="text-white" />
           <span class="font-medium">{n.label}:</span>
           <span class="font-semibold tracking-wide group-hover:underline">{n.number}</span>
         </a>
@@ -84,8 +84,8 @@ import { hospital, emergencyNumbers } from '../data/site'
           <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-brand-800 text-white"><Icon name="map-pin" size={22} /></span>
           <div>
             <h3 class="font-semibold">Hospital Address</h3>
-            <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">
-              {hospital.name}<br />
+            <p class="mt-1 text-sm text-gray-600 dark:text-slate-400">{hospital.name}</p>
+            <p class="text-sm text-gray-600 dark:text-slate-400" data-site-address>
               {hospital.address.line1}, {hospital.address.line2}<br />
               {hospital.address.city}, {hospital.address.state} {hospital.address.pincode}
             </p>
@@ -103,7 +103,7 @@ import { hospital, emergencyNumbers } from '../data/site'
               {emergencyNumbers.map((n) => (
                 <li class="flex items-center justify-between gap-3 border-b pb-2 last:border-0 last:pb-0 dark:border-night-border">
                   <span class="text-gray-600 dark:text-slate-400">{n.label} {n.note ? `· ${n.note}` : ''}</span>
-                  <a href={`tel:${n.number.replace(/-/g, '')}`} class="font-semibold hover:underline" style="color: var(--color-primary)">{n.number}</a>
+                  <a href={`tel:${n.number.replace(/-/g, '')}`} class="font-semibold hover:underline" style="color: var(--color-primary)"><span data-site-phone={n.number === hospital.phones.emergency ? 'emergency' : undefined}>{n.number}</span></a>
                 </li>
               ))}
             </ul>
@@ -115,7 +115,7 @@ import { hospital, emergencyNumbers } from '../data/site'
             <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-700 dark:bg-night-border dark:text-slate-200"><Icon name="mail" size={18} /></span>
             <div class="min-w-0">
               <p class="text-xs font-medium text-gray-500 dark:text-slate-400">Email</p>
-              <p class="truncate text-sm font-semibold">{hospital.email}</p>
+              <p class="truncate text-sm font-semibold" data-site-email>{hospital.email}</p>
             </div>
           </a>
           <a href={hospital.social.whatsapp} target="_blank" rel="noopener noreferrer" class="card card-hover flex items-center gap-3 !p-4">

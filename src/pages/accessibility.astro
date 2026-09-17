@@ -1,0 +1,69 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Accessibility Statement"
+  subtitle="Our commitment to making this website and our services accessible to everyone."
+  updated="September 2026"
+>
+  <h2>Our Commitment</h2>
+  <p>
+    {hospital.name} is committed to ensuring that our website and digital services are accessible to all users, including
+    people with disabilities and those who use assistive technologies. We believe access to health information and services
+    is a right, not a privilege.
+  </p>
+
+  <h2>Standards We Follow</h2>
+  <ul>
+    <li><strong>WCAG 2.1 Level AA</strong> — the Web Content Accessibility Guidelines published by the W3C.</li>
+    <li><strong>IS 17802</strong> — the Indian Standard on accessibility for ICT products and services.</li>
+    <li><strong>Rights of Persons with Disabilities Act, 2016 (RPwD Act)</strong> — including the accessibility obligations applicable to service providers.</li>
+    <li>Guidance from the <strong>Guidelines for Indian Government Websites (GIGW)</strong> where relevant.</li>
+  </ul>
+
+  <h2>Measures We Have Taken</h2>
+  <ul>
+    <li>Semantic HTML headings, landmarks and lists to support screen readers and keyboard navigation.</li>
+    <li>Sufficient colour contrast for text and important interface elements, including in dark mode.</li>
+    <li>Visible focus indicators and full keyboard operability for interactive elements.</li>
+    <li>Alternative text for meaningful images, and decorative images hidden from assistive technology.</li>
+    <li>Form fields with programmatically associated labels, clear error messages and logical tab order.</li>
+    <li>Respect for the operating system's "reduce motion" preference, with reduced animation for those who prefer it.</li>
+    <li>Responsive layouts that work across screen sizes and support browser zoom and text scaling.</li>
+    <li>Descriptive link text and page titles, with a "skip to main content" link.</li>
+  </ul>
+
+  <h2>Known Limitations</h2>
+  <p>
+    Accessibility is an ongoing effort. Some third-party content (for example, embedded maps or external services) may not
+    fully meet our standards. We are working to reduce these gaps and welcome your feedback.
+  </p>
+
+  <h2>Assistive Technology Support</h2>
+  <p>
+    This website is designed to work with current versions of major screen readers, voice-control software and browser
+    magnification tools. For the best experience, please use a recent version of your browser and assistive technology.
+  </p>
+
+  <h2>Feedback and Assistance</h2>
+  <p>
+    If you encounter an accessibility barrier, or need information from this website in an alternative format or language,
+    please contact us. We will do our best to provide the information you need and to fix the issue.
+  </p>
+  <p>
+    <strong>Accessibility Contact — {hospital.name}</strong><br />
+    {hospital.address.line1}, {hospital.address.line2}, {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    Email: {hospital.email}<br />
+    Phone: {hospital.phones.reception}
+  </p>
+  <p>We aim to acknowledge accessibility feedback within <strong>5 working days</strong>.</p>
+
+  <h2>Physical Accessibility</h2>
+  <p>
+    For information about wheelchair access, accessible entrances, restrooms, parking, assistance for patients with
+    disabilities and the language support available at the hospital, please call us at {hospital.phones.reception} before
+    your visit so we can make suitable arrangements.
+  </p>
+</LegalLayout>

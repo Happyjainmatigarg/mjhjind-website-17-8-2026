@@ -8,6 +8,7 @@ export interface HospitalInfo {
   phones: { emergency: string; ambulance: string; appointment: string; reception: string }
   address: { line1: string; line2: string; city: string; state: string; pincode: string }
   hours: { opd: string }
+  national: { emergency: string; ambulance: string; women: string; covid?: string }
   social: { facebook: string; instagram: string; youtube: string; whatsapp: string }
   mapsDirections: string
   mapsEmbed: string
@@ -34,6 +35,7 @@ export const hospital: HospitalInfo = {
     pincode: '126102',
   },
   hours: { opd: '9:00 AM – 2:00 PM' },
+  national: { emergency: '112', ambulance: '108', women: '181' },
   social: {
     facebook: 'https://www.facebook.com/share/1FLNJvwyw4/',
     instagram: 'https://www.instagram.com/meenakshi_jain_hospital',
@@ -51,9 +53,10 @@ export interface EmergencyNumber {
 }
 
 export const emergencyNumbers: EmergencyNumber[] = [
-  { label: 'Emergency', number: '8278170381', note: '24 × 7' },
-  { label: 'Ambulance', number: '8278170381', note: '24 × 7' },
-  { label: 'Reception', number: '8278170381', note: 'OPD hours' },
+  { label: 'Medical Emergency (Hospital)', number: '8278170381', note: '24 × 7 · Direct hospital line' },
+  { label: 'All-in-one Emergency', number: '112', note: 'Police, fire, ambulance and disaster response' },
+  { label: 'Ambulance (National)', number: '108', note: 'Free emergency ambulance service' },
+  { label: 'Women Helpline', number: '181', note: '24 × 7 · Women in distress' },
 ]
 
 export interface SiteSection {

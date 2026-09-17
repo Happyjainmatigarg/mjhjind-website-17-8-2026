@@ -71,7 +71,7 @@ export const faqs: Faq[] = [
   },
   {
     question: 'What should I do in case of a medical emergency?',
-    answer: 'Call our 24×7 emergency line immediately or dial the national ambulance number 108/102. Do not drive yourself to the hospital — our ambulance can reach you and start care en route.',
+    answer: 'Call our 24×7 emergency line immediately or dial the national emergency number 112 (ambulance 108). Do not drive yourself to the hospital — our ambulance can reach you and start care en route.',
     category: 'General',
   },
 ]

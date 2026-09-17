@@ -13,19 +13,22 @@ import { telHref } from '../lib/utils'
         <p class="mt-4 text-sm leading-relaxed">
           A modern, patient-first hospital serving the people of Jind and surrounding districts since {hospital.foundedYear}. Trusted care, advanced facilities, and a team that treats every patient like family.
         </p>
-        <div class="mt-5 flex gap-3">
-          <a href={hospital.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-heal-600">
-            <Icon name="facebook" size={18} />
-          </a>
-          <a href={hospital.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-heal-600">
-            <Icon name="instagram" size={18} />
-          </a>
-          <a href={hospital.social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-heal-600">
-            <Icon name="youtube" size={18} />
-          </a>
-          <a href={hospital.social.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-heal-600">
-            <Icon name="whatsapp" size={18} />
-          </a>
+        <div class="mt-5 flex flex-wrap gap-3" data-site-social>
+          {hospital.social.facebook && (
+            <a href={hospital.social.facebook} data-social="facebook" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-heal-600">
+              <Icon name="facebook" size={18} />
+            </a>
+          )}
+          {hospital.social.instagram && (
+            <a href={hospital.social.instagram} data-social="instagram" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-heal-600">
+              <Icon name="instagram" size={18} />
+            </a>
+          )}
+          {hospital.social.whatsapp && (
+            <a href={hospital.social.whatsapp} data-social="whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-heal-600">
+              <Icon name="whatsapp" size={18} />
+            </a>
+          )}
         </div>
       </div>
 
@@ -58,39 +61,54 @@ import { telHref } from '../lib/utils'
         <h3 class="mb-4 text-sm font-semibold uppercase tracking-wider" style="color: var(--color-footer-heading)">Contact Us</h3>
         <ul class="space-y-3 text-sm">
           <li class="flex gap-3">
-            <Icon name="map-pin" size={18} class="mt-0.5 shrink-0 text-heal-500" />
-            <span>{hospital.address.line1}, {hospital.address.line2}<br />{hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}</span>
+            <Icon name="map-pin" size={18} class="mt-0.5 shrink-0 text-white" />
+            <span data-site-address>{hospital.address.line1}, {hospital.address.line2}<br />{hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}</span>
           </li>
           <li class="flex gap-3">
-            <Icon name="phone" size={18} class="mt-0.5 shrink-0 text-heal-500" />
-            <a href={telHref(hospital.phones.reception)} class="hover:text-white">{hospital.phones.reception}</a>
+            <Icon name="phone" size={18} class="mt-0.5 shrink-0 text-white" />
+            <a href={telHref(hospital.phones.reception)} data-site-phone="reception" class="hover:text-white">{hospital.phones.reception}</a>
           </li>
           <li class="flex gap-3">
-            <Icon name="mail" size={18} class="mt-0.5 shrink-0 text-heal-500" />
-            <a href={`mailto:${hospital.email}`} class="hover:text-white">{hospital.email}</a>
+            <Icon name="mail" size={18} class="mt-0.5 shrink-0 text-white" />
+            <a href={`mailto:${hospital.email}`} data-site-email class="hover:text-white">{hospital.email}</a>
           </li>
           <li class="flex gap-3">
-            <Icon name="clock" size={18} class="mt-0.5 shrink-0 text-heal-500" />
-            <span>{hospital.hours.opd}</span>
+            <Icon name="clock" size={18} class="mt-0.5 shrink-0 text-white" />
+            <span data-site-hours="opd">{hospital.hours.opd}</span>
           </li>
         </ul>
         <div class="mt-5 rounded-md border border-white/10 bg-white/5 p-4">
           <p class="flex items-center gap-2 text-sm font-semibold text-white">
-            <Icon name="lightning" size={16} class="text-warm-500" /> Emergency: {hospital.phones.emergency}
+            <Icon name="lightning" size={16} class="text-warm-500" /> Emergency: <span data-site-phone="emergency">{hospital.phones.emergency}</span>
           </p>
-          <p class="mt-1 text-xs">Ambulance: {hospital.phones.ambulance} · 24 × 7 available</p>
+          <p class="mt-1 text-xs">Ambulance: <span data-site-phone="ambulance">{hospital.phones.ambulance}</span> · 24 × 7 available</p>
         </div>
       </div>
     </div>
   </div>
 
   <div class="border-t border-white/10">
-    <div class="container-site flex flex-col items-center justify-between gap-3 py-5 text-xs sm:flex-row">
-      <p>© {new Date().getFullYear()} {hospital.name}. All rights reserved.</p>
-      <div class="flex items-center gap-4">
+    <div class="container-site py-6">
+      <nav aria-label="Patient information and legal links" class="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs sm:justify-start">
+        <a href="/patient-rights" class="hover:text-white">Patient Rights</a>
+        <a href="/patient-guide" class="hover:text-white">Patient Guide</a>
+        <a href="/grievance" class="hover:text-white">Grievance Redressal</a>
+        <a href="/refund-cancellation" class="hover:text-white">Refunds &amp; Cancellation</a>
+        <a href="/insurance" class="hover:text-white">Insurance &amp; TPA</a>
+        <a href="/telemedicine" class="hover:text-white">Telemedicine</a>
+        <a href="/hospital-information" class="hover:text-white">Hospital Information</a>
+        <a href="/accessibility" class="hover:text-white">Accessibility</a>
         <a href="/privacy" class="hover:text-white">Privacy Policy</a>
         <a href="/terms" class="hover:text-white">Terms of Service</a>
         <a href="/disclaimer" class="hover:text-white">Medical Disclaimer</a>
+      </nav>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="container-site flex flex-col items-center justify-between gap-3 py-5 text-xs sm:flex-row">
+        <p>© {new Date().getFullYear()} {hospital.name}. All rights reserved.</p>
+        <p class="text-center sm:text-right">
+          NABH Certified · Emergency 24 × 7 · <a href="/emergency" class="hover:text-white">Emergency &amp; Ambulance</a>
+        </p>
       </div>
     </div>
   </div>

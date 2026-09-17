@@ -4,18 +4,39 @@ import { hospital } from '../data/site'
 interface Props {
   path?: string
   schema?: object[]
+  noindex?: boolean
 }
 
-const { path = '/', schema = [] } = Astro.props
+const { path = '/', schema = [], noindex = false } = Astro.props
 const url = `https://${hospital.domains.primary}${path === '/' ? '/' : path}`
 const { name, tagline, address, phones, email, social, mapsDirections, foundedYear } = hospital
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name,
+  alternateName: hospital.shortName,
+  url: `https://${hospital.domains.primary}/`,
+  inLanguage: 'en-IN',
+  publisher: { '@id': `https://${hospital.domains.primary}/#hospital` },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `https://${hospital.domains.primary}/search?q={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+}
 
 const hospitalSchema = {
   '@context': 'https://schema.org',
   '@type': 'Hospital',
+  '@id': `https://${hospital.domains.primary}/#hospital`,
   name,
   alternateName: hospital.shortName,
   slogan: tagline,
+  description: `${name} is a NABH-certified multi-speciality hospital in ${address.city}, ${address.state}, providing 24x7 emergency and ICU care.`,
   url: `https://${hospital.domains.primary}`,
   telephone: phones.reception,
   email,
@@ -38,14 +59,48 @@ const hospitalSchema = {
       opens: '09:00',
       closes: '14:00',
     },
+    {
+      '@type': 'OpeningHoursSpecification',
+      description: 'Emergency, ICU and inpatient services',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '00:00',
+      closes: '23:59',
+    },
   ],
-  sameAs: [social.facebook, social.instagram, social.youtube, social.whatsapp],
+  availableService: [
+    { '@type': 'MedicalProcedure', name: 'Emergency Care' },
+    { '@type': 'MedicalProcedure', name: 'Intensive Care (ICU)' },
+    { '@type': 'MedicalProcedure', name: 'Outpatient (OPD) Consultation' },
+  ],
+  contactPoint: [
+    {
+      '@type': 'ContactPoint',
+      contactType: 'emergency',
+      telephone: phones.emergency,
+      availableLanguage: ['en', 'hi'],
+      areaServed: 'IN',
+    },
+    {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      telephone: phones.reception,
+      email,
+      availableLanguage: ['en', 'hi'],
+      areaServed: 'IN',
+    },
+  ],
+  sameAs: [social.facebook, social.instagram, social.youtube, social.whatsapp].filter(Boolean),
   hasMap: mapsDirections,
+}
+
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [websiteSchema, hospitalSchema, ...schema],
 }
 ---
 
 <meta property="og:url" content={url} />
 <link rel="canonical" href={url} />
-<meta name="robots" content="index, follow, max-image-preview:large" />
+{!noindex && <meta name="robots" content="index, follow, max-image-preview:large" />}
 
-<script is:inline type="application/ld+json" set:html={JSON.stringify([hospitalSchema, ...schema]).replace(/<\/script>/gi, '<\\/script>')} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify(graph).replace(/<\/script>/gi, '<\\/script>')} />

@@ -1,0 +1,95 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Patient & Visitor Guide"
+  subtitle="Practical information for your visit — OPD timings, admission, visiting hours, what to bring and hospital rules."
+  updated="September 2026"
+>
+  <h2>OPD Timings</h2>
+  <ul>
+    <li><strong>Out-Patient Department (OPD):</strong> {hospital.hours.opd}, Monday to Saturday.</li>
+    <li><strong>Sunday &amp; public holidays:</strong> limited OPD; emergency services remain fully operational.</li>
+    <li><strong>Emergency &amp; ICU:</strong> open <strong>24 × 7</strong>, every day of the year.</li>
+  </ul>
+  <p>Timings of individual consultants may vary. Please confirm when booking an appointment.</p>
+
+  <h2>Before You Visit</h2>
+  <ul>
+    <li>Book an appointment online through our <a href="/book">appointment page</a> or by calling {hospital.phones.appointment}.</li>
+    <li>Carry a government photo identity proof and your health insurance card where applicable.</li>
+    <li>Bring any previous prescriptions, reports and a list of current medicines.</li>
+    <li>Arrive about 15 minutes before your scheduled slot for registration.</li>
+  </ul>
+
+  <h2>Registration and Consultation</h2>
+  <ol>
+    <li>Register at the reception desk and provide your basic details.</li>
+    <li>Pay the applicable consultation fee (see <a href="/refund-cancellation">Refund &amp; Cancellation Policy</a> for details).</li>
+    <li>Proceed to the relevant OPD room or waiting area; the nursing staff will direct you.</li>
+    <li>Consult the doctor, who will advise investigations, medication or admission as required.</li>
+  </ol>
+
+  <h2>Visiting Hours</h2>
+  <ul>
+    <li><strong>General visiting:</strong> 11:00 AM – 12:30 PM and 5:00 PM – 7:00 PM.</li>
+    <li><strong>ICU / critical care:</strong> restricted visiting, generally one attendant at a time, as advised by the nursing team.</li>
+    <li>Please keep visits brief and avoid bringing children or large groups to inpatient areas.</li>
+    <li>Silence is important for patient rest. Please keep phones on silent in patient areas.</li>
+  </ul>
+
+  <h2>Admission</h2>
+  <ul>
+    <li>Admission is arranged on the advice of the treating doctor. Please complete the registration and consent formalities at the admission desk.</li>
+    <li>An estimated cost of treatment will be shared where possible; a deposit may be required at admission.</li>
+    <li>Please provide your insurance/TPA details at admission if you are seeking cashless treatment. See our <a href="/insurance">Insurance &amp; TPA</a> page.</li>
+    <li>Bring a small bag with personal essentials; valuables should be left at home or secured, as the hospital is not responsible for loss.</li>
+  </ul>
+
+  <h2>What to Bring</h2>
+  <ul>
+    <li>Government photo ID and, where applicable, insurance card and policy documents.</li>
+    <li>Current medicines, prescriptions and past medical reports.</li>
+    <li>Comfortable clothing and personal toiletries for admitted patients.</li>
+    <li>A list of emergency contacts.</li>
+  </ul>
+
+  <h2>Attendants and Care Partners</h2>
+  <ul>
+    <li>One attendant is generally permitted with each admitted patient; additional attendants may be restricted to protect patient safety and privacy.</li>
+    <li>Attendants should follow infection-control and hygiene rules and cooperate with hospital staff.</li>
+    <li>A pregnant woman, an elderly patient, or a patient with a disability may be allowed a support person as per hospital policy.</li>
+  </ul>
+
+  <h2>Hospital Rules</h2>
+  <ul>
+    <li>Smoking, alcohol and tobacco are strictly prohibited throughout the premises.</li>
+    <li>Please maintain silence and hygiene, and avoid littering.</li>
+    <li>Photography and recording of other patients or staff without permission is not allowed.</li>
+    <li>Please follow the parking and safety instructions on the premises.</li>
+    <li>Do not bring outside food for admitted patients unless permitted by the treating team.</li>
+  </ul>
+
+  <h2>Billing and Discharge</h2>
+  <ul>
+    <li>An itemised bill is provided at discharge; please settle dues at the billing counter.</li>
+    <li>Your discharge summary, prescriptions and follow-up advice will be explained by the treating team.</li>
+    <li>For billing corrections, contact the billing desk before discharge where possible.</li>
+  </ul>
+
+  <h2>Your Rights and Feedback</h2>
+  <p>
+    Please read our <a href="/patient-rights">Patient Rights &amp; Responsibilities</a> page. If you have a concern, our
+    <a href="/grievance">Grievance Redressal</a> process explains how to raise it and the timelines involved.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    {hospital.name}<br />
+    {hospital.address.line1}, {hospital.address.line2}, {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    Reception: {hospital.phones.reception} · Appointments: {hospital.phones.appointment}<br />
+    Emergency: {hospital.phones.emergency} (24 × 7) · Email: {hospital.email}
+  </p>
+</LegalLayout>

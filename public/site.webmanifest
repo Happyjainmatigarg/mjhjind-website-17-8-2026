@@ -1,21 +1,55 @@
 {
+  "id": "/",
   "name": "Meenakshi Jain Hospital",
   "short_name": "MJ Hospital",
-  "description": "Quality healthcare in Jind — multi-specialty hospital with 24×7 emergency care.",
+  "description": "Quality healthcare in Jind — multi-specialty hospital with 24x7 emergency care, online appointment booking and health camps.",
+  "lang": "en-IN",
+  "dir": "ltr",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#2D5F8A",
+  "orientation": "portrait-primary",
+  "background_color": "#F7F5F2",
   "theme_color": "#2D5F8A",
+  "categories": ["health", "medical", "lifestyle"],
   "icons": [
     {
       "src": "/favicon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/favicon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Book Appointment",
+      "short_name": "Book",
+      "url": "/book",
+      "icons": [{ "src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "24x7 Emergency",
+      "short_name": "Emergency",
+      "url": "/emergency",
+      "icons": [{ "src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Our Doctors",
+      "short_name": "Doctors",
+      "url": "/doctors",
+      "icons": [{ "src": "/favicon-192x192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

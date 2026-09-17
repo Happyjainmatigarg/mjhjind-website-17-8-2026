@@ -45,7 +45,7 @@ const ogUrl = `https://${hospital.domains.primary}${ogImage}`
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en-IN" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -60,6 +60,7 @@ const ogUrl = `https://${hospital.domains.primary}${ogImage}`
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:alt" content={`${hospital.name} — ${hospital.tagline}`} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content="en_IN" />
@@ -67,15 +68,22 @@ const ogUrl = `https://${hospital.domains.primary}${ogImage}`
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogUrl} />
+    <meta name="twitter:image:alt" content={`${hospital.name} — ${hospital.tagline}`} />
     <meta name="twitter:site" content="@mjhospitalin" />
     {noindex && <meta name="robots" content="noindex" />}
-    <Seo path={canonicalPath} schema={schema} />
+    <Seo path={canonicalPath} schema={schema} noindex={noindex} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content={hospital.shortName} />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="msapplication-TileColor" content="#2D5F8A" />
+    <meta name="msapplication-config" content="/browserconfig.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${hospital.name} — Health Blog`} href="/rss.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <script is:inline set:html={themeScript}></script>
@@ -94,6 +102,9 @@ const ogUrl = `https://${hospital.domains.primary}${ogImage}`
       <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
     </a>
     <script>
+      import initSiteSettings from '../scripts/site-settings'
+      initSiteSettings()
+
       const backToTop = document.getElementById('back-to-top')
       window.addEventListener('scroll', () => {
         if (!backToTop) return

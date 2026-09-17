@@ -1,6 +1,18 @@
-import nodemailer from 'nodemailer'
-import type { Transporter } from 'nodemailer'
+/*
+  Mail delivery abstraction.
+
+  Supports two transports, chosen by the admin email settings:
+    - "api"  : provider HTTP API via fetch (Resend / SendGrid / Brevo). Works on
+               Cloudflare Workers and Node.
+    - "smtp" : classic SMTP via nodemailer, dynamically imported so the module
+               can still be bundled for Workers (where it is never reached).
+
+  Configured through the admin panel (/admin/settings), with environment
+  variables as a fallback.
+*/
+
 import { hospital } from '../../data/site'
+import { getEmailConfig, type ResolvedEmailConfig } from './settings'
 
 export { hospital }
 
@@ -11,60 +23,111 @@ export interface MailMessage {
   text?: string
 }
 
-let cachedTransporter: Transporter | null = null
-let lastConfigHash = ''
-
-function configHash(): string {
-  return [
-    process.env.SMTP_HOST || '',
-    process.env.SMTP_PORT || '',
-    process.env.SMTP_USER || '',
-    process.env.SMTP_PASS || '',
-  ].join('|')
-}
-
-export function isMailConfigured(): boolean {
-  return Boolean(process.env.SMTP_USER && process.env.SMTP_PASS)
-}
-
-function getTransporter(): Transporter | null {
-  if (!isMailConfigured()) return null
-  const hash = configHash()
-  if (cachedTransporter && lastConfigHash === hash) return cachedTransporter
-  lastConfigHash = hash
-  cachedTransporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: Number(process.env.SMTP_PORT) || 587,
-    secure: (process.env.SMTP_SECURE || 'false').toLowerCase() === 'true',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  })
-  return cachedTransporter
-}
-
-export function mailFrom(): string {
-  return process.env.MAIL_FROM || process.env.SMTP_USER || `noreply@${hospital.domains.primary}`
+function readEnv(name: string): string {
+  try {
+    if (typeof process !== 'undefined' && process.env && process.env[name]) return String(process.env[name])
+  } catch {
+    // Workers may not expose process.env
+  }
+  return ''
 }
 
 export function siteUrl(): string {
-  return (process.env.SITE_URL || `https://${hospital.domains.primary}`).replace(/\/$/, '')
+  return (readEnv('SITE_URL') || `https://${hospital.domains.primary}`).replace(/\/$/, '')
+}
+
+export function mailFrom(): string {
+  return readEnv('MAIL_FROM') || readEnv('SMTP_USER') || `noreply@${hospital.domains.primary}`
 }
 
 export function adminNotifyEmails(): string[] {
-  return (process.env.ADMIN_NOTIFY_EMAILS || '')
+  return readEnv('ADMIN_NOTIFY_EMAILS')
     .split(',')
     .map((e) => e.trim())
     .filter(Boolean)
 }
 
-export async function sendMail(message: MailMessage): Promise<boolean> {
-  const transporter = getTransporter()
-  if (!transporter) return false
+export async function isMailConfigured(): Promise<boolean> {
+  const config = await getEmailConfig()
+  return config.transport !== 'none'
+}
+
+async function sendViaApi(config: ResolvedEmailConfig, message: MailMessage): Promise<boolean> {
+  const from = `"${config.fromName}" <${config.fromEmail || mailFrom()}>`
+  const to = message.to.split(',').map((t) => t.trim()).filter(Boolean)
   try {
+    if (config.provider === 'sendgrid') {
+      const res = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${config.apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          personalizations: [{ to: to.map((email) => ({ email })) }],
+          from: { email: config.fromEmail || mailFrom(), name: config.fromName },
+          subject: message.subject,
+          content: [
+            { type: 'text/plain', value: message.text || '' },
+            { type: 'text/html', value: message.html },
+          ],
+        }),
+      })
+      if (!res.ok) console.error('[mailer] SendGrid error:', res.status, await safeText(res))
+      return res.ok
+    }
+    if (config.provider === 'brevo') {
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: { 'api-key': config.apiKey, 'Content-Type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({
+          sender: { name: config.fromName, email: config.fromEmail || mailFrom() },
+          to: to.map((email) => ({ email })),
+          subject: message.subject,
+          htmlContent: message.html,
+          textContent: message.text || '',
+        }),
+      })
+      if (!res.ok) console.error('[mailer] Brevo error:', res.status, await safeText(res))
+      return res.ok
+    }
+    // Default: Resend
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${config.apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from,
+        to,
+        subject: message.subject,
+        html: message.html,
+        text: message.text,
+      }),
+    })
+    if (!res.ok) console.error('[mailer] Resend error:', res.status, await safeText(res))
+    return res.ok
+  } catch (err) {
+    console.error('[mailer] API send failed:', err instanceof Error ? err.message : err)
+    return false
+  }
+}
+
+async function safeText(res: Response): Promise<string> {
+  try {
+    return (await res.text()).slice(0, 300)
+  } catch {
+    return ''
+  }
+}
+
+async function sendViaSmtp(config: ResolvedEmailConfig, message: MailMessage): Promise<boolean> {
+  try {
+    const mod: any = await import('nodemailer')
+    const nodemailer = mod?.default ?? mod
+    const transporter = nodemailer.createTransport({
+      host: config.smtp.host,
+      port: config.smtp.port,
+      secure: config.smtp.secure,
+      auth: { user: config.smtp.user, pass: config.smtp.pass },
+    })
     await transporter.sendMail({
-      from: `"${hospital.name}" <${mailFrom()}>`,
+      from: `"${config.fromName}" <${config.fromEmail || mailFrom()}>`,
       to: message.to,
       subject: message.subject,
       html: message.html,
@@ -72,9 +135,16 @@ export async function sendMail(message: MailMessage): Promise<boolean> {
     })
     return true
   } catch (err) {
-    console.error('[mailer] Failed to send email:', err instanceof Error ? err.message : err)
+    console.error('[mailer] SMTP send failed:', err instanceof Error ? err.message : err)
     return false
   }
+}
+
+export async function sendMail(message: MailMessage): Promise<boolean> {
+  const config = await getEmailConfig()
+  if (config.transport === 'none') return false
+  if (config.transport === 'api') return sendViaApi(config, message)
+  return sendViaSmtp(config, message)
 }
 
 export function wrapEmailHtml(title: string, bodyHtml: string): string {

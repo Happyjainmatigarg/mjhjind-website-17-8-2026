@@ -1,0 +1,78 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Grievance Redressal"
+  subtitle="How to raise a complaint or concern, our service timelines and the escalation matrix."
+  updated="September 2026"
+>
+  <h2>Our Commitment</h2>
+  <p>
+    At {hospital.name}, every patient's experience matters. If something falls short of your expectations, we want to hear
+    about it so we can put it right and improve. This page explains how to raise a grievance, what to expect from us, and
+    how to escalate a matter if it is not resolved to your satisfaction.
+  </p>
+
+  <h2>Grievance Officer</h2>
+  <p>
+    <strong>Grievance Officer — {hospital.name}</strong><br />
+    {hospital.address.line1}, {hospital.address.line2}, {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    Email: {hospital.email}<br />
+    Phone: {hospital.phones.reception}<br />
+    Working hours: Monday to Saturday, 10:00 AM – 4:00 PM (excluding public holidays)
+  </p>
+
+  <h2>How to Raise a Grievance</h2>
+  <ol>
+    <li><strong>Speak to the team first.</strong> Most concerns can be resolved quickly by the nursing station, the treating doctor, the department in-charge, or the front desk.</li>
+    <li><strong>Contact the Grievance Officer.</strong> If the matter is not resolved, submit a written or emailed complaint to the Grievance Officer using the contact details above, or use the <a href="/contact">contact form</a> and mark the topic as a complaint.</li>
+    <li><strong>Provide details.</strong> Please include your name, contact number, date and time of the incident, the department involved, and a short description of what happened. Do not include unrelated sensitive medical details in email.</li>
+    <li><strong>Receive an acknowledgement.</strong> We will acknowledge your complaint within <strong>3 working days</strong> with a reference number.</li>
+  </ol>
+
+  <h2>Service Timelines</h2>
+  <ul>
+    <li><strong>Acknowledgement:</strong> within 3 working days of receipt.</li>
+    <li><strong>Investigation and response:</strong> within <strong>15 working days</strong> for most complaints.</li>
+    <li><strong>Complex or clinical complaints</strong> requiring case review may take up to <strong>30 working days</strong>; you will be kept informed of the reason for any extension.</li>
+    <li><strong>Emergency or patient-safety concerns</strong> are escalated immediately to the Medical Superintendent / Director.</li>
+  </ul>
+
+  <h2>Escalation Matrix</h2>
+  <table>
+    <thead>
+      <tr><th>Level</th><th>Who to contact</th><th>Timeframe</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Level 1</td><td>Department in-charge / Nursing head / Front desk</td><td>Immediate</td></tr>
+      <tr><td>Level 2</td><td>Grievance Officer</td><td>Within 3 working days acknowledgement, 15 working days resolution</td></tr>
+      <tr><td>Level 3</td><td>Medical Superintendent / Hospital Director</td><td>If unresolved after Level 2, or within 7 working days for serious safety concerns</td></tr>
+      <tr><td>Level 4</td><td>National / State authorities (see below)</td><td>As per the applicable authority's process</td></tr>
+    </tbody>
+  </table>
+
+  <h2>External Escalation</h2>
+  <p>Depending on the nature of the complaint, you may also approach:</p>
+  <ul>
+    <li><strong>National Medical Commission (NMC)</strong> or the relevant State Medical Council — for professional-conduct complaints against a registered medical practitioner.</li>
+    <li><strong>National / State Health Authority</strong> — for complaints under the Clinical Establishments Act, where applicable.</li>
+    <li><strong>Consumer Commission</strong> — for consumer disputes regarding services and charges.</li>
+    <li><strong>Cyber Crime Helpline 1930</strong> or local police — where fraud or criminal conduct is suspected.</li>
+  </ul>
+
+  <h2>What We Ask of You</h2>
+  <ul>
+    <li>Please raise your concern as early as possible while details are fresh.</li>
+    <li>Stay factual and courteous; abusive or violent conduct towards staff is not acceptable and may be reported.</li>
+    <li>Do not share personal health information of others, and remove any unrelated personal data from written complaints.</li>
+  </ul>
+
+  <h2>Review and Improvement</h2>
+  <p>
+    All complaints, their root causes and corrective actions are reviewed by hospital leadership at regular quality
+    meetings, in line with NABH quality-improvement requirements. Your feedback directly helps us improve patient safety
+    and experience.
+  </p>
+</LegalLayout>

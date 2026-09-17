@@ -22,6 +22,7 @@ import type { GalleryItem } from '../../data/gallery'
 import { gallery } from '../../data/gallery'
 import type { Testimonial } from '../../data/testimonials'
 import { testimonials } from '../../data/testimonials'
+import { hospital } from '../../data/site'
 
 // Try to obtain Node built-ins at runtime only if available.
 let canUseFs = false as boolean
@@ -101,6 +102,97 @@ export type FormCollection = 'appointments' | 'campRegistrations' | 'contacts' |
 
 export type StoreCollection = ContentCollection | FormCollection
 
+export type MailMode = 'auto' | 'smtp' | 'api'
+export type MailProvider = 'resend' | 'sendgrid' | 'brevo'
+
+export interface EmailSettingsRecord {
+  mode: MailMode
+  provider: MailProvider
+  apiKey: string
+  smtpHost: string
+  smtpPort: number
+  smtpSecure: boolean
+  smtpUser: string
+  smtpPass: string
+  fromName: string
+  fromEmail: string
+  adminNotifyEmails: string
+  updatedAt: string
+}
+
+export type SocialKey = 'facebook' | 'instagram' | 'linkedin' | 'whatsapp' | 'x' | 'youtube'
+
+export interface SocialLinkRecord {
+  key: SocialKey
+  label: string
+  url: string
+  icon: string
+  enabled: boolean
+}
+
+export type PaymentProvider = 'offline' | 'razorpay' | 'payu' | 'phonepe' | 'cashfree' | 'stripe'
+
+export interface PaymentSettingsRecord {
+  enabled: boolean
+  provider: PaymentProvider
+  mode: 'test' | 'live'
+  keyId: string
+  keySecret: string
+  upiId: string
+  instructions: string
+  updatedAt: string
+}
+
+export interface SiteSettingsRecord {
+  email: string
+  phones: { emergency: string; ambulance: string; appointment: string; reception: string }
+  address: { line1: string; line2: string; city: string; state: string; pincode: string }
+  hours: { opd: string; emergency: string; visiting: string; pharmacy: string }
+  social: SocialLinkRecord[]
+  updatedAt: string
+}
+
+export interface AppSettingsShape {
+  email: EmailSettingsRecord
+  site: SiteSettingsRecord
+  payment: PaymentSettingsRecord
+}
+
+export interface TpaRepository {
+  id: string
+  name: string
+  type: 'insurer' | 'tpa'
+  logo: string
+  helpline: string
+  email: string
+  cashless: boolean
+  notes: string
+  active: boolean
+  createdAt?: string
+}
+
+export interface MediaRecord {
+  id: string
+  filename: string
+  mime: string
+  size: number
+  data: string
+  alt: string
+  folder: string
+  visible: boolean
+  uploadedAt: string
+}
+
+export interface ActivityRecord {
+  id: string
+  at: string
+  user: string
+  action: string
+  collection: string
+  itemId: string
+  summary: string
+}
+
 export const CONTENT_COLLECTIONS: ContentCollection[] = [
   'doctors',
   'blogPosts',
@@ -138,6 +230,66 @@ interface StoreShape {
   campRegistrations: CampRegistrationRecord[]
   contacts: ContactRecord[]
   newsletter: NewsletterRecord[]
+  settings: AppSettingsShape
+  activity: ActivityRecord[]
+  tpas: TpaRepository[]
+  media: MediaRecord[]
+}
+
+export const DEFAULT_EMAIL_SETTINGS: EmailSettingsRecord = {
+  mode: 'auto',
+  provider: 'resend',
+  apiKey: '',
+  smtpHost: 'smtp.gmail.com',
+  smtpPort: 587,
+  smtpSecure: false,
+  smtpUser: '',
+  smtpPass: '',
+  fromName: 'Meenakshi Jain Hospital',
+  fromEmail: 'mjhospital2003@gmail.com',
+  adminNotifyEmails: 'mjhospital2003@gmail.com',
+  updatedAt: '',
+}
+
+export const DEFAULT_SOCIAL: SocialLinkRecord[] = [
+  { key: 'facebook', label: 'Facebook', url: hospital.social.facebook || '', icon: 'facebook', enabled: Boolean(hospital.social.facebook) },
+  { key: 'instagram', label: 'Instagram', url: hospital.social.instagram || '', icon: 'instagram', enabled: Boolean(hospital.social.instagram) },
+  { key: 'linkedin', label: 'LinkedIn', url: '', icon: 'linkedin', enabled: false },
+  { key: 'whatsapp', label: 'WhatsApp', url: hospital.social.whatsapp || '', icon: 'whatsapp', enabled: Boolean(hospital.social.whatsapp) },
+  { key: 'x', label: 'X (Twitter)', url: '', icon: 'x', enabled: false },
+]
+
+export const DEFAULT_SITE_SETTINGS: SiteSettingsRecord = {
+  email: hospital.email,
+  phones: { ...hospital.phones },
+  address: { ...hospital.address },
+  hours: {
+    opd: hospital.hours.opd,
+    emergency: 'Open 24 × 7',
+    visiting: '11:00 AM – 12:30 PM, 5:00 PM – 7:00 PM',
+    pharmacy: 'Open 24 × 7',
+  },
+  social: DEFAULT_SOCIAL.map((s) => ({ ...s })),
+  updatedAt: '',
+}
+
+export const DEFAULT_PAYMENT_SETTINGS: PaymentSettingsRecord = {
+  enabled: false,
+  provider: 'offline',
+  mode: 'test',
+  keyId: '',
+  keySecret: '',
+  upiId: '',
+  instructions: 'Pay at the hospital reception by cash, UPI or card. Online payment is optional at booking.',
+  updatedAt: '',
+}
+
+function defaultSettings(): AppSettingsShape {
+  return {
+    email: { ...DEFAULT_EMAIL_SETTINGS },
+    site: { ...DEFAULT_SITE_SETTINGS, phones: { ...DEFAULT_SITE_SETTINGS.phones }, address: { ...DEFAULT_SITE_SETTINGS.address }, hours: { ...DEFAULT_SITE_SETTINGS.hours }, social: DEFAULT_SOCIAL.map((s) => ({ ...s })) },
+    payment: { ...DEFAULT_PAYMENT_SETTINGS },
+  }
 }
 
 // When fs is available, use real file paths. Otherwise, fall back to in-memory store.
@@ -148,7 +300,18 @@ if (canUseFs && nodePath) {
   storeFile = nodePath.join(dataDir, 'store.json')
 }
 
-function seedContent(): Omit<StoreShape, 'appointments' | 'campRegistrations' | 'contacts' | 'newsletter'> {
+function mergeSocial(stored: unknown): SocialLinkRecord[] {
+  const list = Array.isArray(stored) ? (stored as Partial<SocialLinkRecord>[]) : []
+  return DEFAULT_SOCIAL.map((base) => {
+    const found = list.find((s) => s?.key === base.key)
+    return found ? { ...base, ...found, key: base.key, label: base.label, icon: base.icon } : { ...base }
+  })
+}
+
+function seedContent(): Omit<
+  StoreShape,
+  'appointments' | 'campRegistrations' | 'contacts' | 'newsletter' | 'settings' | 'activity' | 'tpas' | 'media'
+> {
   return {
     doctors: doctors.map((d) => ({ ...d })),
     blogPosts: blogPosts.map((p) => ({ ...p })),
@@ -168,6 +331,10 @@ function emptyStore(): StoreShape {
     campRegistrations: [],
     contacts: [],
     newsletter: [],
+    settings: defaultSettings(),
+    activity: [],
+    tpas: [],
+    media: [],
   }
 }
 
@@ -205,6 +372,21 @@ function readStore(): StoreShape {
         campRegistrations: data.campRegistrations ?? [],
         contacts: data.contacts ?? [],
         newsletter: data.newsletter ?? [],
+        settings: {
+          email: { ...DEFAULT_EMAIL_SETTINGS, ...(data.settings?.email ?? {}) },
+          site: {
+            ...DEFAULT_SITE_SETTINGS,
+            ...(data.settings?.site ?? {}),
+            phones: { ...DEFAULT_SITE_SETTINGS.phones, ...(data.settings?.site?.phones ?? {}) },
+            address: { ...DEFAULT_SITE_SETTINGS.address, ...(data.settings?.site?.address ?? {}) },
+            hours: { ...DEFAULT_SITE_SETTINGS.hours, ...(data.settings?.site?.hours ?? {}) },
+            social: mergeSocial(data.settings?.site?.social),
+          },
+          payment: { ...DEFAULT_PAYMENT_SETTINGS, ...(data.settings?.payment ?? {}) },
+        },
+        activity: data.activity ?? [],
+        tpas: data.tpas ?? [],
+        media: data.media ?? [],
       }
       if (!store._contentSeeded) {
         store._contentSeeded = true
@@ -439,4 +621,215 @@ export function createNewsletter(data: Record<string, unknown>): NewsletterRecor
   store.newsletter.push(record)
   writeStore(store)
   return record
+}
+
+export function getSettings(): AppSettingsShape {
+  const store = readStore()
+  return {
+    email: { ...DEFAULT_EMAIL_SETTINGS, ...(store.settings?.email ?? {}) },
+    site: store.settings?.site ?? DEFAULT_SITE_SETTINGS,
+    payment: { ...DEFAULT_PAYMENT_SETTINGS, ...(store.settings?.payment ?? {}) },
+  }
+}
+
+export function saveSettings(email: Partial<EmailSettingsRecord>): EmailSettingsRecord {
+  const store = readStore()
+  const current = { ...DEFAULT_EMAIL_SETTINGS, ...(store.settings?.email ?? {}) }
+  const next: EmailSettingsRecord = {
+    ...current,
+    ...email,
+    smtpPort: Number(email.smtpPort ?? current.smtpPort) || current.smtpPort,
+    smtpSecure: Boolean(email.smtpSecure ?? current.smtpSecure),
+    updatedAt: new Date().toISOString(),
+  }
+  store.settings = { ...store.settings, email: next }
+  writeStore(store)
+  return next
+}
+
+const ACTIVITY_LIMIT = 2000
+
+export function logActivity(entry: Omit<ActivityRecord, 'id' | 'at'> & { at?: string }): ActivityRecord {
+  const store = readStore()
+  const record: ActivityRecord = {
+    id: uid('ACT'),
+    at: entry.at || new Date().toISOString(),
+    user: sanitize(entry.user) || 'admin',
+    action: sanitize(entry.action),
+    collection: sanitize(entry.collection),
+    itemId: sanitize(entry.itemId),
+    summary: sanitize(entry.summary).slice(0, 500),
+  }
+  store.activity.unshift(record)
+  if (store.activity.length > ACTIVITY_LIMIT) store.activity.length = ACTIVITY_LIMIT
+  writeStore(store)
+  return record
+}
+
+export function getActivity(): ActivityRecord[] {
+  return readStore().activity ?? []
+}
+
+export function clearActivity(): void {
+  const store = readStore()
+  store.activity = []
+  writeStore(store)
+}
+
+export function getSiteSettings(): SiteSettingsRecord {
+  const s = readStore().settings?.site
+  if (!s) return { ...DEFAULT_SITE_SETTINGS, phones: { ...DEFAULT_SITE_SETTINGS.phones }, address: { ...DEFAULT_SITE_SETTINGS.address }, hours: { ...DEFAULT_SITE_SETTINGS.hours }, social: mergeSocial(undefined) }
+  return { ...s, phones: { ...DEFAULT_SITE_SETTINGS.phones, ...s.phones }, address: { ...DEFAULT_SITE_SETTINGS.address, ...s.address }, hours: { ...DEFAULT_SITE_SETTINGS.hours, ...s.hours }, social: mergeSocial(s.social) }
+}
+
+export function saveSiteSettings(patch: Partial<SiteSettingsRecord>): SiteSettingsRecord {
+  const store = readStore()
+  const current = store.settings?.site ?? DEFAULT_SITE_SETTINGS
+  const next: SiteSettingsRecord = {
+    email: patch.email !== undefined ? String(patch.email).trim() : current.email,
+    phones: { ...current.phones, ...(patch.phones ?? {}) },
+    address: { ...current.address, ...(patch.address ?? {}) },
+    hours: { ...current.hours, ...(patch.hours ?? {}) },
+    social: patch.social ? mergeSocial(patch.social) : mergeSocial(current.social),
+    updatedAt: new Date().toISOString(),
+  }
+  store.settings = { ...store.settings, site: next }
+  writeStore(store)
+  return next
+}
+
+export function getPaymentSettings(): PaymentSettingsRecord {
+  return { ...DEFAULT_PAYMENT_SETTINGS, ...(readStore().settings?.payment ?? {}) }
+}
+
+export function savePaymentSettings(patch: Partial<PaymentSettingsRecord>): PaymentSettingsRecord {
+  const store = readStore()
+  const current = { ...DEFAULT_PAYMENT_SETTINGS, ...(store.settings?.payment ?? {}) }
+  const next: PaymentSettingsRecord = { ...current, ...patch, updatedAt: new Date().toISOString() }
+  store.settings = { ...store.settings, payment: next }
+  writeStore(store)
+  return next
+}
+
+export function getTpas(): TpaRepository[] {
+  return readStore().tpas ?? []
+}
+
+export function getActiveTpas(): TpaRepository[] {
+  return getTpas().filter((t) => t.active)
+}
+
+export function createTpa(data: Partial<TpaRepository>): TpaRepository {
+  const store = readStore()
+  const record: TpaRepository = {
+    id: uid('TPA'),
+    name: sanitize(data.name),
+    type: data.type === 'tpa' ? 'tpa' : 'insurer',
+    logo: sanitize(data.logo),
+    helpline: sanitize(data.helpline),
+    email: sanitize(data.email),
+    cashless: Boolean(data.cashless),
+    notes: sanitize(data.notes),
+    active: data.active !== false,
+    createdAt: new Date().toISOString(),
+  }
+  store.tpas.push(record)
+  writeStore(store)
+  return record
+}
+
+export function updateTpa(id: string, data: Partial<TpaRepository>): TpaRepository | undefined {
+  const store = readStore()
+  const idx = store.tpas.findIndex((t) => t.id === id)
+  if (idx === -1) return undefined
+  const current = store.tpas[idx]
+  store.tpas[idx] = {
+    ...current,
+    ...data,
+    id: current.id,
+    name: data.name !== undefined ? sanitize(data.name) : current.name,
+    logo: data.logo !== undefined ? sanitize(data.logo) : current.logo,
+    helpline: data.helpline !== undefined ? sanitize(data.helpline) : current.helpline,
+    email: data.email !== undefined ? sanitize(data.email) : current.email,
+    notes: data.notes !== undefined ? sanitize(data.notes) : current.notes,
+    cashless: data.cashless !== undefined ? Boolean(data.cashless) : current.cashless,
+    active: data.active !== undefined ? Boolean(data.active) : current.active,
+  }
+  writeStore(store)
+  return store.tpas[idx]
+}
+
+export function deleteTpa(id: string): boolean {
+  const store = readStore()
+  const idx = store.tpas.findIndex((t) => t.id === id)
+  if (idx === -1) return false
+  store.tpas.splice(idx, 1)
+  writeStore(store)
+  return true
+}
+
+const MAX_MEDIA_BYTES = 4 * 1024 * 1024
+
+export function getMedia(): MediaRecord[] {
+  return readStore().media ?? []
+}
+
+export function getVisibleMedia(): MediaRecord[] {
+  return getMedia().filter((m) => m.visible)
+}
+
+export function getMediaById(id: string): MediaRecord | undefined {
+  return getMedia().find((m) => m.id === id)
+}
+
+export function createMedia(data: {
+  filename: string
+  mime: string
+  size: number
+  data: string
+  alt?: string
+  folder?: string
+  visible?: boolean
+}): MediaRecord {
+  if (data.size > MAX_MEDIA_BYTES) throw new Error('File is larger than the 4 MB limit.')
+  const store = readStore()
+  const record: MediaRecord = {
+    id: uid('IMG'),
+    filename: sanitize(data.filename).slice(0, 200),
+    mime: sanitize(data.mime),
+    size: data.size,
+    data: data.data,
+    alt: sanitize(data.alt || ''),
+    folder: sanitize(data.folder || 'general'),
+    visible: data.visible !== false,
+    uploadedAt: new Date().toISOString(),
+  }
+  store.media.unshift(record)
+  writeStore(store)
+  return record
+}
+
+export function updateMedia(id: string, data: { alt?: string; folder?: string; visible?: boolean; filename?: string }): MediaRecord | undefined {
+  const store = readStore()
+  const idx = store.media.findIndex((m) => m.id === id)
+  if (idx === -1) return undefined
+  const current = store.media[idx]
+  store.media[idx] = {
+    ...current,
+    alt: data.alt !== undefined ? sanitize(data.alt) : current.alt,
+    folder: data.folder !== undefined ? sanitize(data.folder) : current.folder,
+    filename: data.filename !== undefined ? sanitize(data.filename).slice(0, 200) : current.filename,
+    visible: data.visible !== undefined ? Boolean(data.visible) : current.visible,
+  }
+  writeStore(store)
+  return store.media[idx]
+}
+
+export function deleteMedia(id: string): boolean {
+  const store = readStore()
+  const idx = store.media.findIndex((m) => m.id === id)
+  if (idx === -1) return false
+  store.media.splice(idx, 1)
+  writeStore(store)
+  return true
 }

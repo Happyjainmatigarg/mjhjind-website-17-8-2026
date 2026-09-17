@@ -263,3 +263,85 @@ export const adminCollectionsByKey = Object.fromEntries(adminCollections.map((c)
 export function getAdminConfig(name: string): CollectionConfig | undefined {
   return adminCollectionsByKey[name]
 }
+
+export interface AdminPageConfig {
+  name: string
+  label: string
+  icon: string
+  description: string
+  group: 'Settings' | 'Insights' | 'System'
+}
+
+export const adminPages: AdminPageConfig[] = [
+  {
+    name: 'analytics',
+    label: 'Analytics',
+    icon: 'chart',
+    description: 'Request volume, trends and department mix at a glance.',
+    group: 'Insights',
+  },
+  {
+    name: 'reports',
+    label: 'Reports & MIS',
+    icon: 'document',
+    description: 'Operational reports with CSV, Excel, Word, PDF and JSON export.',
+    group: 'Insights',
+  },
+  {
+    name: 'settings',
+    label: 'Email & Notifications',
+    icon: 'mail',
+    description: 'Configure appointment confirmation and enquiry notification delivery.',
+    group: 'Settings',
+  },
+  {
+    name: 'site',
+    label: 'Site & Contact',
+    icon: 'globe',
+    description: 'Contact details, OPD hours and social links shown on the website.',
+    group: 'Settings',
+  },
+  {
+    name: 'media',
+    label: 'Media Library',
+    icon: 'camera',
+    description: 'Upload, hide or delete images used across the website.',
+    group: 'Settings',
+  },
+  {
+    name: 'tpas',
+    label: 'Insurance & TPA',
+    icon: 'shield',
+    description: 'Cashless insurers and third-party administrators with helpline details.',
+    group: 'Settings',
+  },
+  {
+    name: 'payment',
+    label: 'Payments',
+    icon: 'building',
+    description: 'Optional online payment gateway for appointment bookings.',
+    group: 'Settings',
+  },
+  {
+    name: 'activity',
+    label: 'Activity Log',
+    icon: 'clipboard',
+    description: 'Audit trail of admin sign-ins and record changes.',
+    group: 'System',
+  },
+]
+
+export const adminPageNames: string[] = adminPages.map((p) => p.name)
+
+export function isAdminPage(name: string): boolean {
+  return adminPageNames.includes(name)
+}
+
+export function getAdminPage(name: string): AdminPageConfig | undefined {
+  return adminPages.find((p) => p.name === name)
+}
+
+export function isKnownAdminRoute(name: string | undefined | null): boolean {
+  if (!name) return false
+  return name === 'dashboard' || isAdminPage(name) || !!getAdminConfig(name)
+}

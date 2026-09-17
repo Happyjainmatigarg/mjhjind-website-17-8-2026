@@ -1,0 +1,77 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro'
+import { hospital } from '../data/site'
+---
+
+<LegalLayout
+  title="Refund & Cancellation Policy"
+  subtitle="How appointment cancellations, no-shows, refunds and billing corrections are handled."
+  updated="September 2026"
+>
+  <h2>1. Scope</h2>
+  <p>
+    This policy applies to appointment bookings, health-camp registrations, teleconsultations and any online payments made
+    through the {hospital.name} website. In-person hospital services are also governed by the billing and admission
+    policies provided at the time of service.
+  </p>
+
+  <h2>2. Cancelling or Rescheduling an Appointment</h2>
+  <ul>
+    <li>Appointment booking itself is <strong>free of charge</strong> on this website.</li>
+    <li>You may cancel or reschedule by calling us at <strong>{hospital.phones.appointment}</strong> or informing the front desk.</li>
+    <li>Please inform us at least <strong>4 hours before</strong> your appointment slot so the slot can be offered to another patient.</li>
+    <li>Repeated no-shows may lead to your future online bookings being confirmed only by phone.</li>
+  </ul>
+
+  <h2>3. Consultation Fees and No-Show</h2>
+  <ul>
+    <li>OPD consultation fees are payable at the hospital reception unless a specific prepayment option is offered.</li>
+    <li>Where a consultation fee has been prepaid online and you attend, the fee is adjusted against the services provided. Consultation fees are generally <strong>non-refundable once the consultation has taken place</strong>.</li>
+    <li>If you prepaid for a consultation and do <strong>not</strong> attend (no-show) without prior cancellation, the fee may be retained or a portion adjusted against administrative costs.</li>
+  </ul>
+
+  <h2>4. Online Payments and Refund Eligibility</h2>
+  <p>Where online payment is enabled and you make a payment through the website:</p>
+  <ul>
+    <li><strong>Cancelled by the hospital:</strong> if we cancel or cannot provide the booked service, the amount paid is refunded in full.</li>
+    <li><strong>Cancelled by you with notice:</strong> cancellations made at least 4 hours before the appointment are eligible for a full refund of any prepaid service charge (excluding payment-gateway charges, if any).</li>
+    <li><strong>Late cancellation:</strong> cancellations within 4 hours of the slot may attract a deduction to cover administrative and blocked-slot costs.</li>
+    <li><strong>No-show:</strong> prepaid amounts may be forfeited or partly adjusted, at the hospital's discretion.</li>
+    <li><strong>Duplicate or failed transactions:</strong> duplicate charges and amounts debited without a confirmed booking are refunded in full.</li>
+  </ul>
+
+  <h2>5. Refund Process and Timelines</h2>
+  <ul>
+    <li>Refund requests should be raised within <strong>7 days</strong> of the transaction by contacting the hospital with your booking reference and payment details.</li>
+    <li>Eligible refunds are processed within <strong>7–10 working days</strong> of approval.</li>
+    <li>Refunds are made to the original payment method wherever possible. Depending on your bank or payment provider, the amount may take a further 5–7 working days to reflect in your account.</li>
+    <li>A refund reference will be shared once the refund is initiated.</li>
+  </ul>
+
+  <h2>6. Billing Corrections</h2>
+  <p>
+    If you believe a charge is incorrect, please raise it with the billing desk before discharge where possible. Verified
+    billing errors are corrected and any excess amount collected is refunded in accordance with this policy.
+  </p>
+
+  <h2>7. Insurance and Cashless Claims</h2>
+  <p>
+    Where treatment is covered by insurance or a TPA under a cashless arrangement, the insurer/TPA's terms govern the
+    settlement. Refunds of patient-borne portions, co-payments or deposits follow the hospital's billing policy and the
+    insurer's decision. See our <a href="/insurance">Insurance &amp; TPA</a> page for details.
+  </p>
+
+  <h2>8. How to Raise a Refund Request</h2>
+  <p>
+    Contact us with your booking reference, date of service, amount paid and reason for the request:
+  </p>
+  <p>
+    {hospital.name}<br />
+    {hospital.address.line1}, {hospital.address.line2}, {hospital.address.city}, {hospital.address.state} — {hospital.address.pincode}<br />
+    Email: {hospital.email}<br />
+    Phone: {hospital.phones.reception}
+  </p>
+  <p>
+    If you are not satisfied with the resolution, you may escalate through our <a href="/grievance">Grievance Redressal</a> process.
+  </p>
+</LegalLayout>

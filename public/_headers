@@ -1,0 +1,21 @@
+# Security headers (Cloudflare Pages / Netlify _headers format)
+# Strict-Transport-Security forces HTTPS for two years including subdomains.
+# CSP allows Google Fonts (the only third party used) and inline styles/scripts
+# emitted by the framework; tighten with nonces in a future security review.
+# X-Frame-Options and frame-ancestors together prevent clickjacking.
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  X-Frame-Options: SAMEORIGIN
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self'; frame-src https://www.google.com https://maps.google.com; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests
+  Cross-Origin-Opener-Policy: same-origin
+
+# Never cache admin or API responses at the edge.
+/admin/*
+  Cache-Control: no-store
+
+/api/*
+  Cache-Control: no-store
