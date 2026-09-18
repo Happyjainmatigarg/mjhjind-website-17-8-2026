@@ -25,17 +25,24 @@ import { testimonials } from '../../data/testimonials'
 import { hospital } from '../../data/site'
 
 // Try to obtain Node built-ins at runtime only if available.
+// `process.getBuiltinModule` (Node 20.16+/22+) is the reliable synchronous
+// accessor in ESM. The legacy CommonJS `require` and a bundler-safe global
+// lookup are kept as fallbacks. On Cloudflare Workers none of these resolve,
+// so `canUseFs` stays false and the in-memory store is used.
 let canUseFs = false as boolean
 let nodeFs: typeof import('fs') | undefined
 let nodePath: typeof import('path') | undefined
 try {
-  // Use a dynamic require trick to avoid static ESM imports so bundlers targeting Workers
-  // won't automatically externalize node built-ins and cause runtime failures.
-  // This will succeed in Node.js (local dev) and fail silently in Workers.
-  // eslint-disable-next-line no-new-func
-  const _req: any = Function('return require')()
-  nodeFs = _req('fs')
-  nodePath = _req('path')
+  const proc = typeof process !== 'undefined' ? (process as unknown as { getBuiltinModule?: (id: string) => unknown }) : undefined
+  if (typeof proc?.getBuiltinModule === 'function') {
+    nodeFs = proc.getBuiltinModule('node:fs') as typeof import('fs') | undefined
+    nodePath = proc.getBuiltinModule('node:path') as typeof import('path') | undefined
+  }
+  if ((!nodeFs || !nodePath) && typeof (globalThis as { require?: unknown }).require === 'function') {
+    const req = (globalThis as unknown as { require: (id: string) => unknown }).require
+    nodeFs = req('fs') as typeof import('fs') | undefined
+    nodePath = req('path') as typeof import('path') | undefined
+  }
   canUseFs = !!nodeFs && !!nodePath
 } catch (e) {
   canUseFs = false
